@@ -1,7 +1,8 @@
 # tmdb's posters and backdrops for kodi. image.tmdb.org (cloudfront)
-# answers barnard's ip with 403 "blocked from your country", xray's mixed
-# inbound (services.kodi.proxy, xray on barnard) lets them through, but a new connection
-# through it takes 15-50 s; a picture on one that's open, 0.1 s. kodi's
+# answers barnard's ip with 403 "blocked from your country", a proxy
+# (services.kodi.kodi.imagesProxy, xray's mixed inbound on barnard) lets
+# them through, but a new connection through it takes 15-50 s; a picture
+# on one that's open, 0.1 s. with no proxy it's the same, straight. kodi's
 # curl opens new ones all the time and gives up on one after 20 s of
 # nothing. so kodi asks this (../advancedsettings.xml's pathsubstitution:
 # https://image.tmdb.org/t/p/ is http://127.0.0.1:PORT/t/p/ for kodi's
@@ -20,7 +21,6 @@ import threading
 import time
 
 HOST = "image.tmdb.org"
-PROXY = ("127.0.0.1", 10808)
 PORT = 8770
 # connections kept open: kodi's textures load a few at a time
 CONNECTIONS = 6
@@ -42,8 +42,11 @@ class Connection:
 
     def open(self):
         self.close()
-        conn = http.client.HTTPSConnection(*self.pool.proxy, timeout=TIMEOUT, context=self.pool.context)
-        conn.set_tunnel(self.pool.host)
+        if self.pool.proxy:
+            conn = http.client.HTTPSConnection(*self.pool.proxy, timeout=TIMEOUT, context=self.pool.context)
+            conn.set_tunnel(self.pool.host)
+        else:
+            conn = http.client.HTTPSConnection(self.pool.host, timeout=TIMEOUT, context=self.pool.context)
         conn.connect()
         self.http, self.used = conn, time.monotonic()
 
@@ -94,8 +97,10 @@ class Connection:
 
 class Pool:
     # the connections, a request waits for a free one
-    def __init__(self, proxy=PROXY, host=HOST, context=None, log=lambda message, bad: print(message)):
+    # proxy: (host, port), None goes straight
+    def __init__(self, proxy=None, host=HOST, context=None, log=lambda message, bad: print(message)):
         self.proxy, self.host, self.context, self.log = proxy, host, context, log
+        self.via = f"{host} through {proxy[0]}:{proxy[1]}" if proxy else host
         self.free = queue.LifoQueue()
         for _ in range(CONNECTIONS):
             self.free.put(Connection(self))
@@ -119,12 +124,12 @@ class Pool:
                 conn.open()
             if self.failing:
                 self.failing = False
-                self.log(f"{self.host} through {self.proxy[0]}:{self.proxy[1]} again", False)
+                self.log(f"{self.via} again", False)
         except (OSError, http.client.HTTPException) as e:
             conn.close()
             if not self.failing:
                 self.failing = True
-                self.log(f"{self.host} through {self.proxy[0]}:{self.proxy[1]}: {e}", True)
+                self.log(f"{self.via}: {e}", True)
         finally:
             self.free.put(conn)
 

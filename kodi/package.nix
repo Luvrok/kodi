@@ -8,6 +8,8 @@
   proxy ? null,
   # ../arr/shared.nix with the library's disk, for the downloads' add-on
   arr ? import ../arr/shared.nix { },
+  # { host, port } for tmdb's pictures in movie pipe, null: straight
+  imagesProxy ? null,
 }:
 
 let
@@ -25,7 +27,7 @@ let
     patches = (old.patches or [ ]) ++ [ ./kodi-keys.patch ];
   });
   kodiPackages = kodi.packages;
-  addons = kodiPackages.callPackage ./addons.nix { inherit inputs arr; };
+  addons = kodiPackages.callPackage ./addons.nix { inherit inputs arr imagesProxy; };
   kodiWithAddons = kodi.withPackages (_: addons);
 
   # tmdb through a proxy when the provider breaks it: kodi's curl

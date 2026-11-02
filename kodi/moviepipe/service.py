@@ -4,7 +4,7 @@
 # notification when a download starts, ends or fails. where it got to is
 # in the add-on's data, what came while kodi was off is taken in at start.
 # and majan's film page's cast row asked again while it's empty (Cast).
-# tmdb's pictures through xray (./images.py)
+# tmdb's pictures through arr.json's images_proxy, or straight (./images.py)
 import json
 import os
 import threading
@@ -15,7 +15,7 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 
-from arr import Api, Error, notify
+from arr import C, Api, Error, notify
 from images import PORT, Images
 
 STATE = xbmcvfs.translatePath("special://profile/addon_data/plugin.video.moviepipe/state.json")
@@ -205,7 +205,7 @@ def log(message, bad):
 monitor = xbmc.Monitor()
 Service(Pipe()).start()
 Cast().start()
-images = Images(log=log)
+images = Images(proxy=tuple(C["images_proxy"]) if C.get("images_proxy") else None, log=log)
 try:
     images.start()
 except OSError as e:

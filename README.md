@@ -6,7 +6,8 @@ trackers, qBittorrent downloads it, it lands in the library named so Kodi
 finds it on TMDb, and Bazarr puts Russian and English subtitles next to it.
 Videos play in mpv.
 
-NixOS only, with home-manager: Kodi is the user's (`programs.kodi`).
+NixOS only, with home-manager: Kodi is the user's (`programs.kodi`). A
+host without home-manager can import the module, it only can't turn it on.
 
 ## What's in here
 
@@ -57,12 +58,10 @@ downloads.
 | `library` | `/media/outer-1` | `movies/`, `series/`, `downloads/`, one disk for the hardlinks |
 | `proxy` | `null` | `http://host:port` for Radarr, Sonarr, Prowlarr, Bazarr; qBittorrent goes straight |
 | `kodi.useProxy` | `false` | Kodi's TMDb through the proxy too |
+| `kodi.imagesProxy` | `proxy` | `http://host:port` for TMDb's posters and backdrops (Movie pipe keeps a few connections through it open); `null` goes straight |
 | `arr.enable` | `true` | the downloads |
 | `arr.secrets` | `null` | a YAML at runtime: `rutracker_username`, `rutracker_password`, `opensubtitles_username`, `opensubtitles_password`, `libretranslate_key`, each optional. Owned by `user`; restart `arr-setup.service` when it changes |
 | `arr.translators` | `[ ]` | subtitle-translator URLs, tried in order |
-
-Movie pipe's TMDb image proxy (`kodi/moviepipe/images.py`) still asks
-`127.0.0.1:10808` for the posters TMDb's CDN blocks.
 
 ## The web UIs
 

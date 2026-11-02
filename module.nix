@@ -3,7 +3,7 @@
 # rutracker-proxy. one switch turns all of it on or off, arr.enable the
 # downloads alone. kodi is the user's, through home-manager
 inputs:
-{ lib, ... }:
+{ config, lib, ... }:
 
 {
   imports = [
@@ -32,6 +32,13 @@ inputs:
       type = lib.types.bool;
       default = false;
       description = "Kodi's tmdb through the proxy too. No internet in kodi while the proxy is down.";
+    };
+    kodi.imagesProxy = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = config.services.kodi.proxy;
+      defaultText = lib.literalExpression "config.services.kodi.proxy";
+      example = "http://127.0.0.1:10808";
+      description = "http://host:port for tmdb's posters and backdrops (movie pipe keeps a few connections through it open). null: straight to image.tmdb.org.";
     };
     arr = {
       enable = lib.mkOption {

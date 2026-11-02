@@ -7,6 +7,8 @@
   inputs,
   # ../arr/shared.nix: its ports and the keys' folder (./test: the mock's)
   arr ? import ../arr/shared.nix { },
+  # { host, port } for tmdb's pictures (./moviepipe/images.py), null: straight
+  imagesProxy ? null,
   kodi,
   lib,
   buildKodiAddon,
@@ -112,6 +114,14 @@ let
               radarr = arr.movies;
               sonarr = arr.series;
             };
+            images_proxy =
+              if imagesProxy == null then
+                null
+              else
+                [
+                  imagesProxy.host
+                  imagesProxy.port
+                ];
           }
         )
       } $d/arr.json

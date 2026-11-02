@@ -16,6 +16,11 @@ let
   inputs = flake.inputs;
   pkgs = import inputs.nixpkgs-kodi { system = builtins.currentSystem; };
   kodi = if mock then pkgs.kodi else pkgs.kodi-wayland;
+  # ./xray.py in the mock, barnard's xray live
+  imagesProxy = {
+    host = "127.0.0.1";
+    port = 10808;
+  };
 
   # tmdb helper's api and images at the mock's port
   tmdbhelper = pkgs.runCommand "tmdbhelper-mock" { } ''
@@ -38,9 +43,10 @@ let
         arr = import ../../arr/shared.nix { } // {
           inherit keys;
         };
+        inherit imagesProxy;
       }
     else
-      { inherit inputs; }
+      { inherit inputs imagesProxy; }
   );
 in
 {
