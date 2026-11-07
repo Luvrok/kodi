@@ -35,15 +35,6 @@ setup() {
   mkdir -p $D/userdata/keymaps $D/userdata/addon_data/plugin.video.themoviedb.helper/players $STATE/shots
   cp $REPO/keyboard.xml $D/userdata/keymaps/keyboard.xml
   cp $REPO/advancedsettings.xml $D/userdata/advancedsettings.xml
-  # the webserver: JSON-RPC drives the tests here (no keyboard)
-  python3 - "$D/userdata/advancedsettings.xml" <<'EOF'
-import sys
-p = sys.argv[1]
-s = open(p).read()
-if "<enablewebserver>" not in s:
-    s = s.replace("</advancedsettings>", "<webserver><enablewebserver>true</enablewebserver><webserverport>8085</webserverport><user></user></webserver></advancedsettings>")
-    open(p, "w").write(s)
-EOF
   # run.sh xray: the mock's pictures as tmdb's, through images.py
   [ -e $STATE/xray/cert.pem ] && sed -i 's#<pathsubstitution>#&<substitute><from>http://127.0.0.1:8765/img/</from><to>http://127.0.0.1:8770/t/p/</to></substitute>#' $D/userdata/advancedsettings.xml
   cp $REPO/moviepipe-player.json $D/userdata/addon_data/plugin.video.themoviedb.helper/players/moviepipe-download.json
