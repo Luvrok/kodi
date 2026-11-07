@@ -205,13 +205,6 @@
 			<effect type="slide" start="0,0" end="0,-8" time="150" tween="cubic" easing="out"/>
 		</animation>
 	</include>
-	<!-- Same lift without the zoom: tight rows (Home spotlight, gap 8) keep the focus frame 3 px off
-	     the poster and still clear the neighbour. -->
-	<include name="Anim_FocusLiftFlat">
-		<animation type="Focus" reversible="true" condition="!Skin.HasSetting(majan.reducemotion)">
-			<effect type="slide" start="0,0" end="0,-4" time="150" tween="cubic" easing="out"/>
-		</animation>
-	</include>
 
 	<!-- Focus outline/frame fade-in (on the frame image inside focusedlayout or a button overlay).
 	     Reduce motion: frame appears instantly. -->

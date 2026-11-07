@@ -49,9 +49,9 @@
 	<constant name="button_x_details">156</constant>      <!-- 140 + 16 -->
 	<constant name="button_x_trailer">302</constant>      <!-- 156 + 130 + 16 -->
 
-	<!-- Focus frame geometry (DESIGN 7.2): frame = item rect expanded 7px on every side -->
-	<constant name="focus_out">-7</constant>
-	<constant name="focus_grow">14</constant>
+	<!-- Focus frame geometry (DESIGN 7.2): frame = item rect expanded 3px on every side -->
+	<constant name="focus_out">-3</constant>
+	<constant name="focus_grow">6</constant>
 
 	<!-- Posters / rows -->
 	<constant name="poster_m_w">168</constant>            <!-- Home newest row -->

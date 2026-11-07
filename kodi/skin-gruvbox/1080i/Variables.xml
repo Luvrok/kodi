@@ -50,7 +50,7 @@
 	<!-- ==================================================================== textures -->
 
 	<!-- Focus frame (setting 3 x setting 2). Empty when the outline is Off. 40x40, border 16,
-	     placed at item rect +7px each side (constants focus_out / focus_grow). 1px everywhere. -->
+	     placed at item rect +3px each side (constants focus_out / focus_grow). 1px everywhere. -->
 	<variable name="FocusFrame">
 		<value condition="$EXP[FocusOutlineOff]"></value>
 		<value condition="$EXP[FocusOutlineMedium] + $EXP[IsRounded]">focus/outline_1_round.png</value>

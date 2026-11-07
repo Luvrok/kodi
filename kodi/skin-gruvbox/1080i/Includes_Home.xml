@@ -51,7 +51,7 @@
 	<constant name="home_card_item_h">238</constant>      <!-- thumb 180 + 10 + show 26 + 2 + code 20 -->
 	<constant name="home_newest_list_x">80</constant>
 	<constant name="home_newest_list_y">52</constant>     <!-- row top + 66 - pad 22: the lifted focus frame stays clear of the row title -->
-	<constant name="spot_list_y">40</constant>           <!-- spotlight row: flat lift (no zoom), posters hug the block title -->
+	<constant name="spot_list_y">34</constant>           <!-- spotlight row: posters hug the block title -->
 
 	<!-- ============================================================== expressions -->
 	<expression name="Home_SecHome">[String.IsEmpty(Window(Home).Property(majan.section)) | String.IsEqual(Window(Home).Property(majan.section),home)] + !Skin.HasSetting(HideMenu.Home) + !Skin.HasSetting(HideMenu.Movies)</expression>
@@ -773,24 +773,19 @@
 		</definition>
 	</include>
 
-	<!-- Unfocused / focused item for poster rows. params: id, w, h, dim, mask_round, mask_square, art,
-	     item_top, flat, frame_out -->
+	<!-- Unfocused / focused item for poster rows. params: id, w, h, dim, mask_round, mask_square, art -->
 	<include name="Home_PosterItem">
 		<param name="art">$INFO[ListItem.Art(poster)]</param>
 		<param name="mask_round">masks/poster_round8.png</param>
 		<param name="mask_square">masks/poster_square.png</param>
 		<param name="focused">false</param>
-		<param name="item_top">home_list_pad</param>
-		<param name="flat">false</param>
-		<param name="frame_out">focus_out</param>
 		<definition>
 			<control type="group">
 				<left>home_item_x</left>
-				<top>$PARAM[item_top]</top>
+				<top>home_list_pad</top>
 				<width>$PARAM[w]</width>
 				<height>$PARAM[h]</height>
-				<include condition="$PARAM[focused] + $PARAM[flat]">Anim_FocusLiftFlat</include>
-				<include condition="$PARAM[focused] + !$PARAM[flat]">Anim_FocusLift</include>
+				<include condition="$PARAM[focused]">Anim_FocusLift</include>
 				<control type="group">
 					<visible>!$EXP[Home_IsMoreItem]</visible>
 					<include content="Home_Art">
@@ -807,7 +802,6 @@
 				</control>
 				<include content="Majan_FocusFrame" condition="$PARAM[focused]">
 					<param name="visible" value="Control.HasFocus($PARAM[id])"/>
-					<param name="out" value="$PARAM[frame_out]"/>
 				</include>
 			</control>
 		</definition>
@@ -2237,9 +2231,6 @@
 							<param name="w" value="spot_poster_w"/>
 							<param name="h" value="spot_poster_h"/>
 							<param name="dim" value="Home_Dim_9120"/>
-							<param name="item_top" value="12"/>
-							<param name="flat" value="true"/>
-							<param name="frame_out" value="3"/>
 						</include>
 					</itemlayout>
 					<focusedlayout width="spot_poster_pitch" height="296">
@@ -2249,9 +2240,6 @@
 							<param name="h" value="spot_poster_h"/>
 							<param name="dim" value="Home_Dim_9120"/>
 							<param name="focused" value="true"/>
-							<param name="item_top" value="12"/>
-							<param name="flat" value="true"/>
-							<param name="frame_out" value="3"/>
 						</include>
 					</focusedlayout>
 					<content target="videos">special://skin/playlists/majan_spotlight.xsp</content>
