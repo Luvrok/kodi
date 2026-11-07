@@ -4,7 +4,7 @@
 	Used by MyVideoNav.xml; the shared label/fact variables are also used by DialogVideoInfo.xml.
 
 	View ids (CONVENTIONS 4): 500 Poster Showcase (movies, sets) | 501 Big Poster (movies, sets) |
-	502 Wall (tvshows, seasons) + Next up strip 9310 at the TV root | 503 Episodes list (episodes,
+	502 Wall (tvshows, seasons, movies at their root) + Next up strip 9310 at the roots (tv's next
 	seasons) | 50 List (Includes_Views.xml, every content type). Each view container carries its own
 	Container.Content() <visible> so VIEW only cycles views valid for the folder.
 
@@ -59,9 +59,10 @@
 	<expression name="VidView_IsMoviesRoot">Container.Content(movies) + String.StartsWith(Container.FolderPath,videodb://movies/titles)</expression>
 	<expression name="VidView_IsTVRoot">Container.Content(tvshows) + String.StartsWith(Container.FolderPath,videodb://tvshows/titles)</expression>
 	<expression name="VidView_IsLibraryVideo">Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(musicvideos)</expression>
-	<!-- Next up strip: TV root while the Wall is the active view -->
-	<expression name="VidView_ShowNextUp">Container.Content(tvshows) + String.StartsWith(Container.FolderPath,videodb://tvshows/titles) + Control.IsVisible(502)</expression>
-	<expression name="VidView_HasNextUp">Container.Content(tvshows) + String.StartsWith(Container.FolderPath,videodb://tvshows/titles) + Control.IsVisible(502) + Integer.IsGreater(Container(9310).NumItems,0)</expression>
+	<!-- Next up strip: TV root (their next episode) and movies root (films
+	     in progress), both while the Wall is the active view -->
+	<expression name="VidView_ShowNextUp">[Container.Content(tvshows) + String.StartsWith(Container.FolderPath,videodb://tvshows/titles)] | [$EXP[VidView_IsMoviesRoot] + Control.IsVisible(502)]</expression>
+	<expression name="VidView_HasNextUp">[([[Container.Content(tvshows) + String.StartsWith(Container.FolderPath,videodb://tvshows/titles)] | [$EXP[VidView_IsMoviesRoot]]] + Control.IsVisible(502) + Integer.IsGreater(Container(9310).NumItems,0))]</expression>
 	<expression name="VidView_NavActiveAll">!System.Setting(hidewatched) + !String.StartsWith(Container.FolderPath,videodb://inprogresstvshows)</expression>
 	<expression name="VidView_IsFolderType">String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)</expression>
 	<expression name="VidView_IsTVType">String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)</expression>
@@ -258,6 +259,9 @@
 
 	<!-- Wall header (focused show of the wall, container 502) -->
 	<variable name="VidView_WallProgress">
+		<value condition="String.IsEqual(Container(502).ListItem.DBType,movie) + Integer.IsGreater(Container(502).ListItem.PercentPlayed,0)">$INFO[Container(502).ListItem.PercentPlayed]% WATCHED$INFO[Container(502).ListItem.LastPlayed, · ,]</value>
+		<value condition="String.IsEqual(Container(502).ListItem.DBType,movie) + Integer.IsGreater(Container(502).ListItem.Playcount,0)">WATCHED$INFO[Container(502).ListItem.LastPlayed, · ,]</value>
+		<value condition="String.IsEqual(Container(502).ListItem.DBType,movie)">UNWATCHED</value>
 		<value condition="Integer.IsEqual(Container(502).ListItem.Property(UnWatchedEpisodes),0) + Integer.IsGreater(Container(502).ListItem.Property(TotalEpisodes),0)">ALL $INFO[Container(502).ListItem.Property(TotalEpisodes)] EPISODES WATCHED$INFO[Container(502).ListItem.Property(TotalSeasons), · , SEASONS]</value>
 		<value condition="Integer.IsGreater(Container(502).ListItem.Property(WatchedEpisodes),0)">$INFO[Container(502).ListItem.Property(WatchedEpisodes)] OF $INFO[Container(502).ListItem.Property(TotalEpisodes)] EPISODES WATCHED$INFO[Container(502).ListItem.Property(UnWatchedEpisodes), · , TO GO]$INFO[Container(502).ListItem.Property(TotalSeasons), · , SEASONS]</value>
 		<value condition="Integer.IsGreater(Container(502).ListItem.Property(TotalEpisodes),0)">$INFO[Container(502).ListItem.Property(TotalEpisodes)] EPISODES · UNWATCHED$INFO[Container(502).ListItem.Property(TotalSeasons), · , SEASONS]</value>
@@ -272,18 +276,21 @@
 		<value>$INFO[Container(502).ListItem.Year]$INFO[Container(502).ListItem.Genre, · ,]$INFO[Container(502).ListItem.Studio, · ,]</value>
 	</variable>
 
-	<!-- Next up (SPEC decision 5): embuary next-episode list, else in-progress shows (xsp) -->
+	<!-- Next up (SPEC decision 5): shows get embuary's next-episode list,
+	     else in-progress shows (xsp); films get their in-progress list -->
 	<variable name="VidView_NextUpPath">
-		<value condition="System.AddonIsEnabled(script.embuary.helper)">plugin://script.embuary.helper/?info=getnextup</value>
-		<value>special://skin/playlists/majan_inprogress_tvshows.xsp</value>
+		<value condition="$EXP[VidView_IsTVRoot] + System.AddonIsEnabled(script.embuary.helper)">plugin://script.embuary.helper/?info=getnextup</value>
+		<value condition="$EXP[VidView_IsTVRoot]">special://skin/playlists/majan_inprogress_tvshows.xsp</value>
+		<value condition="$EXP[VidView_IsMoviesRoot]">special://skin/playlists/majan_inprogress_movies.xsp</value>
 	</variable>
 	<variable name="VidView_NextUpCaption">
-		<value condition="System.AddonIsEnabled(script.embuary.helper)">NEXT UNWATCHED EPISODE OF SHOWS IN PROGRESS</value>
-		<value>SHOWS IN PROGRESS · LAST PLAYED FIRST</value>
+		<value condition="$EXP[VidView_IsTVRoot] + System.AddonIsEnabled(script.embuary.helper)">NEXT UNWATCHED EPISODE OF SHOWS IN PROGRESS</value>
+		<value condition="$EXP[VidView_IsTVRoot]">SHOWS IN PROGRESS · LAST PLAYED FIRST</value>
+		<value>FILMS IN PROGRESS · LAST PLAYED FIRST</value>
 	</variable>
 	<!-- card art per item (used inside the strip's layouts) -->
 	<variable name="VidView_NextUpThumb">
-		<value condition="String.IsEqual(ListItem.DBType,tvshow) + !String.IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
 		<value condition="String.IsEqual(ListItem.DBType,tvshow) + !String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.landscape))">$INFO[ListItem.Art(tvshow.landscape)]</value>
@@ -296,6 +303,7 @@
 	</variable>
 	<variable name="VidView_NextUpLine">
 		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.Property(WatchedEpisodes)] OF $INFO[ListItem.Property(TotalEpisodes)] WATCHED</value>
+		<value condition="String.IsEqual(ListItem.DBType,movie)">$INFO[ListItem.Year]$INFO[ListItem.Genre, · ,]</value>
 		<value>$VAR[VidView_EpCode]$INFO[ListItem.Title, · ,]</value>
 	</variable>
 
@@ -635,6 +643,16 @@
 			<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
 			<info>ListItem.Property(WatchedEpisodePercent)</info>
 			<visible>$EXP[ShowUnwatchedMarkers] + $EXP[VidView_IsTVType] + $EXP[VidView_TVStarted]</visible>
+		</control>
+		<control type="progress">
+			<left>0</left>
+			<right>0</right>
+			<bottom>0</bottom>
+			<height>progress_h</height>
+			<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
+			<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
+			<info>ListItem.PercentPlayed</info>
+			<visible>$EXP[ShowUnwatchedMarkers] + String.IsEqual(ListItem.DBType,movie) + Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
 		</control>
 	</include>
 	<include name="VidView_TVMarkersSquare">
@@ -1527,7 +1545,7 @@
 
 	<!-- ================================================================ View 502 -->
 	<!-- Wall (TV.dc.html): 10 x 2 posters under a header line. Above it: the Next up strip at the
-	     TV root, otherwise the focused show/season block. Container geometry never changes. -->
+	     roots that have it, otherwise the focused show/season/film block. Container geometry never changes. -->
 	<include name="VidView_502_Wall">
 		<control type="group">
 			<visible>Control.IsVisible(502)</visible>
@@ -1633,7 +1651,7 @@
 				<onleft>ActivateWindow(1155)</onleft>
 				<onright>ActivateWindow(1155)</onright>
 				<viewtype label="31308">list</viewtype>
-				<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+				<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(movies)</visible>
 				<itemlayout width="vidview_wall_pitch_x" height="vidview_wall_pitch_y">
 					<control type="group">
 						<left>8</left>
@@ -1664,7 +1682,7 @@
 		</control>
 	</include>
 
-	<!-- Next up strip (TV root only; separate container 9310, not a view). -->
+	<!-- Next up strip (the tv and the movies root; separate container 9310, not a view). -->
 	<include name="VidView_NextUpStrip">
 		<control type="group">
 			<left>page_margin</left>
@@ -1712,7 +1730,8 @@
 				<preloaditems>1</preloaditems>
 				<scrolltime tween="cubic" easing="out">200</scrolltime>
 				<onup>9000</onup>
-				<ondown>50</ondown>
+				<ondown condition="String.StartsWith(Container.FolderPath,videodb://movies/titles)">502</ondown>
+				<ondown>502</ondown>
 				<onleft>ActivateWindow(1155)</onleft>
 				<onright>ActivateWindow(1155)</onright>
 				<itemlayout width="vidview_next_pitch" height="262">

@@ -37,6 +37,16 @@ def movie(tmdb):
         m.update(radarr.new(), monitored=True, minimumAvailability="announced")
         m["addOptions"] = {"searchForMovie": False}
         m = radarr.post("/movie", m, timeout=LOOKUP)
+    if not m.get("isAvailable"):
+        # still in cinemas (or earlier): nothing on the trackers, no release
+        # to pick. a film just looked up leaves radarr again
+        when = (m.get("digitalRelease") or m.get("inCinemas") or "")[:10]
+        if added:
+            try:
+                radarr.delete(f"/movie/{m['id']}")
+            except Error:
+                pass
+        raise Error(f"Not out yet{', digital ' + when if when else ''}: download it when it's out")
     title = f"{m['title']} ({m['year']})"
     if choose(radarr, title, movieId=m["id"]) is None and added:
         # nothing picked: not even radarr's to look for later

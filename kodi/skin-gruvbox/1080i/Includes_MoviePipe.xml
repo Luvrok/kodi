@@ -301,6 +301,7 @@
 	<include name="MoviePipe_RowItem">
 		<param name="focused">false</param>
 		<param name="round">true</param>
+		<param name="soon">false</param>
 		<definition>
 			<control type="group">
 				<left>home_item_x</left>
@@ -334,6 +335,10 @@
 						<visible>!$EXP[IsRounded] | !$PARAM[round]</visible>
 					</control>
 					<include>Majan_WatchedMarkers</include>
+					<include content="VidView_TagBox" condition="$PARAM[soon]">
+						<param name="width" value="56"/>
+						<param name="label" value="SOON"/>
+					</include>
 				</control>
 				<control type="group">
 					<visible>$EXP[MoviePipe_IsNext]</visible>
@@ -372,6 +377,7 @@
 		<param name="onback">noop</param>
 		<param name="custom">false</param>
 		<param name="onclick">noop</param>
+		<param name="soon">false</param>
 		<definition>
 			<control type="group">
 				<top>$PARAM[top]</top>
@@ -427,6 +433,7 @@
 							<param name="art" value="$PARAM[art]"/>
 							<param name="aspect" value="$PARAM[aspect]"/>
 							<param name="round" value="$PARAM[round]"/>
+							<param name="soon" value="$PARAM[soon]"/>
 						</include>
 					</itemlayout>
 					<focusedlayout width="$PARAM[pitch]" height="254">
@@ -437,6 +444,7 @@
 							<param name="art" value="$PARAM[art]"/>
 							<param name="aspect" value="$PARAM[aspect]"/>
 							<param name="round" value="$PARAM[round]"/>
+							<param name="soon" value="$PARAM[soon]"/>
 							<param name="focused" value="true"/>
 						</include>
 					</focusedlayout>
@@ -589,7 +597,7 @@
 			<param name="page" value="Window.Property(row$PARAM[n].page)"/>
 			<param name="onnext" value="SendClick(4$PARAM[n])"/>
 			<param name="onback" value="SendClick(5$PARAM[n])"/>
-			<param name="custom" value="String.IsEqual(Window.Property(row$PARAM[n].kind),downloads)"/>
+			<param name="soon" value="!String.IsEmpty(Window.Property(row$PARAM[n].tag))"/>
 			<param name="onclick" value="RunPlugin(plugin://plugin.video.moviepipe/?action=downloads)"/>
 			<param name="visible" value="!String.IsEmpty(Window.Property(row$PARAM[n].path)) + String.IsEmpty(Window.Property(row$PARAM[n].empty))"/>
 		</include>

@@ -1,15 +1,17 @@
 # 5, discover (resources/skins/Default/1080i/moviepipe-discover.xml): what
-# tmdb has in rows, majan's hub rows, films or shows (the chips): trending,
-# popular, in cinemas, upcoming, top rated, more like the library's newest,
-# popular people; what radarr and sonarr download first. tmdb helper fills
-# them (the rows' paths are the window's properties), so enter on a film is
-# its player (Download…), i its page, c its menu; a show's enter is its
-# page, a person's theirs (./person.py), a download's the downloads. the
-# last tile turns the row's page, left on the first one back. a row gets
-# its path when the focus is two rows from it: tmdb helper asks tmdb for
-# every poster's details the first time. SEARCH: what tmdb finds, back
-# the rows again. up from the rows: the plot on top, enter all of it. t a
-# trailer, o the tmdb page in the browser, r the rows again
+# tmdb has in rows, majan's hub rows, films or shows (the chips): trending
+# the week and the month, tmdb's top 10 on a provider, top rated, coming
+# soon, more like the library's newest, popular people; shows also anime
+# and what's on the air. tmdb helper fills them (the rows' paths are the
+# window's rown.* properties), so enter on a film is its player
+# (Download…), i its page, c its menu; a show's enter is its page, a
+# person's theirs (./person.py). a row that's not out yet gets a "soon"
+# tag on its tiles. the last tile turns the row's page, left on the first
+# one back. a row gets its path when the focus is two rows from it: tmdb
+# helper asks tmdb for every poster's details the first time. SEARCH: what
+# tmdb finds, back the rows again. up from the rows: the plot on top,
+# enter all of it. t a trailer, o the tmdb page in the browser, r the rows
+# again
 import threading
 import time
 
@@ -22,28 +24,41 @@ from browser import browse, url
 from keys import letter
 from tmdb import HELPER, helper, info, settle
 from trailer import trailer
-from windows import downloads, window
+from windows import window
 
 # (the row's name, tmdb helper's list, what's on it, extra list params).
-# the order here is the page's, rows 2 on. {} in a name: the library's
-# newest film or show
+# the order here is the page's. {} in a name: the library's newest film or
+# show. top 10 of a streaming service is tmdb's discover through it
+# (tmdb's providers in the us), popularity desc
+NETFLIX, PRIME, APPLE = 8, 9, 350
+
+
+def top(region, provider):
+    return {"with_watch_providers": str(provider), "watch_region": region,
+            "with_id": "True", "sort_by": "popularity.desc"}
+
+
 ROWS = {
     "movie": [
         ("Trending this week", "trending_week", "movie", {}),
-        ("Popular", "popular", "movie", {}),
-        ("In cinemas", "now_playing", "movie", {}),
-        ("Upcoming", "upcoming", "movie", {}),
+        ("Trending this month", "trending_month", "movie", {}),
+        ("Top 10 Netflix", "discover", "movie", top("US", NETFLIX)),
+        ("Top 10 Prime Video", "discover", "movie", top("US", PRIME)),
+        ("Top 10 Apple TV+", "discover", "movie", top("US", APPLE)),
         ("Top rated", "top_rated", "movie", {}),
         ("Because you have {}", "recommendations", "movie", {}),
         ("Popular people", "popular", "person", {}),
+        ("Not out yet", "upcoming", "movie", {}),
     ],
     "tv": [
         ("Trending this week", "trending_week", "tv", {}),
-        ("Popular", "popular", "tv", {}),
+        ("Trending this month", "trending_month", "tv", {}),
         ("Trending anime", "discover", "tv", {"with_genres": "16", "with_id": "True",
                                               "with_original_language": "ja", "sort_by": "popularity.desc"}),
+        ("Top 10 Netflix", "discover", "tv", top("US", NETFLIX)),
+        ("Top 10 Prime Video", "discover", "tv", top("US", PRIME)),
+        ("Top 10 Apple TV+", "discover", "tv", top("US", APPLE)),
         ("On the air", "on_the_air", "tv", {}),
-        ("Airing today", "airing_today", "tv", {}),
         ("Top rated", "top_rated", "tv", {}),
         ("Because you have {}", "recommendations", "tv", {}),
         ("Popular people", "popular", "person", {}),
@@ -54,19 +69,19 @@ ROWS = {
         ("People", "search", "person", {}),
     ],
 }
-# row n is list 200 + n: 1 the downloads (./default.py's queue), 2..9 tmdb's
-QUEUE = "plugin://plugin.video.moviepipe/?action=queue"
-FIRST, LAST = 2, 9
+# row n is list 200 + n, 1..10 tmdb's lists (what downloads has its own
+# window at 6, it isn't a row here)
+FIRST, LAST = 1, 10
 # the chips, the plot on top, and the rows' SendClick: 40 + n the next
-# page, 50 + n back
+# page, 50 + n back (two-digit n: 40 + 10 = 410)
 MOVIES, SHOWS, SEARCH, BROWSE, PLOT = 101, 102, 103, 104, 9100
-NEXT, BACK = 40, 50
+NEXTPAGES = tuple(40 + n for n in range(1, LAST + 1))
+BACKPAGES = tuple(50 + n for n in range(1, LAST + 1))
 # rows past the focus that get their path: each is tmdb helper asking tmdb
 # for its 20 posters' details the first time
 AHEAD = 1
-# s: how often the focus and the downloads are looked at
+# s: how often the focus is looked at
 TICK = 0.2
-POLL = 10
 
 
 def newest(kind):
@@ -80,9 +95,10 @@ def newest(kind):
 
 
 class Row:
-    # a row's name, tmdb helper's params for it, what's on it, its page
-    def __init__(self, title, params, kind):
-        self.title, self.params, self.kind, self.page = title, params, kind, 1
+    # a row's name, tmdb helper's params for it, what's on it, its page and
+    # whether its tiles carry a tag (a row that isn't out yet: "soon")
+    def __init__(self, title, params, kind, tag=""):
+        self.title, self.params, self.kind, self.tag, self.page = title, params, kind, tag, 1
 
 
 class Discover(xbmcgui.WindowXML):
@@ -98,7 +114,6 @@ class Discover(xbmcgui.WindowXML):
         self.stamp = ""
         self.query = ""
         self.mode = self.before = "movie"
-        self.queue = None
         self.show("movie")
         threading.Thread(target=self.watch, daemon=True).start()
 
@@ -125,7 +140,7 @@ class Discover(xbmcgui.WindowXML):
                 params["tmdb_id"] = found[1]
             if kind == "search":
                 params["query"] = self.query
-            rows.append(Row(title, params, what))
+            rows.append(Row(title, params, what, tag="soon" if kind == "upcoming" else ""))
         self.rows = {FIRST + i: row for i, row in enumerate(rows)}
         self.loads += 1
         load = self.loads
@@ -135,7 +150,7 @@ class Discover(xbmcgui.WindowXML):
         for n in range(FIRST, LAST + 1):
             self.clearProperty(f"row{n}.empty")
             if n not in self.rows or n > FIRST + AHEAD:
-                for p in ("path", "title", "sub", "index", "kind", "page"):
+                for p in ("path", "title", "sub", "index", "kind", "tag", "page"):
                     self.clearProperty(f"row{n}.{p}")
         self.near(FIRST)
         threading.Thread(target=self.first, args=(load,), daemon=True).start()
@@ -162,10 +177,11 @@ class Discover(xbmcgui.WindowXML):
         # row n's properties, its path last: a new path loads it
         row = self.rows[n]
         page = row.page if row.page > 1 else None
-        self.setProperty(f"row{n}.index", f"{n - 1:02}")
+        self.setProperty(f"row{n}.index", f"{n:02}")
         self.setProperty(f"row{n}.title", row.title)
         self.setProperty(f"row{n}.sub", f"page {row.page}" if page else "TMDb")
         self.setProperty(f"row{n}.kind", row.kind)
+        self.setProperty(f"row{n}.tag", row.tag)
         self.setProperty(f"row{n}.page", str(row.page))
         self.setProperty(f"row{n}.path", helper(**row.params, page=page, reload=self.stamp))
         threading.Thread(target=self.empty, args=(n, self.loads), daemon=True).start()
@@ -192,43 +208,22 @@ class Discover(xbmcgui.WindowXML):
 
         threading.Thread(target=first, daemon=True).start()
 
-    # what's in focus, what downloads
+    # what's in focus
 
     def watch(self):
         # the row whose tile is on top: the one with the focus, the last one
         # when it went up to the chips (the mouse too, it moves no action)
         monitor = xbmc.Monitor()
-        polled = 0
         while not self.closing and not monitor.waitForAbort(TICK):
             try:
                 focus = self.getFocusId()
-                if 201 <= focus <= 200 + LAST and str(focus) != self.getProperty("row"):
+                if 200 + FIRST <= focus <= 200 + LAST and str(focus) != self.getProperty("row"):
                     self.setProperty("row", str(focus))
                     if focus > 200 + FIRST:
                         self.moved = True
                     self.near(focus - 200)
-                if time.time() - polled > POLL:
-                    polled = time.time()
-                    self.downloads()
             except RuntimeError:
                 return
-
-    def downloads(self):
-        # the first row while something downloads, again when that changed
-        found, _ = downloads()
-        keys = [(key, row["percent"]) for key, _, _, row in found]
-        if keys == self.queue or self.closing:
-            return
-        self.queue = keys
-        if not found:
-            for p in ("path", "title", "sub", "index", "kind"):
-                self.clearProperty(f"row1.{p}")
-            return
-        self.setProperty("row1.index", "06")
-        self.setProperty("row1.title", "Downloading")
-        self.setProperty("row1.sub", "Radarr · Sonarr")
-        self.setProperty("row1.kind", "downloads")
-        self.setProperty("row1.path", f"{QUEUE}&reload={time.time()}")
 
     # keys
 
@@ -249,10 +244,14 @@ class Discover(xbmcgui.WindowXML):
         elif cid == BROWSE:
             self.leave()
             xbmc.executebuiltin(f"ActivateWindow(Videos,{HELPER},return)")
-        elif NEXT < cid <= NEXT + LAST:
-            self.turn(cid - NEXT, 1)
-        elif BACK < cid <= BACK + LAST:
-            self.turn(cid - BACK, -1)
+        elif cid == 410:
+            self.turn(10, 1)
+        elif cid == 510:
+            self.turn(10, -1)
+        elif cid in NEXTPAGES:
+            self.turn(cid - 40, 1)
+        elif cid in BACKPAGES:
+            self.turn(cid - 50, -1)
 
     def onAction(self, action):
         a = action.getId()

@@ -5,7 +5,7 @@
 	  9000 top-bar group: 9001 Home, 9002 Movies, 9003 TV Shows, 9004 Music, 9005 Search, 9006 Gear
 	  9101 spotlight data list (5 random, majan_spotlight.xsp), 9102 spotlight pool counter (caption n)
 	  9110-9112 Play / Details / Trailer, 9119 newest rows wrapper, 9120 date added, 9121 release date
-	  9211-9213 Movies hub rows, 9218 Movies rest timer
+	  9211-9212 Movies hub rows (a poster row, a card row), 9218 Movies rest timer
 	  9221-9222 TV hub rows, 9228 TV rest timer
 	  9231-9233 Music hub rows, 9237 recently-played probe, 9238 Music rest timer
 
@@ -81,11 +81,8 @@
 	<variable name="Home_PathMoviesRecent">
 		<value condition="$EXP[Home_HubMovies]">videodb://recentlyaddedmovies/</value>
 	</variable>
-	<variable name="Home_PathMoviesNewest">
-		<value condition="$EXP[Home_HubMovies]">special://skin/playlists/majan_newest_movies.xsp</value>
-	</variable>
-	<variable name="Home_PathMoviesTop">
-		<value condition="$EXP[Home_HubMovies]">special://skin/playlists/majan_toprated_unwatched.xsp</value>
+	<variable name="Home_PathMoviesInProgress">
+		<value condition="$EXP[Home_HubMovies]">special://skin/playlists/majan_inprogress_movies.xsp</value>
 	</variable>
 	<!-- Next up: script.embuary.helper (true next episode, local only; Omar decision 5) else in-progress shows -->
 	<variable name="Home_PathNextUp">
@@ -122,10 +119,7 @@
 		<value condition="Integer.IsGreater(Container(9237).NumItems,0)">musicdb://recentlyplayedalbums/</value>
 		<value>special://skin/playlists/majan_newest_albums.xsp</value>
 	</variable>
-	<variable name="Home_SubTopRated">
-		<value condition="Integer.IsGreater(Container(9102).NumItems,0)">$INFO[Container(9102).NumItems,, titles]</value>
-		<value>Unwatched · 7.5+</value>
-	</variable>
+
 	<variable name="Home_SubNextUp">
 		<value condition="$EXP[Home_HasNextUpHelper]">Next unwatched episode</value>
 		<value>Shows in progress</value>
@@ -177,9 +171,8 @@
 	<!-- Row dimming: a row dims (opaque brightness .45) only while another row of the same block has focus -->
 	<variable name="Home_Dim_9120"><value condition="Control.HasFocus(9121)">dim_row</value><value>white</value></variable>
 	<variable name="Home_Dim_9121"><value condition="Control.HasFocus(9120)">dim_row</value><value>white</value></variable>
-	<variable name="Home_Dim_9211"><value condition="Control.HasFocus(9212) | Control.HasFocus(9213)">dim_row</value><value>white</value></variable>
-	<variable name="Home_Dim_9212"><value condition="Control.HasFocus(9211) | Control.HasFocus(9213)">dim_row</value><value>white</value></variable>
-	<variable name="Home_Dim_9213"><value condition="Control.HasFocus(9211) | Control.HasFocus(9212)">dim_row</value><value>white</value></variable>
+	<variable name="Home_Dim_9211"><value condition="Control.HasFocus(9212)">dim_row</value><value>white</value></variable>
+	<variable name="Home_Dim_9212"><value condition="Control.HasFocus(9211)">dim_row</value><value>white</value></variable>
 	<variable name="Home_Dim_9221"><value condition="Control.HasFocus(9222)">dim_row</value><value>white</value></variable>
 	<variable name="Home_Dim_9222"><value condition="Control.HasFocus(9221)">dim_row</value><value>white</value></variable>
 	<variable name="Home_Dim_9231"><value condition="Control.HasFocus(9232) | Control.HasFocus(9233)">dim_row</value><value>white</value></variable>
@@ -1546,66 +1539,40 @@
 				<param name="id" value="9211"/>
 				<param name="index" value="01"/>
 				<param name="label" value="Recently added"/>
-				<param name="visible" value="!Control.HasFocus(9212) + !Control.HasFocus(9213)"/>
+				<param name="visible" value="!Control.HasFocus(9212)"/>
 			</include>
 			<include content="Home_InfoMovie">
 				<param name="id" value="9212"/>
 				<param name="index" value="02"/>
-				<param name="label" value="Newest releases"/>
+				<param name="label" value="Continue watching"/>
 				<param name="visible" value="Control.HasFocus(9212)"/>
 			</include>
-			<include content="Home_InfoMovie">
-				<param name="id" value="9213"/>
-				<param name="index" value="03"/>
-				<param name="label" value="Top rated, unwatched"/>
-				<param name="visible" value="Control.HasFocus(9213)"/>
+			<include content="Home_HubPosterRow">
+				<param name="id" value="9211"/>
+				<param name="top" value="home_hub_row1_y"/>
+				<param name="index" value="01"/>
+				<param name="label" value="Recently added"/>
+				<param name="sub" value="By date added"/>
+				<param name="path" value="$VAR[Home_PathMoviesRecent]"/>
+				<param name="seeall" value="ActivateWindow(Videos,videodb://movies/titles/,return)"/>
+				<param name="onup" value="9002"/>
+				<param name="ondown" value="9212"/>
+				<param name="empty" value="No films added yet"/>
 			</include>
-			<control type="group">
-				<include content="Home_AnimRowFadeAway"><param name="row3" value="9213"/></include>
-				<include content="Home_HubPosterRow">
-					<param name="id" value="9211"/>
-					<param name="top" value="home_hub_row1_y"/>
-					<param name="index" value="01"/>
-					<param name="label" value="Recently added"/>
-					<param name="sub" value="By date added"/>
-					<param name="path" value="$VAR[Home_PathMoviesRecent]"/>
-					<param name="seeall" value="ActivateWindow(Videos,videodb://movies/titles/,return)"/>
-					<param name="onup" value="9002"/>
-					<param name="ondown" value="9212"/>
-					<param name="empty" value="No films added yet"/>
-				</include>
-			</control>
-			<control type="group">
-				<include content="Home_AnimRowScrollUp"><param name="row3" value="9213"/></include>
-				<!-- 02: xsp pre-filters the newest 100 by year; sortby="year" re-sorts by full premiered date (DATA 2.2) -->
-				<include content="Home_HubPosterRow">
-					<param name="id" value="9212"/>
-					<param name="top" value="home_hub_row2_y"/>
-					<param name="index" value="02"/>
-					<param name="label" value="Newest releases"/>
-					<param name="sub" value="By release date ↓"/>
-					<param name="path" value="$VAR[Home_PathMoviesNewest]"/>
-					<param name="sortby" value="year"/>
-					<param name="seeall" value="ActivateWindow(Videos,videodb://movies/titles/,return)"/>
-					<param name="onup" value="9211"/>
-					<param name="ondown" value="9213"/>
-					<param name="delay" value="50"/>
-				</include>
-				<include content="Home_HubPosterRow">
-					<param name="id" value="9213"/>
-					<param name="top" value="home_hub_row3_y"/>
-					<param name="index" value="03"/>
-					<param name="label" value="Top rated, unwatched"/>
-					<param name="sub" value="$VAR[Home_SubTopRated]"/>
-					<param name="path" value="$VAR[Home_PathMoviesTop]"/>
-					<param name="seeall" value="ActivateWindow(Videos,special://skin/playlists/majan_toprated_unwatched_all.xsp,return)"/>
-					<param name="onup" value="9212"/>
-					<param name="ondown" value="noop"/>
-					<param name="customdown" value="true"/>
-					<param name="empty" value="No unwatched films rated 7.5+"/>
-					<param name="delay" value="100"/>
-				</include>
-			</control>
+			<include content="Home_HubCardRow">
+				<param name="id" value="9212"/>
+				<param name="top" value="home_hub_tv_row2_y"/>
+				<param name="index" value="02"/>
+				<param name="label" value="Continue watching"/>
+				<param name="sub" value="Films in progress · last played first"/>
+				<param name="path" value="$VAR[Home_PathMoviesInProgress]"/>
+				<param name="seeall" value="ActivateWindow(Videos,videodb://movies/titles/,return)"/>
+				<param name="onup" value="9211"/>
+				<param name="ondown" value="noop"/>
+				<param name="customdown" value="true"/>
+				<param name="empty" value="No films half-watched"/>
+				<param name="delay" value="50"/>
+			</include>
 		</control>
 	</include>
 
@@ -2524,7 +2491,7 @@
 			<onup condition="$PARAM[after1] + $EXP[CustomRow1On] + ![$PARAM[after2] + $EXP[CustomRow2On]]">9881</onup>
 			<onup condition="$EXP[Home_SecHome] + $EXP[HomeNewestRelease]">9121</onup>
 			<onup condition="$EXP[Home_SecHome] + !$EXP[HomeNewestRelease]">9120</onup>
-			<onup condition="$EXP[Home_HubMovies]">9213</onup>
+			<onup condition="$EXP[Home_HubMovies]">9212</onup>
 			<onup condition="$EXP[Home_HubTV]">9222</onup>
 			<onup condition="$EXP[Home_HubMusic]">9233</onup>
 			<onup>9000</onup>

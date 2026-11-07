@@ -1,9 +1,12 @@
-# "Subtitles" on a film (its menu, ./context.py; More on its page): russian
-# ones next to it through bazarr (its providers, opensubtitles.com's account
-# in secrets), an english one after. every download bazarr makes goes
-# through its post-processing (../../arr/subtitles.py add), so an english
-# one with no russian around translates in a couple of minutes on its own.
-# mpv takes them up on the next play.
+# "Subtitles" on a film (its menu, ./context.py; More on its page) or on a
+# show, a season, an episode (the pack = the show's menu): russian ones
+# next to the files through bazarr (its providers, opensubtitles.com's
+# account in secrets), an english one after. every download bazarr makes
+# goes through its post-processing (../../arr/subtitles.py add), so an
+# english one with no russian next to it translates in a couple of minutes
+# on its own. mpv takes them up on the next play.
+import ast
+import json
 import os
 import re
 import urllib.error
@@ -36,9 +39,10 @@ def have(near, kinds):
     return next((f for f, s in near.items() if kinds.match(s)), None)
 
 
-def bazarr(path, timeout=180, **query):
+def bazarr(path, timeout=180, method="PATCH", **query):
     # bazarr's own api (not servarr's): the key arr-keys made, apikey in
-    # the query (utilities/helper.py would also take a header or a form)
+    # the query (utilities/helper.py would also take a header or a form).
+    # a patch is form-encoded, a get is just the query
     if not C.get("bazarr"):
         raise Error("bazarr: the add-on has no port for it (addons.nix)")
     try:
@@ -47,18 +51,24 @@ def bazarr(path, timeout=180, **query):
     except OSError:
         raise Error(f"bazarr: no key in {C['keys']}")
     query["apikey"] = key
-    url = f"http://127.0.0.1:{C['bazarr']}/api{path}?" + urllib.parse.urlencode(query)
-    body = urllib.parse.urlencode({k: v for k, v in query.items() if k != "apikey"}).encode()
-    req = urllib.request.Request(url, body, {"Content-Type": "application/x-www-form-urlencoded"}, method="PATCH")
+    url = f"http://127.0.0.1:{C['bazarr']}/api{path}?" + urlencode(query)
+    body = None if method == "GET" else urlencode({k: v for k, v in query.items() if k != "apikey"}).encode()
+    headers = {"Content-Type": "application/x-www-form-urlencoded"} if body else {}
+    req = urllib.request.Request(url, body, headers, method=method)
     try:
         with OPENER.open(req, timeout=timeout) as r:
-            r.read()
+            data = r.read()
     except urllib.error.HTTPError as e:
         raise Error(f"bazarr: {e.code} {e.read().decode(errors='replace')[:200]}")
     except OSError as e:
         if isinstance(e, TimeoutError) or isinstance(getattr(e, "reason", None), TimeoutError):
             raise Error(f"bazarr didn't answer in {timeout} s")
         raise Error("bazarr doesn't answer")
+    return data
+
+
+def urlencode(query):
+    return urllib.parse.urlencode(query)
 
 
 def download(radarrid, language):
@@ -113,3 +123,56 @@ def movie(tmdb):
         notify("Subtitles", "Only English found: Russian translates itself in a couple of minutes")
     else:
         notify("Subtitles", "Nothing found, try another time")
+
+
+# shows: sonarr's series by its tmdb id, bazarr's episodes of it
+
+
+def series(tmdb):
+    found = Api("sonarr").get("/series", tmdbId=tmdb)
+    if not found:
+        raise Error("Not in Sonarr: Download… it first")
+    return found[0]
+
+
+def episodes_of(seriesid):
+    # every episode sonarr has for it, with what's missing (a python-literal
+    # list of languages bazarr still looks for: "['ru']")
+    data = json.loads(bazarr("/episodes", timeout=60, method="GET", **{"seriesid[]": seriesid})) or {}
+    data = data.get("data") or []
+    for e in data:
+        try:
+            e["missing"] = ast.literal_eval(e.get("missing_subtitles") or "[]")
+        except (ValueError, SyntaxError):
+            e["missing"] = []
+    return data
+
+
+def pack(tmdb, season, episode):
+    s = series(tmdb)
+    if episode is not None:
+        ep = next((e for e in episodes_of(s["id"]) if (e["season"], e["episode"]) == (season, episode)), None)
+        if not ep:
+            raise Error(f"sonarr: no episode S{season:02}E{episode:02}")
+        if "ru" not in ep["missing"]:
+            notify("Subtitles", "Russian subtitles are already there")
+        else:
+            bazarr("/episodes/subtitles", seriesid=s["id"], episodeid=ep["sonarrEpisodeId"],
+                   language="ru", forced="False", hi="False")
+            notify("Subtitles", "Bazarr is on it, they land next to the file in a minute")
+        return
+    if season is None:
+        # the pack: every episode's missing ones, bazarr's own job for it
+        waiting("Bazarr", f"Searching subtitles for {s['title']}…",
+                lambda: bazarr("/series", seriesid=s["id"], action="search-missing", timeout=30))
+        notify("Subtitles", "Bazarr: russian for every episode missing, an english one translates after")
+        return
+    eps = [e for e in episodes_of(s["id"]) if e["season"] == season]
+    missing = [e for e in eps if "ru" in e["missing"]]
+    if not missing:
+        notify("Subtitles", "Russian subtitles are already there")
+        return
+    for e in missing:
+        bazarr("/episodes/subtitles", seriesid=s["id"], episodeid=e["sonarrEpisodeId"],
+               language="ru", forced="False", hi="False")
+    notify("Subtitles", f"Bazarr: {len(missing)} of {len(eps)} episodes missing russian, they land in a couple of minutes")

@@ -6,7 +6,7 @@
      downloads them next to it, an english one translates after), the
      window of its downloads (6, or video add-ons), discover (5), kodi's
      library scanned when one is in. ../addons.nix builds it -->
-<addon id="plugin.video.moviepipe" name="Movie pipe" version="1.1.1" provider-name="barnard">
+<addon id="plugin.video.moviepipe" name="Movie pipe" version="1.1.2" provider-name="barnard">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 	</requires>
@@ -30,12 +30,13 @@
 			</item>
 		</menu>
 	</extension>
-	<!-- Subtitles: a film (in the library or tmdb helper's), with its tmdb id -->
+	<!-- Subtitles: a film (in the library or tmdb helper's, its tmdb id), a
+	     show's pack, one of its seasons, an episode -->
 	<extension point="kodi.context.item">
 		<menu id="kodi.core.main">
 			<item library="context.py" args="subtitles">
 				<label>Subtitles</label>
-				<visible>String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.UniqueID(tmdb))</visible>
+				<visible>[String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.UniqueID(tmdb))] | [String.IsEqual(ListItem.DBType,tvshow) + !String.IsEmpty(ListItem.UniqueID(tmdb))] | [String.IsEqual(ListItem.DBType,season) + !String.IsEmpty(ListItem.UniqueID(tvshow.tmdb))] | [String.IsEqual(ListItem.DBType,episode) + !String.IsEmpty(ListItem.UniqueID(tvshow.tmdb))]</visible>
 			</item>
 		</menu>
 	</extension>

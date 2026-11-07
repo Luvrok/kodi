@@ -25,7 +25,7 @@ buildKodiAddon {
   pname = "skin.gruvbox";
   namespace = "skin.gruvbox";
   # keep in step with skin-gruvbox/addon.xml (kodi shows that one)
-  version = "1.0.0";
+  version = "1.0.1";
   src = ./skin-gruvbox;
   propagatedBuildInputs = [ skinvariables ];
 }
