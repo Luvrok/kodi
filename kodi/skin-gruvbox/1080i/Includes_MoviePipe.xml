@@ -127,7 +127,7 @@
 	<include name="MoviePipe_MenuItems">
 		<include content="MoviePipe_MenuItem">
 			<param name="id" value="9008"/>
-			<param name="x" value="822"/>
+			<param name="x" value="626"/>
 			<param name="w" value="152"/>
 			<param name="label_w" value="112"/>
 			<param name="index" value="05"/>
@@ -140,7 +140,7 @@
 		</include>
 		<include content="MoviePipe_MenuItem">
 			<param name="id" value="9009"/>
-			<param name="x" value="1030"/>
+			<param name="x" value="834"/>
 			<param name="w" value="166"/>
 			<param name="label_w" value="126"/>
 			<param name="index" value="06"/>

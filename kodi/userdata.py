@@ -64,7 +64,13 @@ def settings(spec):
         if s is None:
             s = ET.SubElement(root, "setting", id=name)
         elif s.get("default") != "true":
-            continue
+            # migrate off a skin that's no longer installed: a previous
+            # switch set skin.majan, it's gone now and kodi falls back to
+            # estuary. the spec's value (skin.gruvbox) takes over.
+            if name == "lookandfeel.skin" and (s.text or "").strip() == "skin.majan":
+                pass
+            else:
+                continue
         s.attrib.pop("default", None)
         s.text = value
         changed = True

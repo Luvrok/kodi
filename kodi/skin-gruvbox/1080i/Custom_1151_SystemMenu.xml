@@ -22,7 +22,7 @@
 			<texture colordiffuse="dim_dialog">common/white.png</texture>
 		</control>
 		<control type="group">
-			<left>1309</left>
+			<left>1113</left>
 			<top>below_bar_top</top>
 			<width>600</width>
 			<height>892</height>

@@ -32,8 +32,8 @@
 	<constant name="menu_x_movies">251</constant>
 	<constant name="menu_x_tv">422</constant>
 	<constant name="menu_x_music">626</constant>
-	<constant name="menu_x_search">1252</constant>
-	<constant name="menu_x_gear">1334</constant>
+	<constant name="menu_x_search">1056</constant>
+	<constant name="menu_x_gear">1138</constant>
 	<constant name="menu_w_home">99</constant>
 	<constant name="menu_w_movies">115</constant>
 	<constant name="menu_w_tv">148</constant>
