@@ -57,6 +57,9 @@
 	<constant name="poster_m_w">168</constant>            <!-- Home newest row -->
 	<constant name="poster_m_h">252</constant>
 	<constant name="poster_m_pitch">192</constant>        <!-- 168 + gap 24 -->
+	<constant name="spot_poster_w">165</constant>        <!-- Home spotlight row: 10 fill the width -->
+	<constant name="spot_poster_h">248</constant>
+	<constant name="spot_poster_pitch">173</constant>     <!-- 165 + gap 8 -->
 	<constant name="marker_s">12</constant>               <!-- unwatched square in rows -->
 	<constant name="marker_tab">22</constant>             <!-- watched tab in rows -->
 	<constant name="progress_h">4</constant>

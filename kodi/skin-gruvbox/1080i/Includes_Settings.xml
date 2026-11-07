@@ -701,7 +701,6 @@
 	<expression name="Dlg_ArtVisible">System.AddonIsEnabled(plugin.video.themoviedb.helper) + String.IsEqual(Skin.String(majan.artbackground),visible)</expression>
 	<expression name="Dlg_WatchedBoth">String.IsEmpty(Skin.String(majan.watchedmarkers)) | String.IsEqual(Skin.String(majan.watchedmarkers),both)</expression>
 	<expression name="Dlg_OffsetBottom">String.IsEqual(Skin.String(majan.offsetbar),bottom)</expression>
-	<expression name="Dlg_NewestAdded">!String.IsEqual(Skin.String(majan.home.newest),release) + !String.IsEqual(Skin.String(majan.home.newest),both)</expression>
 	<expression name="Dlg_OSDHide5">!String.IsEqual(Skin.String(majan.osdhide),off) + !String.IsEqual(Skin.String(majan.osdhide),3) + !String.IsEqual(Skin.String(majan.osdhide),10)</expression>
 	<expression name="Dlg_Rotate15">!String.IsEqual(Skin.String(majan.spotlightrotate),off) + !String.IsEqual(Skin.String(majan.spotlightrotate),8) + !String.IsEqual(Skin.String(majan.spotlightrotate),30)</expression>
 
@@ -759,9 +758,8 @@
 		<value condition="Control.HasFocus(9514)">Shows a Trailer button next to Play and Details on Home and the info page. It only appears when the film has a trailer link; playback goes through the YouTube add-on.</value>
 		<value condition="Control.HasFocus(9515)">Unwatched: a small accent square. Watched: a check tab. TV shows add the unwatched count and a progress bar. Keep either, both or none.</value>
 		<value condition="Control.HasFocus(9516)">Where the subtitle and audio offset strip appears while you sync. Top keeps bottom-aligned subtitles in view; pick Bottom if your subtitles sit at the top of the screen.</value>
-		<value condition="Control.HasFocus(9520)">Date added: films in the order they arrived. Release date: newest premieres first. Both: two rows, date added first.</value>
 		<value condition="Control.HasFocus(9522)">How long the playback controls stay up after your last button press. They stay while paused and while a menu is open.</value>
-		<value condition="Control.HasFocus(9521)">How often the spotlight moves to the next film. It pauses while focus is on Play, Details or Trailer.</value>
+		<value condition="Control.HasFocus(9521)">How often the spotlight moves to the next film. It pauses while focus is on the spotlight row, Play, Details or Trailer.</value>
 		<value condition="Control.HasFocus(9530)">Replaces zooms and slides with short fades. Focus changes stay instant.</value>
 		<value condition="Control.HasFocus(9531)">Puts every Majan setting back to its default and reloads the skin. Press OK twice to confirm.</value>
 		<value>Majan's own options. Kodi's settings live under Settings; switch skins in Settings > Interface > Skin.</value>

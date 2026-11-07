@@ -31,11 +31,6 @@
 	<!-- Setting 8: reduce motion -->
 	<expression name="ReduceMotion">Skin.HasSetting(majan.reducemotion)</expression>
 
-	<!-- Setting 9 (Omar, 2026-10-18): Home newest row. empty or added = date added, release, both -->
-	<expression name="HomeNewestDateAdded">!String.IsEqual(Skin.String(majan.home.newest),release)</expression>
-	<expression name="HomeNewestRelease">String.IsEqual(Skin.String(majan.home.newest),release) | String.IsEqual(Skin.String(majan.home.newest),both)</expression>
-	<expression name="HomeNewestBoth">String.IsEqual(Skin.String(majan.home.newest),both)</expression>
-
 	<!-- Items -->
 	<expression name="ListItemIsVideoFile">!ListItem.IsFolder + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,musicvideo)]</expression>
 	<expression name="ListItemUnwatched">Integer.IsEqual(ListItem.PlayCount,0) + !ListItem.IsResumable</expression>

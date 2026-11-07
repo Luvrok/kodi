@@ -3,8 +3,9 @@
 	Home (SPEC 4, HomeTuned.dc.html + Hub.dc.html). Owner: Builder A.
 	Ids
 	  9000 top-bar group: 9001 Home, 9002 Movies, 9003 TV Shows, 9004 Music, 9005 Search, 9006 Gear
-	  9101 spotlight data list (5 random, majan_spotlight.xsp), 9102 spotlight pool counter (caption n)
-	  9110-9112 Play / Details / Trailer, 9119 newest rows wrapper, 9120 date added, 9121 release date
+	  9102 spotlight pool counter (caption n)
+	  9110-9112 Play / Details / Trailer, 9119 rows wrapper
+	  9120 spotlight row: the same 10 unwatched 7.5+ films the hero shows (majan_spotlight.xsp)
 	  9211-9212 Movies hub rows (a poster row, a card row), 9218 Movies rest timer
 	  9221-9222 TV hub rows, 9228 TV rest timer
 	  9231-9233 Music hub rows, 9237 recently-played probe, 9238 Music rest timer
@@ -48,7 +49,7 @@
 	<constant name="home_card_h">180</constant>
 	<constant name="home_card_pitch">344</constant>       <!-- gap 24 -->
 	<constant name="home_card_item_h">238</constant>      <!-- thumb 180 + 10 + show 26 + 2 + code 20 -->
-	<constant name="home_newest_list_x">84</constant>
+	<constant name="home_newest_list_x">80</constant>
 	<constant name="home_newest_list_y">52</constant>     <!-- row top + 66 - pad 22: the lifted focus frame stays clear of the row title -->
 
 	<!-- ============================================================== expressions -->
@@ -64,17 +65,9 @@
 	<!-- Kodi's own "More..." item (added when a limited row is cut short): a folder with no library id.
 	     Styled as the "See all" tile; selecting it opens the full source path. -->
 	<expression name="Home_IsMoreItem">ListItem.IsFolder + String.IsEmpty(ListItem.DBID)</expression>
-	<expression name="Home_SpotlightButtonsFocus">Control.HasFocus(9110) | Control.HasFocus(9111) | Control.HasFocus(9112) | Control.HasFocus(9101)</expression>
-	<!-- rotation: setting not Off, Home section shown, buttons not focused, nothing on top -->
-	<expression name="Home_SpotlightCanRotate">!$EXP[SpotlightRotateOff] + $EXP[Home_SecHome] + !$EXP[Home_SpotlightButtonsFocus] + !System.HasActiveModalDialog + !System.ScreenSaverActive + !Window.IsVisible(1151)</expression>
 	<expression name="Home_HasNextUpHelper">System.AddonIsEnabled(script.embuary.helper)</expression>
 	<expression name="Home_MusicBar">Player.HasAudio + !Player.HasVideo</expression>
-	<!-- 1.0.14: spotlight title size tier (probes 9103 / 9104 in Home_SpotlightText) -->
-<expression name="Home_SpotTitle100">!Integer.IsGreater(Container(9103).NumPages,1)</expression>
-<expression name="Home_SpotTitle72">Integer.IsGreater(Container(9103).NumPages,1) + !Integer.IsGreater(Container(9104).NumPages,1)</expression>
-<expression name="Home_SpotTitle64">Integer.IsGreater(Container(9104).NumPages,1)</expression>
-<expression name="Home_SpotTitle100Two">!Integer.IsGreater(Container(9103).NumPages,1) + Integer.IsGreater(Container(9105).NumPages,1)</expression>
-<expression name="Home_SpotlightNoWideArt">String.IsEmpty(Container(9101).ListItem.Art(fanart)) + String.IsEmpty(Container(9101).ListItem.Art(landscape))</expression>
+<expression name="Home_SpotlightNoWideArt">String.IsEmpty(Container(9120).ListItem.Art(fanart)) + String.IsEmpty(Container(9120).ListItem.Art(landscape))</expression>
 
 	<!-- ================================================================ variables -->
 	<!-- Hub content paths: empty unless the hub is rested (see header) -->
@@ -158,7 +151,7 @@
 		<value condition="String.IsEqual(Window(Home).Property(majan.section),movies)">9211</value>
 		<value condition="String.IsEqual(Window(Home).Property(majan.section),tv)">9221</value>
 		<value condition="String.IsEqual(Window(Home).Property(majan.section),music)">9231</value>
-		<value>9101</value>
+		<value>9120</value>
 	</variable>
 
 	<!-- Artwork background opacity (setting 4; empty = Faint) -->
@@ -169,8 +162,7 @@
 	</variable>
 
 	<!-- Row dimming: a row dims (opaque brightness .45) only while another row of the same block has focus -->
-	<variable name="Home_Dim_9120"><value condition="Control.HasFocus(9121)">dim_row</value><value>white</value></variable>
-	<variable name="Home_Dim_9121"><value condition="Control.HasFocus(9120)">dim_row</value><value>white</value></variable>
+	<variable name="Home_Dim_9120"><value>white</value></variable>
 	<variable name="Home_Dim_9211"><value condition="Control.HasFocus(9212)">dim_row</value><value>white</value></variable>
 	<variable name="Home_Dim_9212"><value condition="Control.HasFocus(9211)">dim_row</value><value>white</value></variable>
 	<variable name="Home_Dim_9221"><value condition="Control.HasFocus(9222)">dim_row</value><value>white</value></variable>
@@ -220,8 +212,11 @@
 
 	<!-- "Down" from any top-bar item: into the content of the active section -->
 	<include name="Home_MenuDown">
-		<ondown condition="$EXP[Home_SecHome] + Integer.IsGreater(Container(9101).NumItems,0)">9110</ondown>
-		<ondown condition="$EXP[Home_SecHome] + !Integer.IsGreater(Container(9101).NumItems,0)">9119</ondown>
+		<ondown condition="$EXP[Home_SecHome] + Integer.IsGreater(Container(9120).NumItems,0)">9110</ondown>
+		<ondown condition="$EXP[Home_SecHome] + !Integer.IsGreater(Container(9120).NumItems,0) + $EXP[CustomRow1On]">9881</ondown>
+		<ondown condition="$EXP[Home_SecHome] + !Integer.IsGreater(Container(9120).NumItems,0) + !$EXP[CustomRow1On] + $EXP[CustomRow2On]">9882</ondown>
+		<ondown condition="$EXP[Home_SecHome] + !Integer.IsGreater(Container(9120).NumItems,0) + !$EXP[CustomRow1On] + !$EXP[CustomRow2On] + $EXP[CustomRow3On]">9883</ondown>
+		<ondown condition="$EXP[Home_SecHome] + !Integer.IsGreater(Container(9120).NumItems,0) + !$EXP[CustomRow1On] + !$EXP[CustomRow2On] + !$EXP[CustomRow3On]">9119</ondown>
 		<ondown condition="$EXP[Home_HubMovies]">9211</ondown>
 		<ondown condition="$EXP[Home_HubTV]">9221</ondown>
 		<ondown condition="$EXP[Home_HubMusic]">9231</ondown><ondown condition="$EXP[MoviePipe_HubDiscover]">9261</ondown><ondown condition="$EXP[MoviePipe_HubDownloads]">9271</ondown>
@@ -462,7 +457,7 @@
 			<width>screen_w</width>
 			<height>topbar_h</height>
 			<texture colordiffuse="bg">common/white.png</texture>
-			<visible>[$EXP[HomeNewestBoth] + $EXP[Home_SecHome]] | $EXP[CustomRowsFocus]</visible>
+			<visible>$EXP[CustomRowsFocus]</visible>
 		</control>
 		<control type="group" id="9000">
 			<defaultcontrol>9001</defaultcontrol>
@@ -479,7 +474,7 @@
 				<param name="reset_a" value="9218"/>
 				<param name="reset_b" value="9228"/>
 				<param name="reset_c" value="9238"/>
-				<param name="blur" value="9101"/>
+				<param name="blur" value="9120"/>
 				<param name="onleft" value="9006"/>
 				<param name="onright" value="9002"/>
 			</include>
@@ -610,37 +605,17 @@
 		</definition>
 	</include>
 
-	<!-- Spotlight rotation interval. <autoscroll> does NOT expand $EXP (Kodi logged "Misplaced [" and the
-	     spotlight never rotated), so the condition is Home_SpotlightCanRotate written out: keep them in sync.
-	     <autoscroll time> is a static attribute, so the interval is picked
-	     at skin load (Home is KEEP_IN_MEMORY: changing 8/15/30 s needs ReloadSkin; Off is live). -->
-	<include name="Home_Rotate8"><autoscroll time="8000">!String.IsEqual(Skin.String(majan.spotlightrotate),off) + [String.IsEmpty(Window(Home).Property(majan.section)) | String.IsEqual(Window(Home).Property(majan.section),home)] + !Skin.HasSetting(HideMenu.Home) + !Skin.HasSetting(HideMenu.Movies) + !Control.HasFocus(9110) + !Control.HasFocus(9111) + !Control.HasFocus(9112) + !Control.HasFocus(9101) + !System.HasActiveModalDialog + !System.ScreenSaverActive + !Window.IsVisible(1151)</autoscroll></include>
-	<include name="Home_Rotate15"><autoscroll time="15000">!String.IsEqual(Skin.String(majan.spotlightrotate),off) + [String.IsEmpty(Window(Home).Property(majan.section)) | String.IsEqual(Window(Home).Property(majan.section),home)] + !Skin.HasSetting(HideMenu.Home) + !Skin.HasSetting(HideMenu.Movies) + !Control.HasFocus(9110) + !Control.HasFocus(9111) + !Control.HasFocus(9112) + !Control.HasFocus(9101) + !System.HasActiveModalDialog + !System.ScreenSaverActive + !Window.IsVisible(1151)</autoscroll></include>
-	<include name="Home_Rotate30"><autoscroll time="30000">!String.IsEqual(Skin.String(majan.spotlightrotate),off) + [String.IsEmpty(Window(Home).Property(majan.section)) | String.IsEqual(Window(Home).Property(majan.section),home)] + !Skin.HasSetting(HideMenu.Home) + !Skin.HasSetting(HideMenu.Movies) + !Control.HasFocus(9110) + !Control.HasFocus(9111) + !Control.HasFocus(9112) + !Control.HasFocus(9101) + !System.HasActiveModalDialog + !System.ScreenSaverActive + !Window.IsVisible(1151)</autoscroll></include>
+	<!-- Spotlight rotation = autoscroll on the visible spotlight row (9120), so the hero and the poster
+	     selection advance together and the row shows which film is on screen. Paused while the row or the
+	     buttons have focus, nothing on top. <autoscroll time> is a static attribute, so the interval is
+	     picked at skin load (Home is KEEP_IN_MEMORY: changing 8/15/30 s needs ReloadSkin; Off is live). -->
+	<include name="Home_Rotate8"><autoscroll time="8000">!String.IsEqual(Skin.String(majan.spotlightrotate),off) + [String.IsEmpty(Window(Home).Property(majan.section)) | String.IsEqual(Window(Home).Property(majan.section),home)] + !Skin.HasSetting(HideMenu.Home) + !Skin.HasSetting(HideMenu.Movies) + !Control.HasFocus(9110) + !Control.HasFocus(9111) + !Control.HasFocus(9112) + !Control.HasFocus(9120) + !System.HasActiveModalDialog + !System.ScreenSaverActive + !Window.IsVisible(1151)</autoscroll></include>
+	<include name="Home_Rotate15"><autoscroll time="15000">!String.IsEqual(Skin.String(majan.spotlightrotate),off) + [String.IsEmpty(Window(Home).Property(majan.section)) | String.IsEqual(Window(Home).Property(majan.section),home)] + !Skin.HasSetting(HideMenu.Home) + !Skin.HasSetting(HideMenu.Movies) + !Control.HasFocus(9110) + !Control.HasFocus(9111) + !Control.HasFocus(9112) + !Control.HasFocus(9120) + !System.HasActiveModalDialog + !System.ScreenSaverActive + !Window.IsVisible(1151)</autoscroll></include>
+	<include name="Home_Rotate30"><autoscroll time="30000">!String.IsEqual(Skin.String(majan.spotlightrotate),off) + [String.IsEmpty(Window(Home).Property(majan.section)) | String.IsEqual(Window(Home).Property(majan.section),home)] + !Skin.HasSetting(HideMenu.Home) + !Skin.HasSetting(HideMenu.Movies) + !Control.HasFocus(9110) + !Control.HasFocus(9111) + !Control.HasFocus(9112) + !Control.HasFocus(9120) + !System.HasActiveModalDialog + !System.ScreenSaverActive + !Window.IsVisible(1151)</autoscroll></include>
 
-	<!-- Always-processed data lists: spotlight (5 random, focusable for Details -> Action(Info)) and the
-	     unlimited pool used only for its item count (no layouts, no art loaded). -->
+	<!-- Always-processed data list: the unlimited spotlight pool, used only for its item count
+	     (no layouts, no art loaded). The spotlight films themselves live in the visible row 9120. -->
 	<include name="Home_DataLists">
-		<control type="list" id="9101">
-			<left>0</left>
-			<top>0</top>
-			<width>1</width>
-			<height>1</height>
-			<orientation>vertical</orientation>
-			<scrolltime>0</scrolltime>
-			<include condition="String.IsEqual(Skin.String(majan.spotlightrotate),8)">Home_Rotate8</include>
-			<include condition="String.IsEqual(Skin.String(majan.spotlightrotate),30)">Home_Rotate30</include>
-			<include condition="!String.IsEqual(Skin.String(majan.spotlightrotate),8) + !String.IsEqual(Skin.String(majan.spotlightrotate),30)">Home_Rotate15</include>
-			<onleft>9110</onleft>
-			<onright condition="Control.IsVisible(9112)">9112</onright>
-			<onup>9000</onup>
-			<ondown>9119</ondown>
-			<onback>9000</onback>
-			<onfocus condition="$EXP[ArtBackgroundOn]">SetProperty(TMDbHelper.WidgetContainer,9101,home)</onfocus>
-			<itemlayout width="1" height="1"/>
-			<focusedlayout width="1" height="1"/>
-			<content target="videos" limit="5">special://skin/playlists/majan_spotlight.xsp</content>
-		</control>
 		<control type="list" id="9102">
 			<left>offscreen</left>
 			<top>offscreen</top>
@@ -1244,6 +1219,8 @@
 		<param name="width">home_hub_text_w</param>
 		<param name="dir_w">500</param>
 		<param name="cast_w">700</param>
+		<param name="dir_font">credits_21_semibold</param>
+		<param name="dir_color">text_primary</param>
 		<definition>
 			<control type="grouplist">
 				<left>0</left>
@@ -1255,8 +1232,8 @@
 				<control type="label">
 					<width max="$PARAM[dir_w]">auto</width>
 					<height>28</height>
-					<font>credits_21_semibold</font>
-					<textcolor>text_primary</textcolor>
+					<font>$PARAM[dir_font]</font>
+					<textcolor>$PARAM[dir_color]</textcolor>
 					<label>$INFO[Container($PARAM[id]).ListItem.Director]</label>
 				</control>
 				<control type="label">
@@ -1839,7 +1816,7 @@
 					<height>spot_img_h</height>
 					<aspectratio>scale</aspectratio>
 					<fadetime>200</fadetime>
-					<texture background="true" colordiffuse="hairline_strong">$INFO[Container(9101).ListItem.Art(poster)]</texture>
+					<texture background="true" colordiffuse="hairline_strong">$INFO[Container(9120).ListItem.Art(poster)]</texture>
 					<visible>![$EXP[ArtBackgroundOn] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.BlurImage))]</visible>
 				</control>
 				<control type="image">
@@ -1849,11 +1826,11 @@
 					<height>spot_img_h</height>
 					<aspectratio>keep</aspectratio>
 					<fadetime>200</fadetime>
-					<texture background="true">$INFO[Container(9101).ListItem.Art(poster)]</texture>
+					<texture background="true">$INFO[Container(9120).ListItem.Art(poster)]</texture>
 				</control>
 			</control>
 		</control>
-		<!-- caption: FIG. 01 ... pool count · n / 5 -->
+		<!-- caption: FIG. 01 ... pool count · n / 10 -->
 		<control type="label">
 			<left>spot_img_x</left>
 			<top>722</top>
@@ -1871,69 +1848,45 @@
 			<align>right</align>
 			<font>mono_14</font>
 			<textcolor>$VAR[ColorCaption]</textcolor>
-			<label>$INFO[Container(9101).CurrentItem]$INFO[Container(9101).NumItems, / ,]</label>
+			<label>$INFO[Container(9120).CurrentItem]$INFO[Container(9120).NumItems, / ,]</label>
 		</control>
 	</include>
 
-	<!-- Spotlight text column (HomeTuned): kicker, title (2-line clamp), facts strip, plot (3-line clamp),
-	     credits (1 line), buttons. Item gap 18 (mockup 22) so a 2-line title + 3-line plot still ends
-	     above the Newest row at y 760 (worst case ends at 739). -->
+	<!-- Spotlight text column: one fixed grid, so nothing jumps while the row scrolls. The title always
+	     uses one size (display_64, a 2-line box, vertically centred), the facts strip and the plot area sit
+	     at fixed y, and the bottom block (muted credits + Play/Details/Trailer) is pinned to the
+	     FIG caption's baseline (y 700). The plot takes all the space in between and fades into the
+	     background at both edges instead of ending on a hard clip. -->
 	<include name="Home_SpotlightText">
-		<control type="grouplist">
-			<left>88</left>  <!-- page_margin - 8 and every child at left 8: room for the Play button focus frame (grouplists clip) -->
+		<control type="group">
+			<left>page_margin</left>
 			<top>content_top</top>
-			<width>712</width>
-			<height>588</height>  <!-- to y 760 (the Newest rule): room for the Play focus frame under a 2-line title + 3-line plot -->
-			<orientation>vertical</orientation>
-			<itemgap>10</itemgap>
-			<usecontrolcoords>true</usecontrolcoords>
+			<width>spot_text_w</width>
+			<height>576</height>
 			<control type="label">
-				<left>8</left>
+				<left>0</left>
+				<top>0</top>
 				<width>spot_text_w</width>
 				<height>20</height>
 				<font>mono_15</font>
 				<textcolor>$VAR[ColorAccent]</textcolor>
 				<label>$LOCALIZE[31100]</label>
 			</control>
-			<!-- title, LAYOUT ONLY (transparent): its auto height (1-2 lines of 97 px at linespacing 0.74) moves
-			     the rest of the column. Kodi clips a textbox to that height, which cut the 2nd line's
-			     descenders, so the visible title is Home_SpotlightTitle below, outside the grouplist.
-			     1.0.14: one layout copy per size tier (Home_SpotTitle100/72/64, probes 9103/9104), each at its natural
-			     height. Before, the slot was held at 196 (2 lines at 100 are 226): a 2nd line's descenders sat on the
-			     facts rule ("Dark Knight", "Kingdom"), and a title that needs 3+ lines at 100 ("Batman: The Dark Knight
-			     Returns, Part 1") lost its last line. -->
+			<!-- one title size for every film: the 2-line box is vertically centred, a 3rd line is clipped -->
 			<control type="textbox">
-				<left>8</left>
+				<left>0</left>
+				<top>30</top>
 				<width>spot_text_w</width>
-				<height max="226">auto</height>  <!-- 1 line = 130 (cell), 2 lines = 96.4 + 130 = 226: the 2nd line's "g" (y 420) clears the facts rule (y 454) like a 1-line title's -->
-				<font>display_100</font>
-				<textcolor>00000000</textcolor>
-				<label>$INFO[Container(9101).ListItem.Title]</label>
-				<visible>$EXP[Home_SpotTitle100]</visible>
-			</control>
-			<control type="textbox">
-				<left>8</left>
-				<width>spot_text_w</width>
-				<height max="196">auto</height>  <!-- 2 lines at 72: 68.5 + cell 93.8 = 162 -->
-				<font>display_72</font>
-				<textcolor>00000000</textcolor>
-				<label>$INFO[Container(9101).ListItem.Title]</label>
-				<visible>$EXP[Home_SpotTitle72]</visible>
-			</control>
-			<control type="textbox">
-				<left>8</left>
-				<width>spot_text_w</width>
-				<height max="206">auto</height>  <!-- 2 lines at 64 = 144, 3 lines = 205 (natural: same title-to-rule gap as the other tiers) -->
+				<height>145</height>
 				<font>display_64</font>
-				<textcolor>00000000</textcolor>
-				<label>$INFO[Container(9101).ListItem.Title]</label>
-				<visible>$EXP[Home_SpotTitle64]</visible>
+				<textcolor>text_primary</textcolor>
+				<aligny>center</aligny>
+				<label>$INFO[Container(9120).ListItem.Title]</label>
 			</control>
-			<!-- facts strip: rules above/below, 4 cells, empty cells hidden (others keep width).
-			     top 12: clear of the title's descenders -->
+			<!-- facts strip: rules above/below, 4 cells, empty cells hidden (others keep width) -->
 			<control type="group">
-				<left>8</left>
-				<top>12</top>
+				<left>0</left>
+				<top>185</top>
 				<width>spot_text_w</width>
 				<height>spot_fact_h</height>
 				<include content="Majan_Rule">
@@ -1956,206 +1909,170 @@
 					<orientation>horizontal</orientation>
 					<include content="Home_FactCell">
 						<param name="label" value="$LOCALIZE[31101]"/>
-						<param name="value" value="$INFO[Container(9101).ListItem.Year]"/>
-						<param name="visible" value="!String.IsEmpty(Container(9101).ListItem.Year)"/>
+						<param name="value" value="$INFO[Container(9120).ListItem.Year]"/>
+						<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.Year)"/>
 						<param name="first" value="true"/>
 						<param name="pad" value="0"/>
 					</include>
 					<include content="Home_FactCell">
 						<param name="label" value="$LOCALIZE[31102]"/>
 						<param name="value" value="$VAR[SpotlightRuntime]"/>
-						<param name="visible" value="Integer.IsGreater(Container(9101).ListItem.Duration(m),0) | Integer.IsGreater(Container(9101).ListItem.Duration(h),0)"/>
+						<param name="visible" value="Integer.IsGreater(Container(9120).ListItem.Duration(m),0) | Integer.IsGreater(Container(9120).ListItem.Duration(h),0)"/>
 					</include>
 					<include content="Home_FactCell">
 						<param name="label" value="$LOCALIZE[31103]"/>
-						<param name="value" value="$INFO[Container(9101).ListItem.Rating]"/>
+						<param name="value" value="$INFO[Container(9120).ListItem.Rating]"/>
 						<param name="suffix" value="/ 10"/>
-						<param name="visible" value="!String.IsEmpty(Container(9101).ListItem.Rating) + !String.IsEqual(Container(9101).ListItem.Rating,0.0)"/>
+						<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.Rating) + !String.IsEqual(Container(9120).ListItem.Rating,0.0)"/>
 					</include>
 					<include content="Home_FactCell">
 						<param name="label" value="$LOCALIZE[31104]"/>
 						<param name="value" value="$VAR[SpotlightMPAA]"/>
-						<param name="visible" value="!String.IsEmpty(Container(9101).ListItem.MPAA)"/>
+						<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.MPAA)"/>
 					</include>
 				</control>
 			</control>
-			<!-- plot (3-line clamp) -> tagline. 1.0.14: 2 lines (68) under a 2-line title at 100, which is 30 px taller
-			     than before: the column still ends above the Newest rule (2-line title + 2-line plot = 570 of 592). -->
+			<!-- plot: fixed 189 px, scrolls itself; the two gradients fade it into the bg, top and bottom -->
 			<control type="textbox">
-				<left>8</left>
+				<left>0</left>
+				<top>279</top>
 				<width>spot_text_w</width>
-				<height max="107">auto</height>
+				<height>189</height>
 				<font>body_25</font>
 				<textcolor>text_body</textcolor>
-				<label>$INFO[Container(9101).ListItem.Plot]</label>
-				<autoscroll delay="3000" time="3000" repeat="10000">true</autoscroll>  <!-- standard Kodi plot scroll: wait 3s (spotlight rotates), roll, pause 10s, repeat -->
-				<visible>!String.IsEmpty(Container(9101).ListItem.Plot) + !$EXP[Home_SpotTitle100Two]</visible>
-			</control>
-			<control type="textbox">
-				<left>8</left>
-				<width>spot_text_w</width>
-				<height max="70">auto</height>
-				<font>body_25</font>
-				<textcolor>text_body</textcolor>
-				<label>$INFO[Container(9101).ListItem.Plot]</label>
+				<label>$INFO[Container(9120).ListItem.Plot]</label>
 				<autoscroll delay="3000" time="3000" repeat="10000">true</autoscroll>
-				<visible>!String.IsEmpty(Container(9101).ListItem.Plot) + $EXP[Home_SpotTitle100Two]</visible>
+				<visible>!String.IsEmpty(Container(9120).ListItem.Plot)</visible>
 			</control>
 			<control type="textbox">
-				<left>8</left>
+				<left>0</left>
+				<top>279</top>
 				<width>spot_text_w</width>
-				<height max="107">auto</height>
+				<height>189</height>
 				<font>body_25</font>
 				<textcolor>text_body</textcolor>
-				<label>$INFO[Container(9101).ListItem.Tagline]</label>
-				<visible>String.IsEmpty(Container(9101).ListItem.Plot) + !$EXP[Home_SpotTitle100Two]</visible>
+				<label>$INFO[Container(9120).ListItem.Tagline]</label>
+				<visible>String.IsEmpty(Container(9120).ListItem.Plot) + !String.IsEmpty(Container(9120).ListItem.Tagline)</visible>
 			</control>
-			<control type="textbox">
-				<left>8</left>
+			<control type="image">
+				<left>0</left>
+				<top>279</top>
 				<width>spot_text_w</width>
-				<height max="70">auto</height>
-				<font>body_25</font>
-				<textcolor>text_body</textcolor>
-				<label>$INFO[Container(9101).ListItem.Tagline]</label>
-				<visible>String.IsEmpty(Container(9101).ListItem.Plot) + $EXP[Home_SpotTitle100Two]</visible>
+				<height>14</height>
+				<texture colordiffuse="bg">common/gradient_top.png</texture>
 			</control>
+			<control type="image">
+				<left>0</left>
+				<top>450</top>
+				<width>spot_text_w</width>
+				<height>18</height>
+				<texture colordiffuse="bg">common/gradient_bottom.png</texture>
+			</control>
+			<!-- director + cast: muted, in the bottom block with the buttons -->
 			<control type="group">
-				<left>8</left>
+				<left>0</left>
+				<top>472</top>
 				<width>spot_text_w</width>
 				<height>28</height>
 				<include content="Home_Credits">
-					<param name="id" value="9101"/>
+					<param name="id" value="9120"/>
 					<param name="top" value="0"/>
 					<param name="width" value="spot_text_w"/>
 					<param name="dir_w" value="300"/>
-					<param name="cast_w" value="374"/>
+					<param name="cast_w" value="404"/>
+					<param name="dir_font" value="credits_21"/>
+					<param name="dir_color" value="text_secondary"/>
 				</include>
 			</control>
-			<!-- buttons: Play (accent) / Details / Trailer. Left off Play = previous spotlight item, Right off the
-			     last visible button = next (Control.Move wraps 9101; rotation pauses while a button has focus).
-			     If the next item has no trailer, focus steps back to Details first so it never sits on a hidden button. -->
+			<!-- buttons: Play (accent) / Details / Trailer, pinned to the FIG caption's baseline (y 700).
+			     Left off Play = previous spotlight item, Right off the last visible button = next
+			     (Control.Move wraps 9120; rotation pauses while a button has focus). -->
 			<control type="group">
-				<left>8</left>
+				<left>0</left>
+				<top>514</top>
 				<width>spot_text_w</width>
-				<height>62</height>
-				<control type="group">
-					<top>4</top>
-					<include content="Majan_ButtonPrimary">
-						<param name="id" value="9110"/>
-						<param name="left" value="0"/>
-						<param name="width" value="button_w_play"/>
-						<param name="label" value="$LOCALIZE[208]"/>
-						<param name="onclick" value="PlayMedia($ESCINFO[Container(9101).ListItem.FilenameAndPath])"/>
-						<param name="onup" value="9000"/>
-						<param name="ondown" value="9119"/>
-						<param name="onback" value="9000"/>
-						<param name="onright" value="9111"/>
-						<param name="onleft" value="Control.Move(9101,-1)"/>
-					</include>
-					<include content="Majan_ButtonSecondary">
-						<param name="id" value="9111"/>
-						<param name="left" value="button_x_details"/>
-						<param name="width" value="button_w_details"/>
-						<param name="label" value="$LOCALIZE[31105]"/>
-						<param name="onclick" value="SetFocus(9101)"/>
-						<param name="onclick2" value="Action(Info)"/>
-						<param name="focus_also" value="Control.HasFocus(9101)"/>
-						<param name="onup" value="9000"/>
-						<param name="ondown" value="9119"/>
-						<param name="onback" value="9000"/>
-						<param name="onleft" value="9110"/>
-						<param name="onright" value="9112"/>
-						<param name="onright_if" value="!Control.IsVisible(9112)"/>
-						<param name="onright_then" value="Control.Move(9101,1)"/>
-					</include>
-					<include content="Majan_ButtonSecondary">
-						<param name="id" value="9112"/>
-						<param name="left" value="button_x_trailer"/>
-						<param name="width" value="button_w_trailer"/>
-						<param name="label" value="$LOCALIZE[20410]"/>
-						<param name="onclick" value="PlayMedia($ESCINFO[Container(9101).ListItem.Trailer],playlist_type_hint=1)"/>
-						<param name="visible" value="$EXP[ShowTrailerButton] + !String.IsEmpty(Container(9101).ListItem.Trailer)"/>
-						<param name="onup" value="9000"/>
-						<param name="ondown" value="9119"/>
-						<param name="onback" value="9000"/>
-						<param name="onleft" value="9111"/>
-						<param name="onright_if" value="String.IsEmpty(Container(9101).ListItem(1).Trailer)"/>
-						<param name="onright_then" value="SetFocus(9111)"/>
-						<param name="onright" value="Control.Move(9101,1)"/>
-					</include>
-				</control>
+				<height>58</height>
+				<include content="Majan_ButtonPrimary">
+					<param name="id" value="9110"/>
+					<param name="left" value="0"/>
+					<param name="width" value="button_w_play"/>
+					<param name="label" value="$LOCALIZE[208]"/>
+					<param name="onclick" value="PlayMedia($ESCINFO[Container(9120).ListItem.FilenameAndPath])"/>
+					<param name="onup" value="9000"/>
+					<param name="ondown" value="9120"/>
+					<param name="onback" value="9000"/>
+					<param name="onright" value="9111"/>
+					<param name="onleft" value="Control.Move(9120,-1)"/>
+				</include>
+				<include content="Majan_ButtonSecondary">
+					<param name="id" value="9111"/>
+					<param name="left" value="button_x_details"/>
+					<param name="width" value="button_w_details"/>
+					<param name="label" value="$LOCALIZE[31105]"/>
+					<param name="onclick" value="SetFocus(9120)"/>
+					<param name="onclick2" value="Action(Info)"/>
+					<param name="onup" value="9000"/>
+					<param name="ondown" value="9120"/>
+					<param name="onback" value="9000"/>
+					<param name="onleft" value="9110"/>
+					<param name="onright" value="9112"/>
+					<param name="onright_if" value="!Control.IsVisible(9112)"/>
+					<param name="onright_then" value="Control.Move(9120,1)"/>
+				</include>
+				<include content="Majan_ButtonSecondary">
+					<param name="id" value="9112"/>
+					<param name="left" value="button_x_trailer"/>
+					<param name="width" value="button_w_trailer"/>
+					<param name="label" value="$LOCALIZE[20410]"/>
+					<param name="onclick" value="PlayMedia($ESCINFO[Container(9120).ListItem.Trailer],playlist_type_hint=1)"/>
+					<param name="visible" value="$EXP[ShowTrailerButton] + !String.IsEmpty(Container(9120).ListItem.Trailer)"/>
+					<param name="onup" value="9000"/>
+					<param name="ondown" value="9120"/>
+					<param name="onback" value="9000"/>
+					<param name="onleft" value="9111"/>
+					<param name="onright_if" value="String.IsEmpty(Container(9120).ListItem(1).Trailer)"/>
+					<param name="onright_then" value="SetFocus(9111)"/>
+					<param name="onright" value="Control.Move(9120,1)"/>
+				</include>
 			</control>
-		</control>
-		<!-- visible spotlight title: same place as the layout textbox (content_top + kicker 20 + gap 14 = 202),
-		     taller than two lines so the 2nd line's descenders aren't clipped; still clamps at 2 lines -->
-		<control type="textbox">
-			<left>page_margin</left>
-			<top>198</top>
-			<width>spot_text_w</width>
-			<height>219</height>  <!-- 2 lines at 97 px (linespacing 0.74) + line 2 descenders; a 3rd line's caps start at 224 -->
-			<font>display_100</font>
-			<textcolor>text_primary</textcolor>
-			<label>$INFO[Container(9101).ListItem.Title]</label>
-			<visible>$EXP[Home_SpotTitle100]</visible>
-		</control>
-		<!-- 1.0.14: titles longer than two lines at 100 step down to 72 (2 lines) and then 64 (up to 3 lines).
-		     Heights: last line's "g" (1.215 em below its line top) stays inside; the next line's caps
-		     (0.303 em) would start below the box. Pitches: 72 = 68.5, 64 = 60.9. -->
-		<control type="textbox">
-			<left>page_margin</left>
-			<top>198</top>
-			<width>spot_text_w</width>
-			<height>160</height>  <!-- line 2 descenders end at 156 -->
-			<font>display_72</font>
-			<textcolor>text_primary</textcolor>
-			<label>$INFO[Container(9101).ListItem.Title]</label>
-			<visible>$EXP[Home_SpotTitle72]</visible>
-		</control>
-		<control type="textbox">
-			<left>page_margin</left>
-			<top>198</top>
-			<width>spot_text_w</width>
-			<height>200</height>  <!-- line 3 descenders end at 199.5; a 4th line's caps would start at 202 -->
-			<font>display_64</font>
-			<textcolor>text_primary</textcolor>
-			<label>$INFO[Container(9101).ListItem.Title]</label>
-			<visible>$EXP[Home_SpotTitle64]</visible>
-		</control>
-		<!-- tier probes (clear, at the title's real place; LESSONS: offscreen probes report 0 pages).
-		     NumPages > 1 = more lines than fit: 9103 holds 2 lines at 100 (240 / 96.4), 9104 2 lines at 72 (170 / 68.5). -->
-		<control type="textbox" id="9103">
-			<left>page_margin</left>
-			<top>198</top>
-			<width>spot_text_w</width>
-			<height>240</height>
-			<font>display_100</font>
-			<textcolor>clear</textcolor>
-			<label>$INFO[Container(9101).ListItem.Title]</label>
-		</control>
-		<control type="textbox" id="9105">  <!-- 1 line at 100 (145 / 96.4): NumPages > 1 = the title wraps -->
-			<left>page_margin</left>
-			<top>198</top>
-			<width>spot_text_w</width>
-			<height>145</height>
-			<font>display_100</font>
-			<textcolor>clear</textcolor>
-			<label>$INFO[Container(9101).ListItem.Title]</label>
-		</control>
-		<control type="textbox" id="9104">
-			<left>page_margin</left>
-			<top>198</top>
-			<width>spot_text_w</width>
-			<height>170</height>
-			<font>display_72</font>
-			<textcolor>clear</textcolor>
-			<label>$INFO[Container(9101).ListItem.Title]</label>
+			<!-- crossfade curtain: dims the text column towards bg on every row item change and fades back,
+			     softening the instant text swap (70% -> 0, never fully blank, so quick browsing still shows
+			     the info). Over the text column only (the buttons never change), and only over a solid bg;
+			     with the artwork background on the text would get a visible flat flash. -->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>spot_text_w</width>
+				<height>500</height>
+				<texture colordiffuse="bg">common/white.png</texture>
+				<visible>!$EXP[ArtBackgroundOn]</visible>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,1) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,2) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,3) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,4) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,5) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,6) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,7) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,8) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,9) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="160" tween="cubic" easing="out" condition="Integer.IsEqual(Container(9120).CurrentItem,10) + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,1) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,2) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,3) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,4) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,5) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,6) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,7) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,8) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,9) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+				<animation effect="fade" start="70" end="0" time="60" condition="Integer.IsEqual(Container(9120).CurrentItem,10) + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
+			</control>
 		</control>
 	</include>
 
 	<include name="Home_Spotlight">
 		<control type="group">
-			<top>-40</top><visible>Integer.IsGreater(Container(9101).NumItems,0)</visible>
-			<include>Anim_FadeVisible</include>
+			<top>-40</top><visible>Integer.IsGreater(Container(9120).NumItems,0)</visible>
 			<include>Home_SpotlightText</include>
 			<include>Home_SpotlightImage</include>
 		</control>
@@ -2168,25 +2085,21 @@
 			<font>mono_15</font>
 			<textcolor>$VAR[ColorCaption]</textcolor>
 			<label>$LOCALIZE[31107]</label>
-			<visible>!Integer.IsGreater(Container(9101).NumItems,0) + !Container(9101).IsUpdating</visible>
+			<visible>!Integer.IsGreater(Container(9120).NumItems,0) + !Container(9120).IsUpdating</visible>
 		</control>
 	</include>
 
-	<!-- ============================================================ newest rows -->
-	<!-- One Home poster row (168x252, gap 24). params: id, title, sub, content, sortby, visible, slide,
-	     up_row (true = Up goes to row 9120), ondown, seeall -->
+	<!-- ============================================================ spotlight row -->
+	<!-- The poster row under the hero IS the spotlight queue: the same 10 films (majan_spotlight.xsp,
+	     fixed limit), so focusing or scrolling it changes the hero immediately. 165x248 with gap 8:
+	     ten posters fill the content width (96 + 10*165 + 9*8 = 1818, 6 px to the right margin). -->
 	<include name="Home_PosterRow">
-		<param name="ondown">noop</param>
-		<param name="customdown">false</param>
-		<param name="sortby">none</param>
 		<definition>
 			<control type="group">
 				<left>0</left>
 				<top>home_row_y</top>
 				<width>screen_w</width>
 				<height>330</height>
-				<visible>$PARAM[visible]</visible>
-				<animation effect="slide" start="0,0" end="0,340" time="0" condition="$PARAM[slide]">Conditional</animation>
 				<include content="Majan_Rule">
 					<param name="top" value="0"/>
 					<param name="color" value="$VAR[ColorRuleStrong]"/>
@@ -2198,7 +2111,7 @@
 					<height>30</height>
 					<font>section_24</font>
 					<textcolor>text_primary</textcolor>
-					<label>$PARAM[title]</label>
+					<label>$LOCALIZE[31290]</label>
 				</control>
 				<control type="label">
 					<left>page_margin</left>
@@ -2208,57 +2121,47 @@
 					<align>right</align>
 					<font>mono_14</font>
 					<textcolor>$VAR[ColorCaption]</textcolor>
-					<label>$PARAM[sub]</label>
+					<label>$LOCALIZE[31291]  ·  $INFO[Container(9120).NumItems] $LOCALIZE[31114]</label>
+					<visible>Integer.IsGreater(Container(9120).NumItems,0) | Container(9120).IsUpdating</visible>
 				</control>
-				<control type="label">
-					<left>page_margin</left>
-					<top>70</top>
-					<width>page_width</width>
-					<height>24</height>
-					<font>mono_14</font>
-					<textcolor>$VAR[ColorCaption]</textcolor>
-					<label>$LOCALIZE[31230]</label>
-					<visible>!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !Container($PARAM[id]).IsUpdating</visible>
-				</control>
-				<control type="list" id="$PARAM[id]">
+				<control type="list" id="9120">
 					<left>home_newest_list_x</left>
 					<top>home_newest_list_y</top>
-					<width>1740</width>
+					<width>1750</width>
 					<height>296</height>
 					<orientation>horizontal</orientation>
-					<onup condition="$PARAM[up_row]">9120</onup>
-					<onup condition="!$PARAM[up_row] + Integer.IsGreater(Container(9101).NumItems,0)">9110</onup>
-					<onup condition="!$PARAM[up_row] + !Integer.IsGreater(Container(9101).NumItems,0)">9000</onup>
-					<!-- custom rows (1.0.12): the last row of a page continues down into them (listed before the
-					     param so they win when they apply); customdown false = never -->
-					<ondown condition="$PARAM[customdown] + $EXP[CustomRow1On]">9881</ondown>
-					<ondown condition="$PARAM[customdown] + !$EXP[CustomRow1On] + $EXP[CustomRow2On]">9882</ondown>
-					<ondown condition="$PARAM[customdown] + !$EXP[CustomRow1On] + !$EXP[CustomRow2On] + $EXP[CustomRow3On]">9883</ondown>
-					<ondown>$PARAM[ondown]</ondown>
-					<onleft>noop</onleft>
-					<onright>noop</onright>
+					<include condition="String.IsEqual(Skin.String(majan.spotlightrotate),8)">Home_Rotate8</include>
+					<include condition="String.IsEqual(Skin.String(majan.spotlightrotate),30)">Home_Rotate30</include>
+					<include condition="!String.IsEqual(Skin.String(majan.spotlightrotate),8) + !String.IsEqual(Skin.String(majan.spotlightrotate),30)">Home_Rotate15</include>
+					<onup condition="Integer.IsGreater(Container(9120).NumItems,0)">9110</onup>
+					<onup condition="!Integer.IsGreater(Container(9120).NumItems,0)">9000</onup>
+					<!-- the last row of Home continues down into the custom rows when they are on -->
+					<ondown condition="$EXP[CustomRow1On]">9881</ondown>
+					<ondown condition="!$EXP[CustomRow1On] + $EXP[CustomRow2On]">9882</ondown>
+					<ondown condition="!$EXP[CustomRow1On] + !$EXP[CustomRow2On] + $EXP[CustomRow3On]">9883</ondown>
+					<ondown>noop</ondown>
 					<onback>9000</onback>
-					<onfocus condition="$EXP[ArtBackgroundOn]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onfocus>
+					<onfocus condition="$EXP[ArtBackgroundOn]">SetProperty(TMDbHelper.WidgetContainer,9120,home)</onfocus>
 					<preloaditems>2</preloaditems>
 					<scrolltime tween="cubic" easing="out">200</scrolltime>
-					<itemlayout width="poster_m_pitch" height="296">
+					<itemlayout width="spot_poster_pitch" height="296">
 						<include content="Home_PosterItem">
-							<param name="id" value="$PARAM[id]"/>
-							<param name="w" value="poster_m_w"/>
-							<param name="h" value="poster_m_h"/>
-							<param name="dim" value="Home_Dim_$PARAM[id]"/>
+							<param name="id" value="9120"/>
+							<param name="w" value="spot_poster_w"/>
+							<param name="h" value="spot_poster_h"/>
+							<param name="dim" value="Home_Dim_9120"/>
 						</include>
 					</itemlayout>
-					<focusedlayout width="poster_m_pitch" height="296">
+					<focusedlayout width="spot_poster_pitch" height="296">
 						<include content="Home_PosterItem">
-							<param name="id" value="$PARAM[id]"/>
-							<param name="w" value="poster_m_w"/>
-							<param name="h" value="poster_m_h"/>
-							<param name="dim" value="Home_Dim_$PARAM[id]"/>
+							<param name="id" value="9120"/>
+							<param name="w" value="spot_poster_w"/>
+							<param name="h" value="spot_poster_h"/>
+							<param name="dim" value="Home_Dim_9120"/>
 							<param name="focused" value="true"/>
 						</include>
 					</focusedlayout>
-					<content target="videos" sortby="$PARAM[sortby]" sortorder="descending" limit="15">$PARAM[content]</content>
+					<content target="videos">special://skin/playlists/majan_spotlight.xsp</content>
 				</control>
 			</control>
 		</definition>
@@ -2266,45 +2169,17 @@
 
 	<include name="Home_NewestRows">
 		<control type="group" id="9119">
-			<description>rows wrapper: focus target from above (Kodi picks the first visible row)</description>
+			<description>rows wrapper: focus target from above</description>
 			<defaultcontrol>9120</defaultcontrol>
-			<!-- 9120: by date added (default; first row in "both") -->
-			<include content="Home_PosterRow">
-				<param name="id" value="9120"/>
-				<param name="title" value="$LOCALIZE[31110]"/>
-				<param name="sub" value="$LOCALIZE[31111]$INFO[Window(Home).Property(Movies.Count),  ·  , $LOCALIZE[31114]]"/>
-				<param name="content" value="videodb://recentlyaddedmovies/"/>
-				<param name="visible" value="$EXP[HomeNewestDateAdded]"/>
-				<param name="slide" value="false"/>
-				<param name="up_row" value="false"/>
-				<param name="ondown" value="9121"/>
-				<param name="customdown" value="!$EXP[HomeNewestRelease]"/>
-				<param name="seeall" value="ActivateWindow(Videos,videodb://movies/titles/,return)"/>
-			</include>
-			<!-- 9121: by release date (setting release / both). The xsp pre-filters the newest 100 by year;
-			     sortby="year" here re-sorts by full premiered date (DATA.md 2.2 / 4.3). -->
-			<include content="Home_PosterRow">
-				<param name="id" value="9121"/>
-				<param name="title" value="$LOCALIZE[31112]"/>
-				<param name="sub" value="$LOCALIZE[31113]"/>
-				<param name="content" value="special://skin/playlists/majan_newest_movies.xsp"/>
-				<param name="sortby" value="year"/>
-				<param name="visible" value="$EXP[HomeNewestRelease]"/>
-				<param name="slide" value="$EXP[HomeNewestBoth]"/>
-				<param name="up_row" value="$EXP[HomeNewestBoth]"/>
-				<param name="customdown" value="true"/>
-				<param name="seeall" value="ActivateWindow(Videos,videodb://movies/titles/,return)"/>
-			</include>
+			<include>Home_PosterRow</include>
 		</control>
 	</include>
 
-	<!-- Home section = spotlight + newest row(s). "Both" mode: the region slides up while row 2 has focus. -->
+	<!-- Home section = spotlight hero + the spotlight row. -->
 	<include name="Home_SectionHome">
 		<control type="group">
 			<visible>$EXP[Home_SecHome]</visible>
 			<include>Anim_FadeVisible</include>
-			<animation effect="slide" start="0,0" end="0,-340" time="200" tween="cubic" easing="out" condition="[Control.HasFocus(9121) + $EXP[HomeNewestBoth]] + !Skin.HasSetting(majan.reducemotion)">Conditional</animation>
-			<animation effect="slide" start="0,0" end="0,-340" time="0" tween="cubic" easing="out" condition="[Control.HasFocus(9121) + $EXP[HomeNewestBoth]] + Skin.HasSetting(majan.reducemotion)">Conditional</animation>
 			<include>Home_Spotlight</include>
 			<include>Home_NewestRows</include>
 		</control>
@@ -2489,8 +2364,8 @@
 		<definition>
 			<onup condition="$PARAM[after2] + $EXP[CustomRow2On]">9882</onup>
 			<onup condition="$PARAM[after1] + $EXP[CustomRow1On] + ![$PARAM[after2] + $EXP[CustomRow2On]]">9881</onup>
-			<onup condition="$EXP[Home_SecHome] + $EXP[HomeNewestRelease]">9121</onup>
-			<onup condition="$EXP[Home_SecHome] + !$EXP[HomeNewestRelease]">9120</onup>
+			<onup condition="$EXP[Home_SecHome] + Integer.IsGreater(Container(9120).NumItems,0)">9120</onup>
+			<onup condition="$EXP[Home_SecHome] + !Integer.IsGreater(Container(9120).NumItems,0)">9000</onup>
 			<onup condition="$EXP[Home_HubMovies]">9212</onup>
 			<onup condition="$EXP[Home_HubTV]">9222</onup>
 			<onup condition="$EXP[Home_HubMusic]">9233</onup>
@@ -2504,7 +2379,7 @@
 		</definition>
 	</include>
 
-	<!-- The page: sits below everything the sections draw (the Home overview's release-date row ends at 1430) inside
+	<!-- The page: sits below everything the sections draw (the Home overview's spotlight row ends at 1046) inside
 	     the Home.xml wrapper, which slides 1420 px up while a custom row has focus, so row 1 lands at content_top
 	     (and 128 px more for a third row, so it fits). -->
 	<include name="Home_CustomRows">

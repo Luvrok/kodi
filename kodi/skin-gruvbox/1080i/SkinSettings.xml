@@ -10,7 +10,7 @@
 	onunload: that crashed Kodi on the Shield (2026-10-18).
 	Artwork background also drives TMDb Helper's blur: Off resets TMDbHelper.EnableBlur (and clears
 	TMDbHelper.Service, never set: it would do per-item TMDb lookups); Faint / Soft / Visible set EnableBlur plus Blur.Size 480 / Radius 12.
-	Ids: rows 9510-9516 / 9520-9521 / 9530-9531 / 9560-9564 (main menu) / 9570-9572 (custom rows), categories 9550-9555,
+	Ids: rows 9510-9516 / 9521-9522 / 9530-9531 / 9560-9564 (main menu) / 9570-9572 (custom rows), categories 9550-9555,
 	preview data list 9590, favourites data list 9889 (custom rows picker).
 	Generated once by a scratch script; edit by hand.
 -->
@@ -72,7 +72,7 @@
 				<param name="index" value="02"/>
 				<param name="label" value="Home &amp; playback"/>
 				<param name="key" value="home"/>
-				<param name="onright" value="9520"/>
+				<param name="onright" value="9521"/>
 				<param name="onup" value="9550"/>
 				<param name="ondown" value="9552"/>
 			</include>
@@ -369,36 +369,9 @@
 			<left>settings_list_x</left>
 			<visible>String.IsEqual(Window(Home).Property(majan.skincat),home)</visible>
 			<include>Anim_FadeVisible</include>
-			<!-- ====== Newest row on Home -->
-			<control type="group">
-				<top>168</top>
-				<include content="Dlg_SkinRowChrome">
-					<param name="id" value="9520"/>
-					<param name="label" value="Newest row on Home"/>
-					<param name="hint" value="Row under the spotlight"/>
-				</include>
-				<control type="button" id="9520">
-					<include>Dlg_SkinRowButton</include>
-					<onup>9522</onup>
-					<ondown>9521</ondown>
-					<onback>9551</onback>
-					<onright condition="$EXP[Dlg_NewestAdded]">Skin.SetString(majan.home.newest,release)</onright>
-					<onleft condition="$EXP[Dlg_NewestAdded]">SetFocus(9551)</onleft>
-					<onclick condition="$EXP[Dlg_NewestAdded]">Skin.SetString(majan.home.newest,release)</onclick>
-					<onright condition="String.IsEqual(Skin.String(majan.home.newest),release)">Skin.SetString(majan.home.newest,both)</onright>
-					<onleft condition="String.IsEqual(Skin.String(majan.home.newest),release)">Skin.SetString(majan.home.newest,added)</onleft>
-					<onclick condition="String.IsEqual(Skin.String(majan.home.newest),release)">Skin.SetString(majan.home.newest,both)</onclick>
-					<onleft condition="$EXP[HomeNewestBoth]">Skin.SetString(majan.home.newest,release)</onleft>
-					<onclick condition="$EXP[HomeNewestBoth]">Skin.SetString(majan.home.newest,added)</onclick>
-				</control>
-				<include content="Dlg_SegOption"><param name="left" value="463"/><param name="width" value="150"/><param name="label" value="Date added"/><param name="selected" value="$EXP[Dlg_NewestAdded]"/><param name="row" value="9520"/></include>
-				<include content="Dlg_SegOption"><param name="left" value="613"/><param name="width" value="162"/><param name="label" value="Release date"/><param name="selected" value="String.IsEqual(Skin.String(majan.home.newest),release)"/><param name="row" value="9520"/></include>
-				<include content="Dlg_SegOption"><param name="left" value="775"/><param name="width" value="85"/><param name="label" value="Both"/><param name="selected" value="$EXP[HomeNewestBoth]"/><param name="row" value="9520"/></include>
-				<include content="Dlg_SegFrame"><param name="left" value="463"/><param name="width" value="397"/></include>
-			</control>
 			<!-- ====== Spotlight rotation -->
 			<control type="group">
-				<top>268</top>
+				<top>168</top>
 				<include content="Dlg_SkinRowChrome">
 					<param name="id" value="9521"/>
 					<param name="label" value="Spotlight rotation"/>
@@ -406,7 +379,7 @@
 				</include>
 				<control type="button" id="9521">
 					<include>Dlg_SkinRowButton</include>
-					<onup>9520</onup>
+					<onup>9522</onup>
 					<ondown>9522</ondown>
 					<onback>9551</onback>
 					<onright condition="$EXP[SpotlightRotateOff]">Skin.SetString(majan.spotlightrotate,8)</onright>
@@ -445,7 +418,7 @@
 			</control>
 			<!-- ====== OSD auto-hide (Custom_1152_OSDAutoHide.xml) -->
 			<control type="group">
-				<top>368</top>
+				<top>268</top>
 				<include content="Dlg_SkinRowChrome">
 					<param name="id" value="9522"/>
 					<param name="label" value="OSD auto-hide"/>
@@ -454,7 +427,7 @@
 				<control type="button" id="9522">
 					<include>Dlg_SkinRowButton</include>
 					<onup>9521</onup>
-					<ondown>9520</ondown>
+					<ondown>9521</ondown>
 					<onback>9551</onback>
 					<onright condition="String.IsEqual(Skin.String(majan.osdhide),off)">Skin.SetString(majan.osdhide,3)</onright>
 					<onleft condition="String.IsEqual(Skin.String(majan.osdhide),off)">SetFocus(9551)</onleft>
@@ -474,7 +447,7 @@
 				<include content="Dlg_SegOption"><param name="left" value="781"/><param name="width" value="79"/><param name="label" value="10 s"/><param name="selected" value="String.IsEqual(Skin.String(majan.osdhide),10)"/><param name="row" value="9522"/></include>
 				<include content="Dlg_SegFrame"><param name="left" value="561"/><param name="width" value="299"/></include>
 			</control>
-			<include content="Majan_Rule"><param name="top" value="468"/><param name="left" value="0"/><param name="width" value="860"/></include>
+			<include content="Majan_Rule"><param name="top" value="368"/><param name="left" value="0"/><param name="width" value="860"/></include>
 		</control>
 		<!-- ============================================================ performance -->
 		<control type="group">

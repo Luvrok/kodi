@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <!-- Majan / Home spotlight. Random unwatched films that show as 7.5+ in the UI.
      rating > 7.449 so a stored 7.45-7.499 (displayed "7.5") is included; votes > 50 drops
-     1-vote outliers. No art rules exist in xsp: the skin handles missing fanart/clearlogo. -->
+     1-vote outliers. No art rules exist in xsp: the skin handles missing fanart/clearlogo.
+     limit 10 = the fixed Home spotlight row (9120); the hero reads the same row, so browsing it
+     changes the spotlight film. The count in the FIG caption still comes from the unlimited copy. -->
 <smartplaylist type="movies">
     <name>Majan spotlight</name>
     <match>all</match>
@@ -14,6 +16,6 @@
     <rule field="votes" operator="greaterthan">
         <value>50</value>
     </rule>
-    <limit>5</limit>
+    <limit>10</limit>
     <order direction="ascending">random</order>
 </smartplaylist>

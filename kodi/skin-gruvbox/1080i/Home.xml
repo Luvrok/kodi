@@ -6,7 +6,7 @@
 
 	Focus map
 	  top bar 9001-9006 (Left/Right wrap) -Down-> content of the active section
-	  Home:   Play 9110 -Right-> Details 9111 -Right-> Trailer 9112; buttons -Down-> newest row 9120 (-> 9121)
+	  Home:   Play 9110 -Right-> Details 9111 -Right-> Trailer 9112; buttons -Down-> spotlight row 9120
 	  Hubs:   row 01 -Down-> row 02 (-> row 03); Up from row 01 -> its menu item
 	  Back from any content -> top bar (group 9000 remembers the item). Back on the bar does nothing.
 	Main menu items can be hidden in Skin settings (HideMenu.Home/Movies/TVShows/Music/Search, Includes_Home.xml):
