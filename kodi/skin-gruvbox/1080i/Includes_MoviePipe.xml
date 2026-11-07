@@ -295,7 +295,7 @@
 		</control>
 	</include>
 	<!-- a tile of a row: the picture (a poster, or a logo kept whole) over
-	     its title, majan's watched markers, focus lift and frame. params:
+	     its title, majan's watched markers, focus zoom and frame. params:
 	     id (the list), w, h, art, aspect, round (majan's corners; not a
 	     logo's), focused -->
 	<include name="MoviePipe_RowItem">
@@ -308,7 +308,7 @@
 				<top>home_list_pad</top>
 				<width>$PARAM[w]</width>
 				<height>$PARAM[h]</height>
-				<include condition="$PARAM[focused]">Anim_FocusLift</include>
+				<include condition="$PARAM[focused]">Anim_FocusZoom</include>
 				<control type="group">
 					<visible>!$EXP[MoviePipe_IsNext]</visible>
 					<control type="image">

@@ -198,13 +198,6 @@
 		</animation>
 	</include>
 
-	<!-- Zoom 103.5 + 8 px lift (SPEC T17 "focus zoom", 30 % softer) for poster tiles with room above. -->
-	<include name="Anim_FocusLift">
-		<animation type="Focus" reversible="true" condition="!Skin.HasSetting(majan.reducemotion)">
-			<effect type="zoom" start="100" end="103.5" center="auto" time="150" tween="cubic" easing="out"/>
-			<effect type="slide" start="0,0" end="0,-8" time="150" tween="cubic" easing="out"/>
-		</animation>
-	</include>
 
 	<!-- Focus outline/frame fade-in (on the frame image inside focusedlayout or a button overlay).
 	     Reduce motion: frame appears instantly. -->

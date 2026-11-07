@@ -22,7 +22,7 @@
 	<constant name="search_artist_w">240</constant>
 	<constant name="search_artist_h">56</constant>
 	<constant name="search_artist_pitch">256</constant>
-	<constant name="search_pad">22</constant>             <!-- zoom/lift/frame room inside the list clip rect -->
+	<constant name="search_pad">22</constant>             <!-- zoom/frame room inside the list clip rect -->
 	<constant name="search_list_x">84</constant>          <!-- items start at 96 -->
 
 	<!-- ================================================================ expressions -->
@@ -165,7 +165,7 @@
 						<top>search_pad</top>
 						<width>$PARAM[w]</width>
 						<height>$PARAM[h]</height>
-						<include>Anim_FocusLift</include>
+						<include>Anim_FocusZoom</include>
 						<include content="Home_Art">
 							<param name="art" value="$PARAM[art]"/>
 							<param name="mask_round" value="$PARAM[mask_round]"/>
@@ -227,7 +227,7 @@
 						<top>search_pad</top>
 						<width>search_artist_w</width>
 						<height>search_artist_h</height>
-						<include>Anim_FocusLift</include>
+						<include>Anim_FocusZoom</include>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>

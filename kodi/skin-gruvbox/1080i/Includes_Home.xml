@@ -38,7 +38,7 @@
 	<constant name="home_hub_label_w">200</constant>
 	<constant name="home_hub_list_x">312</constant>       <!-- items start at 328 (96 + 200 + 32), minus 16 pad -->
 	<constant name="home_hub_list_w">1512</constant>
-	<constant name="home_list_pad">22</constant>          <!-- room for lift 8 + zoom 5% + frame 7 inside the list clip rect -->
+	<constant name="home_list_pad">22</constant>          <!-- room for zoom 3.5% + frame 3 inside the list clip rect -->
 	<constant name="home_item_x">16</constant>  <!-- card zoom 5% of 320 = 8 + frame 7: 15px must fit inside the list clip -->
 	<constant name="home_poster_s_w">140</constant>
 	<constant name="home_poster_s_h">210</constant>
@@ -50,7 +50,7 @@
 	<constant name="home_card_pitch">344</constant>       <!-- gap 24 -->
 	<constant name="home_card_item_h">238</constant>      <!-- thumb 180 + 10 + show 26 + 2 + code 20 -->
 	<constant name="home_newest_list_x">80</constant>
-	<constant name="home_newest_list_y">52</constant>     <!-- row top + 66 - pad 22: the lifted focus frame stays clear of the row title -->
+	<constant name="home_newest_list_y">52</constant>     <!-- row top + 66 - pad 22: the focus frame stays clear of the row title -->
 	<constant name="spot_list_y">34</constant>           <!-- spotlight row: posters hug the block title -->
 
 	<!-- ============================================================== expressions -->
@@ -785,7 +785,7 @@
 				<top>home_list_pad</top>
 				<width>$PARAM[w]</width>
 				<height>$PARAM[h]</height>
-				<include condition="$PARAM[focused]">Anim_FocusLift</include>
+				<include condition="$PARAM[focused]">Anim_FocusZoom</include>
 				<control type="group">
 					<visible>!$EXP[Home_IsMoreItem]</visible>
 					<include content="Home_Art">
@@ -816,7 +816,7 @@
 				<top>home_list_pad</top>
 				<width>home_card_w</width>
 				<height>home_card_item_h</height>
-				<include condition="$PARAM[focused]">Anim_FocusLift</include>
+				<include condition="$PARAM[focused]">Anim_FocusZoom</include>
 				<control type="group">
 					<width>home_card_w</width>
 					<height>home_card_h</height>
@@ -2209,7 +2209,7 @@
 					<left>home_newest_list_x</left>
 					<top>spot_list_y</top>
 					<width>1760</width>
-					<height>300</height>
+					<height>306</height>
 					<orientation>horizontal</orientation>
 					<include condition="String.IsEqual(Skin.String(majan.spotlightrotate),8)">Home_Rotate8</include>
 					<include condition="String.IsEqual(Skin.String(majan.spotlightrotate),30)">Home_Rotate30</include>
@@ -2225,7 +2225,7 @@
 					<onfocus condition="$EXP[ArtBackgroundOn]">SetProperty(TMDbHelper.WidgetContainer,9120,home)</onfocus>
 					<preloaditems>2</preloaditems>
 					<scrolltime tween="cubic" easing="out">200</scrolltime>
-					<itemlayout width="spot_poster_pitch" height="300">
+					<itemlayout width="spot_poster_pitch" height="306">
 						<include content="Home_PosterItem">
 							<param name="id" value="9120"/>
 							<param name="w" value="spot_poster_w"/>
@@ -2233,7 +2233,7 @@
 							<param name="dim" value="Home_Dim_9120"/>
 						</include>
 					</itemlayout>
-					<focusedlayout width="spot_poster_pitch" height="300">
+					<focusedlayout width="spot_poster_pitch" height="306">
 						<include content="Home_PosterItem">
 							<param name="id" value="9120"/>
 							<param name="w" value="spot_poster_w"/>
@@ -2350,7 +2350,7 @@
 	<!-- Opt-in rows from Skin settings > Custom rows (Includes_CustomRows.xml, generated): a page below whichever
 	     section is shown (Home overview or a hub), so hiding menu items never hides them. Down from the last row
 	     of the page scrolls one screen up to them; Up from the first one / Back return. Drawn like the Newest row
-	     (rule, section_24 title, mono count, 168x252 posters, Anim_FocusLift + accent frame). Nothing changes
+	     (rule, section_24 title, mono count, 168x252 posters, Anim_FocusZoom + accent frame). Nothing changes
 	     on Home until a row has items: the block sits below the screen and its rows draw nothing while empty. -->
 	<include name="Home_CustomPosterItem">
 		<param name="focused">false</param>
@@ -2360,7 +2360,7 @@
 				<top>home_list_pad</top>
 				<width>poster_m_w</width>
 				<height>poster_m_h</height>
-				<include condition="$PARAM[focused]">Anim_FocusLift</include>
+				<include condition="$PARAM[focused]">Anim_FocusZoom</include>
 				<include content="Home_Art">
 					<param name="art" value="$VAR[CustomRow_PosterArt]"/>
 				</include>
