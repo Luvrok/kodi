@@ -129,8 +129,7 @@ let
   };
 in
 [
-  (callPackage ./majan.nix { inherit inputs jurialmunkey infotagger; })
-  (callPackage ./skin-gruvbox.nix { })
+  (callPackage ./skin-gruvbox.nix { inherit inputs jurialmunkey infotagger; })
   tmdbhelper
   moviepipe
   # trailers: the films' trailers are its plugin:// links (the scrapers')

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    skin.gruvbox · gruvbox, the quickshell palette (Theme.qml). same colour
+    names as majan so every reference keeps working, values swapped to
+    gruvbox. AARRGGBB. $VAR[ColorAccent] falls back to `accent` below.
+-->
+<colors>
+    <!-- Surfaces -->
+    <color name="bg">ff171717</color>
+    <color name="bg_raised">ff282828</color>
+    <color name="bg_ghost">ff3c3836</color>
+    <color name="ink">fffbf1c7</color>
+
+    <!-- Text -->
+    <color name="text_primary">ffebdbb2</color>
+    <color name="text_body">ffebdbb2</color>
+    <color name="text_secondary">73ebdbb2</color>
+    <color name="text_tertiary">40ebdbb2</color>
+
+    <!-- Lines and control borders -->
+    <color name="hairline">ff3c3836</color>
+    <color name="hairline_strong">ff504945</color>
+    <color name="border_control">ff504945</color>
+    <color name="border_button">ff665c54</color>
+    <color name="hairline_art">1affffff</color>
+    <color name="hairline_art_strong">33ffffff</color>
+
+    <!-- Accent + the accent options (Skin.String(majan.accent) stores a hex) -->
+    <color name="accent">ffd65d0e</color>
+    <color name="accent_signal">ffd65d0e</color>
+    <color name="accent_cobalt">ff458588</color>
+    <color name="accent_mint">ff689d6a</color>
+    <color name="accent_amber">ffd79921</color>
+    <color name="accent_rose">fffb4934</color>
+    <color name="accent_ice">ff83a598</color>
+    <color name="accent_bone">ffebdbb2</color>
+
+    <!-- Scrims and shadows -->
+    <color name="scrim">ff171717</color>
+    <color name="scrim_tab">d9171717</color>
+    <color name="scrim_track">cc171717</color>
+    <color name="shadow">73000000</color>
+    <color name="focus_halo">b3171717</color>
+
+    <!-- Unfocused artwork dimming -->
+    <color name="dim_passed">ff737373</color>
+    <color name="dim_ahead">ffcccccc</color>
+    <color name="dim_row">ff737373</color>
+    <color name="dim_wall">ff999999</color>
+
+    <!-- Artwork background opacity -->
+    <color name="art_faint">4dffffff</color>
+    <color name="art_soft">73ffffff</color>
+    <color name="art_visible">a6ffffff</color>
+
+    <!-- Utility -->
+    <color name="white">ffffffff</color>
+    <color name="black">ff000000</color>
+    <color name="clear">00ffffff</color>
+    <color name="disabled">40ebdbb2</color>
+    <color name="dim_dialog">cc171717</color>
+    <color name="dim_video">8c171717</color>
+    <color name="hairline_soft">ff282828</color>
+</colors>

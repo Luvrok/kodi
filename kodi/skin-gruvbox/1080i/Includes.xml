@@ -1,81 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- auto-loaded by kodi: the skin's shared pieces. constants first, then
-     the primitives everything else uses -->
+<!--
+	skin.majan - include root. Kodi loads this file for every window.
+	Only <include file=""/> lines live here; definitions go in the topical files.
+	Map of what lives where: docs/skin.majan/CONVENTIONS.md section 3.
+-->
 <includes>
 	<include file="Defaults.xml"/>
 	<include file="Constants.xml"/>
-
-	<!-- the page background: one white.png tinted bg, no fanart, no blur -->
-	<include name="Gruvbox_Background">
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>screen_w</width>
-			<height>screen_h</height>
-			<texture colordiffuse="bg">common/white.png</texture>
-		</control>
-	</include>
-
-	<!-- a 1px hairline across the page. params: top -->
-	<include name="Gruvbox_Hairline">
-		<control type="image">
-			<left>page_margin</left>
-			<top>$PARAM[top]</top>
-			<width>page_width</width>
-			<height>rule_h</height>
-			<texture colordiffuse="hairline">common/white.png</texture>
-		</control>
-	</include>
-
-	<!-- 1px accent frame around a focused tile's poster. for a
-	     focusedlayout only: no visible condition, kodi shows it on focus.
-	     drawn as four white.png strips tinted accent, poster_w x poster_h -->
-	<include name="Gruvbox_FocusFrame">
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>poster_w</width>
-			<height>rule_h</height>
-			<texture colordiffuse="accent">common/white.png</texture>
-		</control>
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>rule_h</width>
-			<height>poster_h</height>
-			<texture colordiffuse="accent">common/white.png</texture>
-		</control>
-		<control type="image">
-			<left>139</left>
-			<top>0</top>
-			<width>rule_h</width>
-			<height>poster_h</height>
-			<texture colordiffuse="accent">common/white.png</texture>
-		</control>
-		<control type="image">
-			<left>0</left>
-			<top>209</top>
-			<width>poster_w</width>
-			<height>rule_h</height>
-			<texture colordiffuse="accent">common/white.png</texture>
-		</control>
-	</include>
-
-	<!-- one hint chip, quickshell's `key -> what`. params: key, what -->
-	<include name="Gruvbox_Hint">
-		<control type="label">
-			<width>auto</width>
-			<height>hint_h</height>
-			<font>mono_12</font>
-			<textcolor>accent</textcolor>
-			<label>$PARAM[key]</label>
-		</control>
-		<control type="label">
-			<width>auto</width>
-			<height>hint_h</height>
-			<font>mono_12</font>
-			<textcolor>text_secondary</textcolor>
-			<label>$PARAM[what]</label>
-		</control>
-	</include>
+	<include file="Expressions.xml"/>
+	<include file="Variables.xml"/>
+	<include file="Includes_Animations.xml"/>
+	<include file="Includes_Common.xml"/>
+	<include file="Includes_Dialogs.xml"/>
+	<include file="Includes_Settings.xml"/>
+	<include file="Includes_Views.xml"/>
+	<include file="Includes_Home.xml"/>
+	<include file="Includes_OSD.xml"/>
+	<include file="Includes_Search.xml"/>
+	<include file="Includes_Views_Video.xml"/>
+	<include file="Includes_Wall.xml"/>
+	<include file="Includes_VideoInfo.xml"/>
+	<include file="Includes_Music.xml"/>
+	<include file="Includes_Views_Music.xml"/>
+	<include file="Includes_Library.xml"/>
+	<include file="Includes_Misc.xml"/>
+	<include file="Includes_CustomRows.xml"/><include file="Includes_MoviePipe.xml"/>
 </includes>

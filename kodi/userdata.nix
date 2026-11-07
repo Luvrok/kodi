@@ -22,13 +22,12 @@ let
     exec ${config.programs.mpv.finalPackage}/bin/mpv -- "$1"
   '';
 
-  # what kodi's own settings are on a first run: majan and its font (no
-  # cyrillic otherwise, ./majan-patches.nix), no ".." first in a list
-  # (majan's page showed "Back" over a show's seasons, back is a key)
+  # what kodi's own settings are on a first run: the gruvbox skin and its
+  # jetbrains mono font (no cyrillic otherwise), no ".." first in a list
   defaults = pkgs.writeText "kodi-defaults.json" (
     builtins.toJSON {
       settings = {
-        "lookandfeel.skin" = "skin.majan";
+        "lookandfeel.skin" = "skin.gruvbox";
         "lookandfeel.font" = "JetBrains Mono";
         "filelists.showparentdiritems" = "false";
       };

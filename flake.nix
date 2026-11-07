@@ -7,8 +7,6 @@
   # `nix flake lock`
   inputs = {
     nixpkgs-kodi.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&rev=02c087f3fe673c9e317f206a627cb6b910336dbe";
-    kodi-skins.url = "git+https://github.com/KarmaMole/kodi-skins?shallow=1&rev=0f6a3246f1aa41e82f895366709d2bcaaa87e6fc";
-    kodi-skins.flake = false;
     kodi-skinvariables.url = "git+https://github.com/jurialmunkey/script.skinvariables?ref=nexus&shallow=1&rev=9c20ea9bcf67fcb4370a5771da08b6cf7bdb676e";
     kodi-skinvariables.flake = false;
     kodi-tmdbhelper.url = "git+https://github.com/jurialmunkey/plugin.video.themoviedb.helper?ref=nexus&shallow=1&rev=edae17cb8bfc69d1f614ff44b2490ecd6bd5e9a0";

@@ -1,105 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- the home screen, slice 0: a top bar, one dense row of the library's
-     movies, a hint bar. the movie pipe rows (downloads, tmdb's trending,
-     discover) and the menu chips come later, when the windows and keys
-     are wired. no blur, no spotlight, no video background -->
-<window id="10000">
-	<defaultcontrol>9000</defaultcontrol>
+<!--
+	Home (SPEC 4, HomeTuned.dc.html = Home section, Hub.dc.html = section hubs). Owner: Builder A. M2.
+	Kodi hard-codes no control ids on Home (Estuary Home.xml ids are skin-side); Majan ids are listed
+	in Includes_Home.xml. Home is KEEP_IN_MEMORY in Kodi: <include condition> is evaluated at skin load.
+
+	Focus map
+	  top bar 9001-9006 (Left/Right wrap) -Down-> content of the active section
+	  Home:   Play 9110 -Right-> Details 9111 -Right-> Trailer 9112; buttons -Down-> newest row 9120 (-> 9121)
+	  Hubs:   row 01 -Down-> row 02 (-> row 03); Up from row 01 -> its menu item
+	  Back from any content -> top bar (group 9000 remembers the item). Back on the bar does nothing.
+	Main menu items can be hidden in Skin settings (HideMenu.Home/Movies/TVShows/Music/Search, Includes_Home.xml):
+	  hidden items vanish, the rest close up, Left/Right fall through hidden ids. The gear always stays.
+	Default focus on open: the item of the section that was active when Home was left.
+-->
+<window>
+	<defaultcontrol always="true">9001</defaultcontrol>
+	<menucontrol>9000</menucontrol>
+	<backgroundcolor>bg</backgroundcolor>
+	<!-- re-focus the section that was active when Home was left -->
+	<onload condition="String.IsEqual(Window(Home).Property(majan.section),movies) + !Skin.HasSetting(HideMenu.Movies)">SetFocus(9002)</onload>
+	<onload condition="String.IsEqual(Window(Home).Property(majan.section),tv) + !Skin.HasSetting(HideMenu.TVShows)">SetFocus(9003)</onload>
+	<onload condition="String.IsEqual(Window(Home).Property(majan.section),music) + !Skin.HasSetting(HideMenu.Music)">SetFocus(9004)</onload>
+	<!-- 1.0.12: Home (9001) hidden in Skin settings (HideMenu.Home, or HideMenu.Movies: the overview is all films) and
+	     no remembered section to return to: focus the first item that is shown. The gear is never hidden. -->
+	<onload condition="[Skin.HasSetting(HideMenu.Home) | Skin.HasSetting(HideMenu.Movies)] + ![[String.IsEqual(Window(Home).Property(majan.section),movies) + !Skin.HasSetting(HideMenu.Movies)] | [String.IsEqual(Window(Home).Property(majan.section),tv) + !Skin.HasSetting(HideMenu.TVShows)] | [String.IsEqual(Window(Home).Property(majan.section),music) + !Skin.HasSetting(HideMenu.Music)]] + !Skin.HasSetting(HideMenu.Movies)">SetFocus(9002)</onload>
+	<onload condition="[Skin.HasSetting(HideMenu.Home) | Skin.HasSetting(HideMenu.Movies)] + ![[String.IsEqual(Window(Home).Property(majan.section),movies) + !Skin.HasSetting(HideMenu.Movies)] | [String.IsEqual(Window(Home).Property(majan.section),tv) + !Skin.HasSetting(HideMenu.TVShows)] | [String.IsEqual(Window(Home).Property(majan.section),music) + !Skin.HasSetting(HideMenu.Music)]] + Skin.HasSetting(HideMenu.Movies) + !Skin.HasSetting(HideMenu.TVShows)">SetFocus(9003)</onload>
+	<onload condition="[Skin.HasSetting(HideMenu.Home) | Skin.HasSetting(HideMenu.Movies)] + ![[String.IsEqual(Window(Home).Property(majan.section),movies) + !Skin.HasSetting(HideMenu.Movies)] | [String.IsEqual(Window(Home).Property(majan.section),tv) + !Skin.HasSetting(HideMenu.TVShows)] | [String.IsEqual(Window(Home).Property(majan.section),music) + !Skin.HasSetting(HideMenu.Music)]] + Skin.HasSetting(HideMenu.Movies) + Skin.HasSetting(HideMenu.TVShows) + !Skin.HasSetting(HideMenu.Music)">SetFocus(9004)</onload>
+	<onload condition="[Skin.HasSetting(HideMenu.Home) | Skin.HasSetting(HideMenu.Movies)] + ![[String.IsEqual(Window(Home).Property(majan.section),movies) + !Skin.HasSetting(HideMenu.Movies)] | [String.IsEqual(Window(Home).Property(majan.section),tv) + !Skin.HasSetting(HideMenu.TVShows)] | [String.IsEqual(Window(Home).Property(majan.section),music) + !Skin.HasSetting(HideMenu.Music)]] + Skin.HasSetting(HideMenu.Movies) + Skin.HasSetting(HideMenu.TVShows) + Skin.HasSetting(HideMenu.Music) + !Skin.HasSetting(HideMenu.Search)">SetFocus(9005)</onload>
+	<onload condition="[Skin.HasSetting(HideMenu.Home) | Skin.HasSetting(HideMenu.Movies)] + ![[String.IsEqual(Window(Home).Property(majan.section),movies) + !Skin.HasSetting(HideMenu.Movies)] | [String.IsEqual(Window(Home).Property(majan.section),tv) + !Skin.HasSetting(HideMenu.TVShows)] | [String.IsEqual(Window(Home).Property(majan.section),music) + !Skin.HasSetting(HideMenu.Music)]] + Skin.HasSetting(HideMenu.Movies) + Skin.HasSetting(HideMenu.TVShows) + Skin.HasSetting(HideMenu.Music) + Skin.HasSetting(HideMenu.Search)">SetFocus(9006)</onload>
+	<!-- new stamp each time Home opens: the Next up plugin path changes, so it refreshes after playback -->
+	<onload>SetProperty(majan.reload,$INFO[System.Time(hh:mm:ss)],home)</onload>
+	<!-- Artwork background (setting 4) via TMDb Helper's blur service (6.17.9 source, monitor/imgmon.py):
+	     EnableBlur alone starts its image thread (the data service stays idle without TMDbHelper.Service);
+	     on Home it reads Container(TMDbHelper.WidgetContainer).ListItem and writes
+	     Window(Home).Property(TMDbHelper.ListItem.BlurImage). Off = blur service off, no image control. -->
+	<onload condition="$EXP[ArtBackgroundOn] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<!-- 1.0.1: blur went from 240px/radius 30 (a colour wash) to 480px/radius 12 on fanart; migrate -->
+	<onload condition="String.IsEqual(Skin.String(TMDbHelper.Blur.Size),240)">Skin.SetString(TMDbHelper.Blur.Radius,12)</onload>
+	<onload condition="String.IsEqual(Skin.String(TMDbHelper.Blur.Size),240)">Skin.SetString(TMDbHelper.Blur.Size,480)</onload>
+	<onload condition="!$EXP[ArtBackgroundOn] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[ArtBackgroundOn] + String.IsEmpty(Skin.String(TMDbHelper.Blur.Size))">Skin.SetString(TMDbHelper.Blur.Size,480)</onload>
+	<onload condition="$EXP[ArtBackgroundOn]">SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(poster),home)</onload>
+	<onload condition="$EXP[ArtBackgroundOn]">SetProperty(TMDbHelper.WidgetContainer,$VAR[Home_BlurContainer],home)</onload>
+	<!-- other windows must not inherit Home's container id (TMDb Helper reads it globally) -->
+	<onunload>ClearProperty(TMDbHelper.WidgetContainer,home)</onunload>
+	<include>Anim_WindowOpenClose</include>
 	<controls>
-		<include>Gruvbox_Background</include>
-
-		<!-- top bar: title, clock, rule -->
-		<control type="label">
-			<left>page_margin</left>
-			<top>12</top>
-			<width>600</width>
-			<height>topbar_item_h</height>
-			<font>mono_20</font>
-			<textcolor>text_primary</textcolor>
-			<label>GRUVBOX</label>
+		<include>Majan_Background</include>
+		<include>Home_ArtBackground</include>
+		<include>Home_DataLists</include>
+		<include>CustomRows_Probes</include>
+		<!-- 1.0.12: sections + the custom rows page below them; the group slides one screen up while a custom row has focus -->
+		<control type="group">
+			<include>Home_CustomRowsPageAnim</include>
+			<include>Home_SectionHome</include>
+			<include>Home_HubMovies</include>
+			<include>Home_HubTV</include>
+			<include>Home_HubMusic</include><include>MoviePipe_Hubs</include>
+			<include>Home_CustomRows</include>
 		</control>
-		<control type="label">
-			<right>page_margin</right>
-			<top>18</top>
-			<width>300</width>
-			<height>30</height>
-			<align>right</align>
-			<font>mono_14</font>
-			<textcolor>text_secondary</textcolor>
-			<label>$INFO[System.Time]</label>
-		</control>
-		<include content="Gruvbox_Hairline">
-			<param name="top" value="topbar_rule_y"/>
-		</include>
-
-		<!-- the row: library movies -->
-		<control type="list" id="9000">
-			<left>page_margin</left>
-			<top>72</top>
-			<width>page_width</width>
-			<height>950</height>
-			<orientation>horizontal</orientation>
-			<preloaditems>2</preloaditems>
-			<scrolltime tween="cubic" easing="out">200</scrolltime>
-			<content>videodb://movies/titles/</content>
-			<itemlayout width="poster_pitch" height="row_h">
-				<control type="group">
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>poster_w</width>
-						<height>poster_h</height>
-						<aspectratio>scale</aspectratio>
-						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-					</control>
-					<control type="label">
-						<left>0</left>
-						<top>214</top>
-						<width>poster_w</width>
-						<height>28</height>
-						<font>mono_14</font>
-						<textcolor>text_secondary</textcolor>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
-				</control>
-			</itemlayout>
-			<focusedlayout width="poster_pitch" height="row_h">
-				<control type="group">
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>poster_w</width>
-						<height>poster_h</height>
-						<aspectratio>scale</aspectratio>
-						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-					</control>
-					<include>Gruvbox_FocusFrame</include>
-					<control type="label">
-						<left>0</left>
-						<top>214</top>
-						<width>poster_w</width>
-						<height>28</height>
-						<font>mono_14</font>
-						<textcolor>text_primary</textcolor>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
-				</control>
-			</focusedlayout>
-		</control>
-
-		<!-- hint bar, quickshell's bottom chips -->
-		<control type="grouplist">
-			<left>page_margin</left>
-			<top>1040</top>
-			<width>page_width</width>
-			<height>hint_h</height>
-			<orientation>horizontal</orientation>
-			<itemgap>18</itemgap>
-			<usecontrolcoords>true</usecontrolcoords>
-			<include content="Gruvbox_Hint"><param name="key" value="h j k l"/><param name="what" value="move"/></include>
-			<include content="Gruvbox_Hint"><param name="key" value="enter"/><param name="what" value="play"/></include>
-			<include content="Gruvbox_Hint"><param name="key" value="q"/><param name="what" value="back"/></include>
-			<include content="Gruvbox_Hint"><param name="key" value="esc"/><param name="what" value="home"/></include>
-		</control>
+		<include>Home_NowPlaying</include>
+		<include>Home_TopBar</include>
 	</controls>
 </window>

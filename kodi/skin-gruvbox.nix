@@ -1,23 +1,31 @@
-# kodi's own skin: square, hairline, no blur, JetBrains Mono NL, the
-# gruvbox of quickshell. ./skin-gruvbox/ holds the skin, this builds it and
-# puts the fonts next to it (kodi reads fonts from {skin}/fonts). a sibling
-# of majan in ../addons.nix, majan stays until this is complete
+# kodi's own skin: a fork of majan re-skinned to the gruvbox of quickshell
+# (JetBrains Mono NL, square hairlines, no blur). ./skin-gruvbox/ is the
+# whole skin (fonts and media included), this builds it and the script
+# skinvariables it needs. majan's build is gone: this replaces it
 {
-  nerd-fonts,
-  python3,
+  inputs,
   buildKodiAddon,
+  jurialmunkey,
+  infotagger,
 }:
 
+let
+  skinvariables = buildKodiAddon {
+    pname = "skinvariables";
+    namespace = "script.skinvariables";
+    version = inputs.kodi-skinvariables.shortRev;
+    src = inputs.kodi-skinvariables;
+    propagatedBuildInputs = [
+      jurialmunkey
+      infotagger
+    ];
+  };
+in
 buildKodiAddon {
   pname = "skin.gruvbox";
   namespace = "skin.gruvbox";
   # keep in step with skin-gruvbox/addon.xml (kodi shows that one)
-  version = "0.1.0";
+  version = "1.0.0";
   src = ./skin-gruvbox;
-  postInstall = ''
-    d=$out/share/kodi/addons/skin.gruvbox
-    mkdir -p $d/fonts $d/media
-    cp ${nerd-fonts.jetbrains-mono}/share/fonts/truetype/NerdFonts/JetBrainsMono/JetBrainsMonoNLNerdFont-{Regular,Medium,SemiBold,Bold,ExtraBold}.ttf $d/fonts/
-    ${python3}/bin/python3 ${./skin-gruvbox-media.py} $d/media
-  '';
+  propagatedBuildInputs = [ skinvariables ];
 }
