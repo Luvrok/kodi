@@ -17,6 +17,7 @@ import xbmcvfs
 
 from arr import C, Api, Error, notify
 from images import PORT, Images
+from progress import Progress
 
 STATE = xbmcvfs.translatePath("special://profile/addon_data/plugin.video.moviepipe/state.json")
 POLL = 60
@@ -205,6 +206,7 @@ def log(message, bad):
 monitor = xbmc.Monitor()
 Service(Pipe()).start()
 Cast().start()
+Progress().start()
 images = Images(proxy=tuple(C["images_proxy"]) if C.get("images_proxy") else None, log=log)
 try:
     images.start()

@@ -16,10 +16,16 @@ let
 
   # kodi puts its libraries (rtmpdump, libnfs...) in LD_LIBRARY_PATH, mpv
   # shouldn't load them over its own, nor take kodi's proxy. -- for a file
-  # that starts with a dash
+  # that starts with a dash. mpv-progress.lua reports the position to
+  # moviepipe's service, which writes kodi's resume/watch data (./moviepipe/
+  # progress.py); the state dir is the same for both (moviepipe uses the
+  # same XDG_RUNTIME_DIR fallback)
   mpv = pkgs.writeShellScript "kodi-mpv" ''
     unset LD_LIBRARY_PATH http_proxy https_proxy no_proxy
-    exec ${config.programs.mpv.finalPackage}/bin/mpv -- "$1"
+    state="''${XDG_RUNTIME_DIR:-/tmp}/kodi-mpv"
+    mkdir -p "$state"
+    export KODI_MPV_STATE="$state"
+    exec ${config.programs.mpv.finalPackage}/bin/mpv --script=${./mpv-progress.lua} -- "$1"
   '';
 
   # what kodi's own settings are on a first run: the gruvbox skin and its
@@ -50,10 +56,11 @@ in
 
     # a video file goes to mpv. kodi runs it through sh with the path in
     # double quotes, a " $ ` or \ in a file name breaks it. mpv resumes
-    # where it was (save-position-on-quit). kodi marked it watched after
-    # 10 seconds of mpv: never now (playcountminimumtime), only by hand (w,
-    # ./keyboard.xml). the streams of add-ons stay in kodi's player, the
-    # first rule that matches wins
+    # where it was (save-position-on-quit). kodi's own playcount stays off
+    # (playcountminimumtime max): mpv-progress.lua reports the position and
+    # moviepipe/progress.py writes kodi's lastPlayed, resume bookmark and
+    # watched flag. the streams of add-ons stay in kodi's player, the first
+    # rule that matches wins
     "${datadir}/userdata/playercorefactory.xml".text = ''
       <playercorefactory>
         <players>

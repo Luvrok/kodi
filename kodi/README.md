@@ -296,10 +296,14 @@ python не доходит, поэтому `SendClick` в скрытые кно�
 - `browser.py`: TMDb / IMDb / Letterboxd (`letterboxd.com/tmdb/<id>`) через
   `xdg-open` из xdg-utils, путь зашит при сборке (`addons.nix`): в PATH Kodi
   его может не быть.
-- Просмотрено только руками: у mpv `playcountminimumtime` — максимум (Kodi
-  считал фильм просмотренным после 10 с mpv), у своего плеера
-  `playcountminimumpercent` 101. `w` — ToggleWatched везде (было только в
-  окне файлов).
+- Просмотрено и прогресс: mpv — внешний плеер, Kodi сам ничего не пишет
+  (`playcountminimumtime` / `playcountminimumpercent` намеренно отключены).
+  `mpv-progress.lua` (обёртка в `userdata.nix`) пишет путь, позицию и
+  длительность в `$XDG_RUNTIME_DIR/kodi-mpv/`; сервис MoviePipe
+  (`moviepipe/progress.py`) находит файл в библиотеке и пишет в базу Kodi
+  `lastPlayed`, resume-закладку (type 1) и на 90 % `playCount`. Поэтому
+  прогресс-бары, Continue watching, in-progress ряды и Next up считаются от
+  реального просмотра, включая серии; `w` по-прежнему переключает вручную.
 
 ### 19. Стенд (`test/`)
 

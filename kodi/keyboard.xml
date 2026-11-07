@@ -20,9 +20,10 @@
 			<q>Back</q>
 			<f>UpdateLibrary(video)</f>
 			<r>Container.Refresh</r>
-			<!-- watched or not: only by hand, kodi marks nothing itself
-			     (./userdata.nix, ./advancedsettings.xml). kodi had w in its
-			     lists of files only -->
+			<!-- watched or not: kodi marks nothing itself (./userdata.nix,
+			     ./advancedsettings.xml); mpv's progress thread writes the
+			     watched flag and resume point, w toggles by hand. kodi had
+			     w in its lists of files only -->
 			<w>ToggleWatched</w>
 			<!-- movie pipe's windows (./moviepipe/keys.py): t a trailer, o
 			     its page in the browser, v marks a download, d removes.
