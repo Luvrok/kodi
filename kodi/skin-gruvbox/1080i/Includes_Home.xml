@@ -2172,15 +2172,15 @@
 
 	<!-- ============================================================ spotlight row -->
 	<!-- The poster row under the hero IS the spotlight queue: the same 9 films (majan_spotlight.xsp,
-	     fixed limit), so focusing or scrolling it changes the hero immediately. 176x264 with gap 18:
-	     nine posters fill the content width exactly (96 + 9*176 + 8*18 = 1824). -->
+	     fixed limit), so focusing or scrolling it changes the hero immediately. 181.33x272 with gap 12:
+	     nine posters fill the content width exactly (96 + 9*181.33 + 8*12 = 1824). -->
 	<include name="Home_PosterRow">
 		<definition>
 			<control type="group">
 				<left>0</left>
 				<top>home_row_y</top>
 				<width>screen_w</width>
-				<height>350</height>
+				<height>340</height>
 				<include content="Majan_Rule">
 					<param name="top" value="0"/>
 					<param name="color" value="$VAR[ColorRuleStrong]"/>
@@ -2209,7 +2209,7 @@
 					<left>home_newest_list_x</left>
 					<top>spot_list_y</top>
 					<width>1760</width>
-					<height>310</height>
+					<height>300</height>
 					<orientation>horizontal</orientation>
 					<include condition="String.IsEqual(Skin.String(majan.spotlightrotate),8)">Home_Rotate8</include>
 					<include condition="String.IsEqual(Skin.String(majan.spotlightrotate),30)">Home_Rotate30</include>
@@ -2225,7 +2225,7 @@
 					<onfocus condition="$EXP[ArtBackgroundOn]">SetProperty(TMDbHelper.WidgetContainer,9120,home)</onfocus>
 					<preloaditems>2</preloaditems>
 					<scrolltime tween="cubic" easing="out">200</scrolltime>
-					<itemlayout width="spot_poster_pitch" height="310">
+					<itemlayout width="spot_poster_pitch" height="300">
 						<include content="Home_PosterItem">
 							<param name="id" value="9120"/>
 							<param name="w" value="spot_poster_w"/>
@@ -2233,7 +2233,7 @@
 							<param name="dim" value="Home_Dim_9120"/>
 						</include>
 					</itemlayout>
-					<focusedlayout width="spot_poster_pitch" height="310">
+					<focusedlayout width="spot_poster_pitch" height="300">
 						<include content="Home_PosterItem">
 							<param name="id" value="9120"/>
 							<param name="w" value="spot_poster_w"/>

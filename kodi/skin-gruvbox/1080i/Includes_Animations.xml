@@ -188,20 +188,20 @@
 	<!-- FOCUS                                                                                 -->
 	<!-- ===================================================================================== -->
 
-	<!-- Focused item zoom 100 -> 105 around its own centre, 150 ms cubic out.
+	<!-- Focused item zoom 100 -> 103.5 around its own centre, 150 ms cubic out.
 	     Use on the art GROUP inside a list <focusedlayout>, or directly on a button/control.
 	     Focus-only + reversible: losing focus reverses from the current value, so fast d-pad
 	     scrolling never stacks or snaps. Reduce motion: no zoom (focus frame still shows). -->
 	<include name="Anim_FocusZoom">
 		<animation type="Focus" reversible="true" condition="!Skin.HasSetting(majan.reducemotion)">
-			<effect type="zoom" start="100" end="105" center="auto" time="150" tween="cubic" easing="out"/>
+			<effect type="zoom" start="100" end="103.5" center="auto" time="150" tween="cubic" easing="out"/>
 		</animation>
 	</include>
 
-	<!-- Zoom 105 + 8 px lift (SPEC T17 "focus zoom 105 / lift 8px") for poster tiles with room above. -->
+	<!-- Zoom 103.5 + 8 px lift (SPEC T17 "focus zoom", 30 % softer) for poster tiles with room above. -->
 	<include name="Anim_FocusLift">
 		<animation type="Focus" reversible="true" condition="!Skin.HasSetting(majan.reducemotion)">
-			<effect type="zoom" start="100" end="105" center="auto" time="150" tween="cubic" easing="out"/>
+			<effect type="zoom" start="100" end="103.5" center="auto" time="150" tween="cubic" easing="out"/>
 			<effect type="slide" start="0,0" end="0,-8" time="150" tween="cubic" easing="out"/>
 		</animation>
 	</include>
