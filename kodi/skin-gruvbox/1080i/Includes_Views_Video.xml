@@ -1769,6 +1769,16 @@
 					<info>ListItem.Property(WatchedEpisodePercent)</info>
 					<visible>$EXP[ShowUnwatchedMarkers] + String.IsEqual(ListItem.DBType,tvshow) + $EXP[VidView_TVStarted]</visible>
 				</control>
+				<control type="progress">
+					<left>0</left>
+					<right>0</right>
+					<bottom>0</bottom>
+					<height>progress_h</height>
+					<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
+					<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
+					<info>ListItem.PercentPlayed</info>
+					<visible>$EXP[ShowUnwatchedMarkers] + !String.IsEqual(ListItem.DBType,tvshow) + Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
+				</control>
 				<include content="VidView_PosterFocus" condition="$PARAM[focused]">
 					<param name="id" value="9310"/>
 				</include>
