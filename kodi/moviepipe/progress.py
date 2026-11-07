@@ -80,7 +80,7 @@ class Progress(threading.Thread):
                     continue
                 if not final and now - entry["written"] < WRITE:
                     continue
-            result = self.write(state, final)
+            result = self.write(state)
             if result is True:
                 self.refresh()
                 self.seen[key] = {"written": now, "final": final}
@@ -117,7 +117,7 @@ class Progress(threading.Thread):
         self.database = version
         return version
 
-    def write(self, state, final):
+    def write(self, state):
         database = self.db()
         if not database:
             return False
