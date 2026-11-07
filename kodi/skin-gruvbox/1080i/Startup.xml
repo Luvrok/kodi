@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	Startup: black page + wordmark for the instant before Home. No splash timer.
-	Goes to Kodi's configured startup window (default Home), like Estuary, so Omar's
-	"Settings > Interface > Startup window" keeps working.
+	Startup: the same page as ../splash.png (kodi's pre-skin splash, copied
+	from ./splash.png by ../userdata.nix), so the handoff has no jump. A
+	spinner for the parts that take longer (a library scan, a slow disk).
+	No splash timer: goes to Kodi's configured startup window (default
+	Home), like Estuary, so Settings > Interface > Startup window works.
 -->
 <window>
 	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
 	<controls>
 		<include>Majan_Background</include>
+		<!-- KODI, small above the wordmark -->
+		<control type="label">
+			<left>page_margin</left>
+			<top>412</top>
+			<width>400</width>
+			<height>26</height>
+			<font>mono_14</font>
+			<textcolor>$VAR[ColorAccent]</textcolor>
+			<label>[UPPERCASE]KODI[/UPPERCASE]</label>
+		</control>
+		<!-- wordmark (the splash's Majan Display) -->
 		<control type="label">
 			<left>page_margin</left>
 			<top>460</top>
@@ -15,6 +28,31 @@
 			<height>140</height>
 			<font>display_100</font>
 			<label>$LOCALIZE[31024]</label>
+		</control>
+		<!-- the accent rule under it -->
+		<include content="Majan_Rule">
+			<param name="top" value="620"/>
+			<param name="left" value="page_margin"/>
+			<param name="width" value="320"/>
+			<param name="color" value="$VAR[ColorAccent]"/>
+		</include>
+		<!-- loading: a label and a spinner, only while kodi is still busy -->
+		<control type="label">
+			<left>page_margin</left>
+			<top>952</top>
+			<width>140</width>
+			<height>26</height>
+			<font>mono_14</font>
+			<textcolor>text_secondary</textcolor>
+			<label>LOADING</label>
+		</control>
+		<control type="image">
+			<left>228</left>
+			<top>955</top>
+			<width>20</width>
+			<height>20</height>
+			<texture>spinner.png</texture>
+			<animation effect="rotate" center="auto" start="0" end="360" time="1200" loop="true" condition="true">Conditional</animation>
 		</control>
 	</controls>
 </window>

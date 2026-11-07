@@ -53,7 +53,7 @@ def enable(ids):
 # values that win over kodi's even when they were changed by hand: the
 # external mpv always resumes, so kodi's "play or resume" question has no
 # meaning (and its "play from beginning" cannot reach mpv anyway)
-FORCE = {"myvideos.selectaction", "myvideos.playaction"}
+FORCE = {"myvideos.selectaction", "myvideos.playaction", "lookandfeel.soundskin"}
 
 
 def settings(spec):

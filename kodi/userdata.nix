@@ -41,12 +41,18 @@ let
         # and resume anyway)
         "myvideos.selectaction" = "2";  # ACTION_RESUME
         "myvideos.playaction" = "2";    # ACTION_RESUME
+        # kodi's own click set: no 6 s startup.wav (the titan set has one)
+        "lookandfeel.soundskin" = "resource.uisounds.kodi";
       };
     }
   );
 in
 {
   home.file = {
+    # kodi's splash, before the skin is loaded: the same page as the skin's
+    # Startup.xml (majan wordmark, no kodi logo)
+    "${datadir}/media/splash.png".source = ./splash.png;
+
     # vim keys (./keyboard.xml)
     "${datadir}/userdata/keymaps/keyboard.xml".source = ./keyboard.xml;
 
