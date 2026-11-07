@@ -114,7 +114,7 @@ def same(path, text):
 
 
 def files(spec):
-    for name, text in spec["files"].items():
+    for name, text in (spec.get("files") or {}).items():
         path = os.path.join(datadir, name)
         if os.path.exists(path) and (same(path, text) or not ours_may_replace(path, text)):
             continue

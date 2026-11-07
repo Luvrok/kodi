@@ -1,8 +1,7 @@
-# the add-ons kodi gets: majan (./majan.nix), tmdb helper (films, shows
-# and people from tmdb, with the menu of ./moviepipe on them), Movie pipe,
-# iptv simple with its tv channels, youtube for the trailers. the
-# github ones are flake inputs like the skins, pinned to a commit each
-# (this repo's flake.nix)
+# the add-ons kodi gets: the gruvbox skin (./skin-gruvbox.nix), tmdb helper
+# (films, shows and people from tmdb, with the menu of ./moviepipe on
+# them), Movie pipe, youtube for the trailers. the github ones are flake
+# inputs, pinned to a commit each (this repo's flake.nix)
 {
   inputs,
   # ../arr/shared.nix: its ports and the keys' folder (./test: the mock's)
@@ -17,8 +16,6 @@
   requests,
   signals,
   xdg-utils,
-  pvr-iptvsimple,
-  inputstream-adaptive,
   youtube,
 }:
 
@@ -136,9 +133,6 @@ in
   (callPackage ./skin-gruvbox.nix { })
   tmdbhelper
   moviepipe
-  pvr-iptvsimple
-  # dash and the like for iptv simple: channel one's stream is dash
-  inputstream-adaptive
   # trailers: the films' trailers are its plugin:// links (the scrapers')
   youtube
 ]

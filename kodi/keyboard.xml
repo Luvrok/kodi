@@ -37,9 +37,8 @@
 			<one>ActivateWindowAndFocus(Home,9001,0)</one>
 			<two>ActivateWindowAndFocus(Home,9002,0)</two>
 			<three>ActivateWindowAndFocus(Home,9003,0)</three>
-			<!-- 4 the tv channels, 5 discover (tmdb's films and shows not in
-			     the library), 6 what downloads (../arr) -->
-			<four>ActivateWindow(TVChannels)</four>
+			<!-- 5 discover (tmdb's films and shows not in the library), 6 what
+			     downloads (../arr) -->
 			<five>RunPlugin(plugin://plugin.video.moviepipe/?action=discover)</five>
 			<six>RunPlugin(plugin://plugin.video.moviepipe/?action=downloads)</six>
 			<!-- majan's search, the home screen's search icon opens it -->
