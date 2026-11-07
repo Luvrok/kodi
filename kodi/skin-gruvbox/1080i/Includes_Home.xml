@@ -42,12 +42,12 @@
 	<constant name="home_item_x">16</constant>  <!-- card zoom 5% of 320 = 8 + frame 7: 15px must fit inside the list clip -->
 	<constant name="home_poster_s_w">140</constant>
 	<constant name="home_poster_s_h">210</constant>
-	<constant name="home_poster_s_pitch">160</constant>   <!-- gap 20 -->
+	<constant name="home_poster_s_pitch">152</constant>   <!-- gap 12 -->
 	<constant name="home_cover_w">210</constant>
-	<constant name="home_cover_pitch">230</constant>
+	<constant name="home_cover_pitch">222</constant>
 	<constant name="home_card_w">320</constant>
 	<constant name="home_card_h">180</constant>
-	<constant name="home_card_pitch">344</constant>       <!-- gap 24 -->
+	<constant name="home_card_pitch">332</constant>       <!-- gap 12 -->
 	<constant name="home_card_item_h">238</constant>      <!-- thumb 180 + 10 + show 26 + 2 + code 20 -->
 	<constant name="home_newest_list_x">80</constant>
 	<constant name="home_newest_list_y">52</constant>     <!-- row top + 66 - pad 22: the focus frame stays clear of the row title -->

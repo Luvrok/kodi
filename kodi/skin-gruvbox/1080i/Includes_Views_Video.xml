@@ -34,10 +34,10 @@
 	<constant name="vidview_hero_h">780</constant>
 	<constant name="vidview_strip_w">100</constant>           <!-- Showcase browse strip -->
 	<constant name="vidview_strip_h">150</constant>
-	<constant name="vidview_strip_pitch">116</constant>
+	<constant name="vidview_strip_pitch">112</constant>
 	<constant name="vidview_big_w">330</constant>             <!-- Big Poster -->
 	<constant name="vidview_big_h">495</constant>
-	<constant name="vidview_big_pitch">354</constant>
+	<constant name="vidview_big_pitch">342</constant>
 	<constant name="vidview_big_marker">14</constant>
 	<constant name="vidview_big_tab">24</constant>
 	<constant name="vidview_wall_w">162</constant>            <!-- TV wall, 10 columns -->
@@ -47,7 +47,7 @@
 	<constant name="vidview_wall_top">540</constant>
 	<constant name="vidview_next_w">320</constant>            <!-- Next up cards -->
 	<constant name="vidview_next_h">180</constant>
-	<constant name="vidview_next_pitch">344</constant>
+	<constant name="vidview_next_pitch">332</constant>
 	<constant name="vidview_ep_row_h">174</constant>          <!-- Episodes list -->
 	<constant name="vidview_ep_thumb_w">256</constant>
 	<constant name="vidview_ep_thumb_h">144</constant>
@@ -62,7 +62,7 @@
 	<!-- Next up strip: TV root (their next episode) and movies root (films
 	     in progress), both while the Wall is the active view -->
 	<expression name="VidView_ShowNextUp">[Container.Content(tvshows) + String.StartsWith(Container.FolderPath,videodb://tvshows/titles)] | [$EXP[VidView_IsMoviesRoot] + Control.IsVisible(502)]</expression>
-	<expression name="VidView_HasNextUp">[([[Container.Content(tvshows) + String.StartsWith(Container.FolderPath,videodb://tvshows/titles)] | [$EXP[VidView_IsMoviesRoot]]] + Control.IsVisible(502) + Integer.IsGreater(Container(9310).NumItems,0))]</expression>
+	<expression name="VidView_HasNextUp">Integer.IsGreater(Container(9310).NumItems,0)</expression>
 	<expression name="VidView_NavActiveAll">!System.Setting(hidewatched) + !String.StartsWith(Container.FolderPath,videodb://inprogresstvshows)</expression>
 	<expression name="VidView_IsFolderType">String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)</expression>
 	<expression name="VidView_IsTVType">String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)</expression>
@@ -1639,7 +1639,8 @@
 				<orientation>vertical</orientation>
 				<preloaditems>1</preloaditems>
 				<scrolltime tween="cubic" easing="out">200</scrolltime>
-				<onup>9000</onup>
+				<onup condition="$EXP[VidView_HasNextUp]">9310</onup>
+				<onup condition="!$EXP[VidView_HasNextUp]">9000</onup>
 				<ondown>noop</ondown>
 				<onleft>noop</onleft>
 				<onright>noop</onright>

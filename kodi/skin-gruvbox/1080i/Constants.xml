@@ -56,7 +56,7 @@
 	<!-- Posters / rows -->
 	<constant name="poster_m_w">168</constant>            <!-- Home newest row -->
 	<constant name="poster_m_h">252</constant>
-	<constant name="poster_m_pitch">192</constant>        <!-- 168 + gap 24 -->
+	<constant name="poster_m_pitch">180</constant>        <!-- 168 + gap 12 -->
 	<constant name="spot_poster_w">181.333</constant>    <!-- Home spotlight row: 9 fill the width -->
 	<constant name="spot_poster_h">272</constant>
 	<constant name="spot_poster_pitch">193.333</constant> <!-- 181.333 + gap 12 -->
