@@ -612,6 +612,68 @@
 		</definition>
 	</include>
 
+	<!-- the cover over Home while its rows and posters first load: the same
+	     page as ../splash.png and the skin's Startup.xml (wordmark, KODI,
+	     accent rule), with the accent bar sweeping left to right for the
+	     2.5 s of timer 9248. It is the last control of Home, so it hides
+	     the spotlight and the rows filling in. -->
+	<include name="Home_Boot">
+		<control type="group">
+			<visible>!Integer.IsGreater(Container(9248).CurrentItem,1)</visible>
+			<!-- fallback for the timer: if it ever fails to advance, the
+			     whole page fades out at the same 2.5 s anyway -->
+			<animation effect="fade" start="100" end="0" delay="2500" time="1" condition="true">WindowOpen</animation>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>screen_w</width>
+				<height>screen_h</height>
+				<texture colordiffuse="bg">common/white.png</texture>
+			</control>
+			<control type="label">
+				<left>page_margin</left>
+				<top>412</top>
+				<width>400</width>
+				<height>26</height>
+				<font>mono_14</font>
+				<textcolor>$VAR[ColorAccent]</textcolor>
+				<label>[UPPERCASE]KODI[/UPPERCASE]</label>
+			</control>
+			<control type="label">
+				<left>page_margin</left>
+				<top>460</top>
+				<width>page_width</width>
+				<height>140</height>
+				<font>display_100</font>
+				<label>$LOCALIZE[31024]</label>
+			</control>
+			<control type="image">
+				<left>page_margin</left>
+				<top>620</top>
+				<width>320</width>
+				<height>1</height>
+				<texture colordiffuse="hairline_strong">common/white.png</texture>
+			</control>
+			<control type="image">
+				<left>page_margin</left>
+				<top>619</top>
+				<width>64</width>
+				<height>3</height>
+				<texture colordiffuse="$VAR[ColorAccent]">common/white.png</texture>
+				<animation effect="slide" start="0,0" end="256,0" time="2500" tween="sine" easing="inout" condition="true">WindowOpen</animation>
+			</control>
+			<control type="label">
+				<left>page_margin</left>
+				<top>952</top>
+				<width>140</width>
+				<height>26</height>
+				<font>mono_14</font>
+				<textcolor>text_secondary</textcolor>
+				<label>LOADING</label>
+			</control>
+		</control>
+	</include>
+
 	<!-- Spotlight rotation = autoscroll on the visible spotlight row (9120), so the hero and the poster
 	     selection advance together and the row shows which film is on screen. Paused while the row or the
 	     buttons have focus, nothing on top. <autoscroll time> is a static attribute, so the interval is
@@ -644,6 +706,23 @@
 			<param name="id" value="9238"/>
 			<param name="menu" value="9004"/>
 		</include>
+		<!-- the first Home of a Kodi session: a 2-item timer, 2.5 s on item
+		     1, then item 2 (no focus, no menu: just the boot cover below) -->
+		<control type="list" id="9248">
+			<left>offscreen</left>
+			<top>offscreen</top>
+			<width>1</width>
+			<height>2</height>
+			<orientation>vertical</orientation>
+			<scrolltime>0</scrolltime>
+			<autoscroll time="2500">Integer.IsEqual(Container(9248).CurrentItem,1)</autoscroll>
+			<itemlayout width="1" height="1"/>
+			<focusedlayout width="1" height="1"/>
+			<content>
+				<item><label>boot</label><onclick>noop</onclick></item> <!-- kdk-ignore: labels; boot cover timer, never drawn -->
+				<item><label>ready</label><onclick>noop</onclick></item> <!-- kdk-ignore: labels; boot cover timer, never drawn -->
+			</content>
+		</control>
 	</include>
 
 	<!-- ============================================================ background -->

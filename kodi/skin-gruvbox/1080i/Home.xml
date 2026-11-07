@@ -61,5 +61,7 @@
 		</control>
 		<include>Home_NowPlaying</include>
 		<include>Home_TopBar</include>
+		<!-- last: covers the first seconds of the rows and posters loading -->
+		<include>Home_Boot</include>
 	</controls>
 </window>
