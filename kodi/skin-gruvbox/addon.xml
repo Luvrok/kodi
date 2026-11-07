@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- skin.gruvbox: kodi's own skin, not majan's. square, hairline, no blur,
+     JetBrains Mono NL, the gruvbox of quickshell (modules/nixos/hyprland/
+     quickshell/Theme.qml). movies and shows play in mpv, so the skin is a
+     dense index: home rows, a film page, movie pipe's windows, the
+     dialogs kodi can't do without, pvr for the tv. ../skin-gruvbox.nix
+     builds it, ../addons.nix adds it -->
+<addon id="skin.gruvbox" version="0.1.0" name="Gruvbox" provider-name="Luvrok">
+	<requires>
+		<import addon="xbmc.gui" version="5.17.0"/>
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false" effectslowdown="1">
+		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en_GB">Gruvbox - a dense, fast index for your library.</summary>
+		<description lang="en_GB">Square, hairline, no blur, no shadows, JetBrains Mono NL, the gruvbox of the quickshell desktop. Built for a library that plays in mpv and downloads through the movie pipe.</description>
+		<platform>all</platform>
+		<license>GPL-2.0-or-later</license>
+	</extension>
+</addon>

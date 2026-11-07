@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- one fontset, JetBrains Mono NL (the quickshell font). sizes are the
+     design pixels at 1080i. jetbrains is wide, so multi-line fonts carry a
+     taller linespacing to not cut the next line -->
+<fonts>
+	<fontset id="Default" idloc="31900">
+		<font><name>mono_10</name><filename>JetBrainsMonoNLNerdFont-Regular.ttf</filename><size>10</size></font>
+		<font><name>mono_12</name><filename>JetBrainsMonoNLNerdFont-Regular.ttf</filename><size>12</size></font>
+		<font><name>mono_14</name><filename>JetBrainsMonoNLNerdFont-Regular.ttf</filename><size>14</size><linespacing>1.28</linespacing></font>
+		<font><name>mono_16</name><filename>JetBrainsMonoNLNerdFont-Medium.ttf</filename><size>16</size></font>
+		<font><name>mono_20</name><filename>JetBrainsMonoNLNerdFont-SemiBold.ttf</filename><size>20</size></font>
+		<font><name>mono_26</name><filename>JetBrainsMonoNLNerdFont-Bold.ttf</filename><size>26</size></font>
+		<font><name>mono_36</name><filename>JetBrainsMonoNLNerdFont-Bold.ttf</filename><size>36</size></font>
+		<font><name>mono_44</name><filename>JetBrainsMonoNLNerdFont-ExtraBold.ttf</filename><size>44</size></font>
+	</fontset>
+</fonts>

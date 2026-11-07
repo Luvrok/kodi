@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- the home screen, slice 0: a top bar, one dense row of the library's
+     movies, a hint bar. the movie pipe rows (downloads, tmdb's trending,
+     discover) and the menu chips come later, when the windows and keys
+     are wired. no blur, no spotlight, no video background -->
+<window id="10000">
+	<defaultcontrol>9000</defaultcontrol>
+	<controls>
+		<include>Gruvbox_Background</include>
+
+		<!-- top bar: title, clock, rule -->
+		<control type="label">
+			<left>page_margin</left>
+			<top>12</top>
+			<width>600</width>
+			<height>topbar_item_h</height>
+			<font>mono_20</font>
+			<textcolor>text_primary</textcolor>
+			<label>GRUVBOX</label>
+		</control>
+		<control type="label">
+			<right>page_margin</right>
+			<top>18</top>
+			<width>300</width>
+			<height>30</height>
+			<align>right</align>
+			<font>mono_14</font>
+			<textcolor>text_secondary</textcolor>
+			<label>$INFO[System.Time]</label>
+		</control>
+		<include content="Gruvbox_Hairline">
+			<param name="top" value="topbar_rule_y"/>
+		</include>
+
+		<!-- the row: library movies -->
+		<control type="list" id="9000">
+			<left>page_margin</left>
+			<top>72</top>
+			<width>page_width</width>
+			<height>950</height>
+			<orientation>horizontal</orientation>
+			<preloaditems>2</preloaditems>
+			<scrolltime tween="cubic" easing="out">200</scrolltime>
+			<content>videodb://movies/titles/</content>
+			<itemlayout width="poster_pitch" height="row_h">
+				<control type="group">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>poster_w</width>
+						<height>poster_h</height>
+						<aspectratio>scale</aspectratio>
+						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+					</control>
+					<control type="label">
+						<left>0</left>
+						<top>214</top>
+						<width>poster_w</width>
+						<height>28</height>
+						<font>mono_14</font>
+						<textcolor>text_secondary</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</control>
+			</itemlayout>
+			<focusedlayout width="poster_pitch" height="row_h">
+				<control type="group">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>poster_w</width>
+						<height>poster_h</height>
+						<aspectratio>scale</aspectratio>
+						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+					</control>
+					<include>Gruvbox_FocusFrame</include>
+					<control type="label">
+						<left>0</left>
+						<top>214</top>
+						<width>poster_w</width>
+						<height>28</height>
+						<font>mono_14</font>
+						<textcolor>text_primary</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</control>
+			</focusedlayout>
+		</control>
+
+		<!-- hint bar, quickshell's bottom chips -->
+		<control type="grouplist">
+			<left>page_margin</left>
+			<top>1040</top>
+			<width>page_width</width>
+			<height>hint_h</height>
+			<orientation>horizontal</orientation>
+			<itemgap>18</itemgap>
+			<usecontrolcoords>true</usecontrolcoords>
+			<include content="Gruvbox_Hint"><param name="key" value="h j k l"/><param name="what" value="move"/></include>
+			<include content="Gruvbox_Hint"><param name="key" value="enter"/><param name="what" value="play"/></include>
+			<include content="Gruvbox_Hint"><param name="key" value="q"/><param name="what" value="back"/></include>
+			<include content="Gruvbox_Hint"><param name="key" value="esc"/><param name="what" value="home"/></include>
+		</control>
+	</controls>
+</window>

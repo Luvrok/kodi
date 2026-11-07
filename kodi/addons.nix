@@ -133,6 +133,7 @@ let
 in
 [
   (callPackage ./majan.nix { inherit inputs jurialmunkey infotagger; })
+  (callPackage ./skin-gruvbox.nix { })
   tmdbhelper
   moviepipe
   pvr-iptvsimple

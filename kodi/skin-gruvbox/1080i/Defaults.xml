@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- control defaults, applied to every control of the type unless it says
+     otherwise. one place for the common look, fewer attributes per control -->
+<includes>
+	<default type="label">
+		<font>mono_14</font>
+		<textcolor>text_primary</textcolor>
+		<disabledcolor>text_tertiary</disabledcolor>
+		<align>left</align>
+		<aligny>center</aligny>
+		<scroll>false</scroll>
+	</default>
+	<default type="image">
+		<aspectratio>stretch</aspectratio>
+	</default>
+</includes>

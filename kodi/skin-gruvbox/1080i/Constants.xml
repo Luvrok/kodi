@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- every pixel value used more than once, one grid for the whole skin.
+     dense: page margin 24, posters 140 wide, rows 246 tall. snake_case,
+     prefixed by area -->
+<includes>
+	<constant name="screen_w">1920</constant>
+	<constant name="screen_h">1080</constant>
+	<constant name="page_margin">24</constant>
+	<constant name="page_width">1872</constant>
+	<constant name="rule_h">1</constant>
+
+	<constant name="topbar_h">48</constant>
+	<constant name="topbar_item_h">48</constant>
+	<constant name="topbar_rule_y">47</constant>
+
+	<constant name="poster_w">140</constant>
+	<constant name="poster_h">210</constant>
+	<constant name="poster_gap">12</constant>
+	<constant name="poster_pitch">152</constant>
+	<constant name="caption_h">36</constant>
+	<constant name="row_h">246</constant>
+
+	<constant name="hint_h">40</constant>
+</includes>
