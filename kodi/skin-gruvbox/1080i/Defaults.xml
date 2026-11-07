@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 	Control defaults (Kodi applies these to every control of the type unless overridden).
-	Focus language everywhere: accent 2px frame (focus/outline_2.png, border 16) or accent fill.
+	Focus language everywhere: accent 1px frame (focus/outline_1.png, border 16) or accent fill.
 	Colours are names from colors/defaults.xml; $VAR[ColorAccent] = live accent (setting 1).
 -->
 <includes>
@@ -34,7 +34,7 @@
 		<textcolor>text_secondary</textcolor>
 		<focusedcolor>text_primary</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
-		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus>
+		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus>
 		<texturenofocus />
 		<textoffsetx>24</textoffsetx>
 		<aligny>center</aligny>
@@ -45,9 +45,9 @@
 		<textcolor>text_secondary</textcolor>
 		<focusedcolor>text_primary</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
-		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus>
+		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus>
 		<texturenofocus />
-		<alttexturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</alttexturefocus>
+		<alttexturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</alttexturefocus>
 		<alttexturenofocus />
 		<textoffsetx>24</textoffsetx>
 		<aligny>center</aligny>
@@ -58,7 +58,7 @@
 		<textcolor>text_secondary</textcolor>
 		<focusedcolor>text_primary</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
-		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus>
+		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus>
 		<texturenofocus />
 		<radiowidth>26</radiowidth>
 		<radioheight>26</radioheight>
@@ -78,7 +78,7 @@
 		<textcolor>text_secondary</textcolor>
 		<focusedcolor>text_primary</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
-		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus>
+		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus>
 		<texturenofocus />
 		<spinwidth>24</spinwidth>
 		<spinheight>24</spinheight>
@@ -115,7 +115,7 @@
 		<textcolor>text_secondary</textcolor>
 		<focusedcolor>text_primary</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
-		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus>
+		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus>
 		<texturenofocus />
 		<sliderwidth>240</sliderwidth>
 		<sliderheight>6</sliderheight>
@@ -140,7 +140,7 @@
 		<textcolor>text_secondary</textcolor>
 		<focusedcolor>text_primary</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
-		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus>
+		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus>
 		<texturenofocus />
 		<colorwidth>60</colorwidth>
 		<colorheight>30</colorheight>
@@ -157,7 +157,7 @@
 		<focusedcolor>text_primary</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
 		<invalidcolor>accent_signal</invalidcolor>
-		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus>
+		<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus>
 		<texturenofocus border="10" colordiffuse="border_control">common/rect_outline_1.png</texturenofocus>
 		<textoffsetx>24</textoffsetx>
 		<aligny>center</aligny>

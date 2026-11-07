@@ -6,7 +6,7 @@
      goes down. row n is list 20n (majan-moviepipe.xml's MoviePipe_Row), its
      path, name and page in the window's rown.* properties, row the one whose
      tile is on top (it stays when the focus goes up to the chips). 1 what
-     downloads, 2..8 tmdb helper's lists. a row with no path, or that came
+     downloads, 2..9 tmdb helper's lists. a row with no path, or that came
      back empty, is hidden; up and down skip it -->
 <window>
 	<defaultcontrol>101</defaultcontrol>
@@ -28,6 +28,7 @@
 		<include content="MoviePipe_Click"><param name="id" value="46"/></include>
 		<include content="MoviePipe_Click"><param name="id" value="47"/></include>
 		<include content="MoviePipe_Click"><param name="id" value="48"/></include>
+		<include content="MoviePipe_Click"><param name="id" value="49"/></include>
 		<include content="MoviePipe_Click"><param name="id" value="51"/></include>
 		<include content="MoviePipe_Click"><param name="id" value="52"/></include>
 		<include content="MoviePipe_Click"><param name="id" value="53"/></include>
@@ -36,6 +37,7 @@
 		<include content="MoviePipe_Click"><param name="id" value="56"/></include>
 		<include content="MoviePipe_Click"><param name="id" value="57"/></include>
 		<include content="MoviePipe_Click"><param name="id" value="58"/></include>
+		<include content="MoviePipe_Click"><param name="id" value="59"/></include>
 		<control type="grouplist" id="9000">
 			<left>520</left>
 			<top>56</top>
@@ -85,6 +87,7 @@
 		<include content="MoviePipe_DiscoverInfo"><param name="n" value="6"/></include>
 		<include content="MoviePipe_DiscoverInfo"><param name="n" value="7"/></include>
 		<include content="MoviePipe_DiscoverInfo"><param name="n" value="8"/></include>
+		<include content="MoviePipe_DiscoverInfo"><param name="n" value="9"/></include>
 		<!-- the plot on top in focus: up from the rows, enter its whole text
 		     (discover.py) -->
 		<include content="MoviePipe_PlotButton">
@@ -123,7 +126,8 @@
 			<include content="MoviePipe_DiscoverRow"><param name="n" value="5"/><param name="onup" value="204"/><param name="ondown" value="206"/></include>
 			<include content="MoviePipe_DiscoverRow"><param name="n" value="6"/><param name="onup" value="205"/><param name="ondown" value="207"/></include>
 			<include content="MoviePipe_DiscoverRow"><param name="n" value="7"/><param name="onup" value="206"/><param name="ondown" value="208"/></include>
-			<include content="MoviePipe_DiscoverRow"><param name="n" value="8"/><param name="onup" value="207"/><param name="ondown" value="noop"/></include>
+			<include content="MoviePipe_DiscoverRow"><param name="n" value="8"/><param name="onup" value="207"/><param name="ondown" value="209"/></include>
+			<include content="MoviePipe_DiscoverRow"><param name="n" value="9"/><param name="onup" value="208"/><param name="ondown" value="noop"/></include>
 		</control>
 	</controls>
 </window>

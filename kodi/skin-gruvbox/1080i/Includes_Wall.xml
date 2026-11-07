@@ -267,7 +267,7 @@
 									<top>0</top>
 									<right>0</right>
 									<bottom>0</bottom>
-									<texture border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_3.png</texture>
+									<texture border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texture>
 								</control>
 								<control type="image">
 									<left>0</left>
@@ -468,7 +468,7 @@
 									<top>0</top>
 									<right>0</right>
 									<bottom>0</bottom>
-									<texture border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_3.png</texture>
+									<texture border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texture>
 								</control>
 								<control type="image">
 									<left>0</left>
@@ -669,7 +669,7 @@
 									<top>0</top>
 									<right>0</right>
 									<bottom>0</bottom>
-									<texture border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_3.png</texture>
+									<texture border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texture>
 								</control>
 								<control type="image">
 									<left>0</left>

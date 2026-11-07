@@ -204,9 +204,9 @@
 		<value>icons/pause.png</value>
 	</variable>
 	<variable name="OSD_Hint">
-		<value condition="Control.HasFocus(87)">◀ ▶ SKIP  ·  ▼ CONTROLS  ·  BACK HIDES</value>
-		<value condition="Player.SeekEnabled">▲ SEEK  ·  ◀ ▶ CONTROLS  ·  BACK HIDES</value>
-		<value>◀ ▶ CONTROLS  ·  BACK HIDES</value>
+		<value condition="Control.HasFocus(87)">◀ ▶ SKIP  ·  S SUBTITLES  ·  ▼ CONTROLS  ·  BACK HIDES</value>
+		<value condition="Player.SeekEnabled">▲ SEEK  ·  ◀ ▶ CONTROLS  ·  S SUBTITLES  ·  BACK HIDES</value>
+		<value>◀ ▶ CONTROLS  ·  S SUBTITLES  ·  BACK HIDES</value>
 	</variable>
 	<!-- PlayerControls -->
 	<variable name="OSD_PlayerArt">

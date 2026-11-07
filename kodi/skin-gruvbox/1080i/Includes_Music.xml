@@ -472,7 +472,7 @@
 	</include>
 
 	<!-- ========================================================= header tabs -->
-	<!-- One mono tab: active = text_primary + 3 px accent underline (togglebutton alt texture),
+	<!-- One mono tab: active = text_primary + 1 px accent underline (togglebutton alt texture),
 	     focused = accent fill + ink text (same language as Majan_SubNavButton).
 	     params: id, label, onclick, active (condition), textcolor, visible -->
 	<include name="Music_Tab">
@@ -494,7 +494,7 @@
 				<texturefocus colordiffuse="$VAR[ColorAccent]">common/white.png</texturefocus>
 				<texturenofocus />
 				<alttexturefocus colordiffuse="$VAR[ColorAccent]">common/white.png</alttexturefocus>
-				<alttexturenofocus border="0,8,0,3" colordiffuse="$VAR[ColorAccent]">music/tab_underline.png</alttexturenofocus>
+				<alttexturenofocus border="0,8,0,1" colordiffuse="$VAR[ColorAccent]">music/tab_underline.png</alttexturenofocus>
 				<usealttexture>$PARAM[active]</usealttexture>
 				<onclick>$PARAM[onclick]</onclick>
 				<altclick>$PARAM[onclick]</altclick>

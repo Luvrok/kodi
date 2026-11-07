@@ -18,8 +18,6 @@
 	<constant name="topbar_rule_y">119</constant>
 	<constant name="topbar_item_top">52</constant>        <!-- top of the 48px tall menu label box -->
 	<constant name="topbar_item_h">48</constant>
-	<constant name="topbar_underline_y">84</constant>     <!-- 3px accent underline under the active label -->
-	<constant name="topbar_underline_h">3</constant>
 	<constant name="topbar_index_w">20</constant>         <!-- mono_14 "01" -->
 	<constant name="topbar_label_x">30</constant>         <!-- index 20 + gap 10 -->
 	<constant name="topbar_icon">26</constant>

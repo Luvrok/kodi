@@ -237,7 +237,7 @@
 		<ondown condition="$EXP[Menu_HideHome] + Skin.HasSetting(HideMenu.TVShows) + Skin.HasSetting(HideMenu.Music) + !$EXP[CustomRow1On] + !$EXP[CustomRow2On] + $EXP[CustomRow3On]">9883</ondown>
 	</include>
 
-	<!-- One text menu item: mono index + label; active = bold, primary, accent index, 3px underline.
+	<!-- One text menu item: mono index + label; active = bold, primary, accent index and dot.
 	     params: id, x, w, label_w, index, label, section, active, onclick, onleft, onright,
 	             reset_a / reset_b / reset_c (other sections' rest timers to rewind),
 	             blur (container id TMDb Helper reads while this section is shown) -->
@@ -388,15 +388,7 @@
 						<texture colordiffuse="$VAR[ColorAccent]">moviepipe/dot.png</texture>
 					</control>
 				</control>
-				<!-- 3px accent underline -->
-				<control type="image">
-					<left>topbar_label_x</left>
-					<top>44</top>
-					<width>$PARAM[label_w]</width>
-					<height>topbar_underline_h</height>
-					<texture colordiffuse="$VAR[ColorAccent]">common/white.png</texture>
-					<visible>$PARAM[active]</visible>
-				</control>
+				<!-- active: accent dot above, no underline -->
 			</control>
 		</definition>
 	</include>

@@ -369,7 +369,7 @@
 		</control>
 	</include>
 
-	<!-- One OSD tab: mono label, 2px accent underline on the current tab, accent fill + ink on focus.
+	<!-- One OSD tab: mono label, 1px accent underline on the current tab, accent fill + ink on focus.
 	     Clicking a non-current tab closes whichever OSD settings dialog is open (only the current one
 	     is) and opens the target; majan.osdtab suppresses the slide so the swap reads as a tab change.
 	     params: id, left, width, uwidth (underline = text width), label, current (condition), target,
@@ -422,7 +422,7 @@
 					<left>10</left>
 					<top>38</top>
 					<width>$PARAM[uwidth]</width>
-					<height>2</height>
+					<height>1</height>
 					<texture colordiffuse="$VAR[ColorAccent]">common/white.png</texture>
 					<visible>[$PARAM[current]] + !Control.HasFocus($PARAM[id])</visible>
 				</control>

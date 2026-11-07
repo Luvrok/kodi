@@ -57,9 +57,16 @@ def for_mpv(path):
 
 def trailer(kind, tmdb):
     title = xbmc.getInfoLabel("ListItem.Title")
-    path = xbmc.getInfoLabel("ListItem.Trailer")
-    if not path and tmdb:
-        path = next(iter(videos(kind, tmdb)), "")
+    # tmdb helper's videos call takes a second or two: a modal busy curtain
+    # so it's clear something is happening, and a second press can't queue
+    # another mpv while the first is still resolving
+    xbmc.executebuiltin("ActivateWindow(busydialog)")
+    try:
+        path = xbmc.getInfoLabel("ListItem.Trailer")
+        if not path and tmdb:
+            path = next(iter(videos(kind, tmdb)), "")
+    finally:
+        xbmc.executebuiltin("Dialog.Close(busydialog,true)")
     if not path:
         notify(title, "No trailer on TMDb")
         return

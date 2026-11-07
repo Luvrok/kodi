@@ -50,20 +50,20 @@
 	<!-- ==================================================================== textures -->
 
 	<!-- Focus frame (setting 3 x setting 2). Empty when the outline is Off. 40x40, border 16,
-	     placed at item rect +7px each side (constants focus_out / focus_grow). -->
+	     placed at item rect +7px each side (constants focus_out / focus_grow). 1px everywhere. -->
 	<variable name="FocusFrame">
 		<value condition="$EXP[FocusOutlineOff]"></value>
-		<value condition="$EXP[FocusOutlineMedium] + $EXP[IsRounded]">focus/outline_3_round.png</value>
-		<value condition="$EXP[FocusOutlineMedium]">focus/outline_3.png</value>
-		<value condition="$EXP[IsRounded]">focus/outline_2_round.png</value>
-		<value>focus/outline_2.png</value>
+		<value condition="$EXP[FocusOutlineMedium] + $EXP[IsRounded]">focus/outline_1_round.png</value>
+		<value condition="$EXP[FocusOutlineMedium]">focus/outline_1.png</value>
+		<value condition="$EXP[IsRounded]">focus/outline_1_round.png</value>
+		<value>focus/outline_1.png</value>
 	</variable>
 	<!-- Frames for controls that must ALWAYS show focus (buttons, dialogs): never empty -->
 	<variable name="FocusFrameAlways">
-		<value condition="$EXP[FocusOutlineMedium] + $EXP[IsRounded]">focus/outline_3_round.png</value>
-		<value condition="$EXP[FocusOutlineMedium]">focus/outline_3.png</value>
-		<value condition="$EXP[IsRounded]">focus/outline_2_round.png</value>
-		<value>focus/outline_2.png</value>
+		<value condition="$EXP[FocusOutlineMedium] + $EXP[IsRounded]">focus/outline_1_round.png</value>
+		<value condition="$EXP[FocusOutlineMedium]">focus/outline_1.png</value>
+		<value condition="$EXP[IsRounded]">focus/outline_1_round.png</value>
+		<value>focus/outline_1.png</value>
 	</variable>
 
 	<!-- Button fill / outline (32x32, border 10) -->

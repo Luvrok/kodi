@@ -17,6 +17,7 @@
   signals,
   xdg-utils,
   youtube,
+  a4ksubtitles,
 }:
 
 let
@@ -134,4 +135,7 @@ in
   moviepipe
   # trailers: the films' trailers are its plugin:// links (the scrapers')
   youtube
+  # subtitles: search and download them mid-playback (s in fullscreen video
+  # opens the subtitle settings, shift+s the download search)
+  a4ksubtitles
 ]

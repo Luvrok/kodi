@@ -135,6 +135,8 @@ def tmdb(path, q):
         return page(ALL_MOVIES[shift:] + ALL_MOVIES[:shift], q)
     if m := re.fullmatch(r"/tv/(popular|on_the_air|airing_today|top_rated)", p):
         return page(ALL_SHOWS, q)
+    if m := re.fullmatch(r"/discover/(movie|tv)", p):
+        return page(ALL_MOVIES if m[1] == "movie" else ALL_SHOWS, q)
     if p == "/person/popular":
         return page(ALL_PEOPLE, q)
     if m := re.fullmatch(r"/(movie|tv)/(\d+)/(recommendations|similar)", p):

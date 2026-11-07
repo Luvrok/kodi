@@ -709,7 +709,7 @@
 				<texturefocus colordiffuse="$VAR[ColorAccent]">common/white.png</texturefocus>
 				<texturenofocus/>
 				<alttexturefocus colordiffuse="$VAR[ColorAccent]">common/white.png</alttexturefocus>
-				<alttexturenofocus border="14,4,14,3" colordiffuse="$VAR[ColorAccent]">moviepipe-underline.png</alttexturenofocus>
+				<alttexturenofocus border="14,4,14,1" colordiffuse="$VAR[ColorAccent]">moviepipe-underline.png</alttexturenofocus>
 				<usealttexture>$PARAM[shown]</usealttexture>
 				<onup>$PARAM[onup]</onup>
 				<ondown>$PARAM[ondown]</ondown>

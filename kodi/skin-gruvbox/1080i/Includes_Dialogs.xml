@@ -89,10 +89,10 @@
 		<include condition="Skin.HasSetting(majan.roundedcorners) + !String.IsEqual(Skin.String(majan.focusoutline),medium)">Dlg_Tex_RowFocus_R2</include>
 		<include condition="Skin.HasSetting(majan.roundedcorners) + String.IsEqual(Skin.String(majan.focusoutline),medium)">Dlg_Tex_RowFocus_R3</include>
 	</include>
-	<include name="Dlg_Tex_RowFocus_S2"><texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus></include>
-	<include name="Dlg_Tex_RowFocus_S3"><texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_3.png</texturefocus></include>
-	<include name="Dlg_Tex_RowFocus_R2"><texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2_round.png</texturefocus></include>
-	<include name="Dlg_Tex_RowFocus_R3"><texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_3_round.png</texturefocus></include>
+	<include name="Dlg_Tex_RowFocus_S2"><texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus></include>
+	<include name="Dlg_Tex_RowFocus_S3"><texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus></include>
+	<include name="Dlg_Tex_RowFocus_R2"><texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1_round.png</texturefocus></include>
+	<include name="Dlg_Tex_RowFocus_R3"><texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1_round.png</texturefocus></include>
 
 	<!-- Hairline under a row (texturenofocus of Kodi-cloned rows). flip = true gives a top rule. -->
 	<include name="Dlg_Tex_RowRule">

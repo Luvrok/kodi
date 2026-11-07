@@ -149,7 +149,7 @@
 			<selectedcolor>text_primary</selectedcolor>
 			<textoffsetx>24</textoffsetx>
 			<aligny>center</aligny>
-			<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_2.png</texturefocus>
+			<texturefocus border="16" colordiffuse="$VAR[ColorAccent]">focus/outline_1.png</texturefocus>
 			<texturenofocus />
 		</definition>
 	</include>

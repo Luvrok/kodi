@@ -165,9 +165,9 @@
 		<include>Anim_FadeVisible</include>
 	</include>
 
-	<!-- Home rows: fade + 12 px rise, staggered. Put on each ROW GROUP (not inside item layouts).
-	     Fires on window open and when the row's <visible> turns true (section switch).
-	     Use delay 0 / 50 / 100 / 150 for rows 1-4; never more than 4 steps (cap 150). -->
+	<!-- Home rows: fade + 12 px rise on window open, staggered (delay 0 / 50 / 100).
+	     No Visible animation: hub rows appear together with their hub container's
+	     fade (Anim_FadeVisible on it), not one by one. -->
 	<include name="Anim_RowStagger">
 		<param name="delay" default="0"/>
 		<definition>
@@ -176,13 +176,6 @@
 				<effect type="slide" start="0,12" end="0,0" time="200" delay="$PARAM[delay]" tween="cubic" easing="out"/>
 			</animation>
 			<animation type="WindowOpen" condition="Skin.HasSetting(majan.reducemotion)">
-				<effect type="fade" start="0" end="100" time="80"/>
-			</animation>
-			<animation type="Visible" condition="!Skin.HasSetting(majan.reducemotion)">
-				<effect type="fade" start="0" end="100" time="200" delay="$PARAM[delay]" tween="cubic" easing="out"/>
-				<effect type="slide" start="0,12" end="0,0" time="200" delay="$PARAM[delay]" tween="cubic" easing="out"/>
-			</animation>
-			<animation type="Visible" condition="Skin.HasSetting(majan.reducemotion)">
 				<effect type="fade" start="0" end="100" time="80"/>
 			</animation>
 			<animation type="Hidden">

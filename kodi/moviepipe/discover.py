@@ -24,36 +24,39 @@ from tmdb import HELPER, helper, info, settle
 from trailer import trailer
 from windows import downloads, window
 
-# (the row's name, tmdb helper's list, what's on it). the order here is the
-# page's, rows 2 on. {} in a name: the library's newest film or show
+# (the row's name, tmdb helper's list, what's on it, extra list params).
+# the order here is the page's, rows 2 on. {} in a name: the library's
+# newest film or show
 ROWS = {
     "movie": [
-        ("Trending this week", "trending_week", "movie"),
-        ("Popular", "popular", "movie"),
-        ("In cinemas", "now_playing", "movie"),
-        ("Upcoming", "upcoming", "movie"),
-        ("Top rated", "top_rated", "movie"),
-        ("Because you have {}", "recommendations", "movie"),
-        ("Popular people", "popular", "person"),
+        ("Trending this week", "trending_week", "movie", {}),
+        ("Popular", "popular", "movie", {}),
+        ("In cinemas", "now_playing", "movie", {}),
+        ("Upcoming", "upcoming", "movie", {}),
+        ("Top rated", "top_rated", "movie", {}),
+        ("Because you have {}", "recommendations", "movie", {}),
+        ("Popular people", "popular", "person", {}),
     ],
     "tv": [
-        ("Trending this week", "trending_week", "tv"),
-        ("Popular", "popular", "tv"),
-        ("On the air", "on_the_air", "tv"),
-        ("Airing today", "airing_today", "tv"),
-        ("Top rated", "top_rated", "tv"),
-        ("Because you have {}", "recommendations", "tv"),
-        ("Popular people", "popular", "person"),
+        ("Trending this week", "trending_week", "tv", {}),
+        ("Popular", "popular", "tv", {}),
+        ("Trending anime", "discover", "tv", {"with_genres": "Animation", "with_original_language": "ja",
+                                              "sort_by": "popularity.desc"}),
+        ("On the air", "on_the_air", "tv", {}),
+        ("Airing today", "airing_today", "tv", {}),
+        ("Top rated", "top_rated", "tv", {}),
+        ("Because you have {}", "recommendations", "tv", {}),
+        ("Popular people", "popular", "person", {}),
     ],
     "search": [
-        ("Films", "search", "movie"),
-        ("TV shows", "search", "tv"),
-        ("People", "search", "person"),
+        ("Films", "search", "movie", {}),
+        ("TV shows", "search", "tv", {}),
+        ("People", "search", "person", {}),
     ],
 }
-# row n is list 200 + n: 1 the downloads (./default.py's queue), 2..8 tmdb's
+# row n is list 200 + n: 1 the downloads (./default.py's queue), 2..9 tmdb's
 QUEUE = "plugin://plugin.video.moviepipe/?action=queue"
-FIRST, LAST = 2, 8
+FIRST, LAST = 2, 9
 # the chips, the plot on top, and the rows' SendClick: 40 + n the next
 # page, 50 + n back
 MOVIES, SHOWS, SEARCH, BROWSE, PLOT = 101, 102, 103, 104, 9100
@@ -111,8 +114,9 @@ class Discover(xbmcgui.WindowXML):
         self.setProperty("mode", mode)
         self.setProperty("query", f"«{self.query}»" if mode == "search" else "")
         rows = []
-        for title, kind, what in ROWS[mode]:
+        for title, kind, what, extra in ROWS[mode]:
             params = dict(info=kind, tmdb_type=what)
+            params.update(extra)
             if kind == "recommendations":
                 found = newest(what)
                 if not found:
