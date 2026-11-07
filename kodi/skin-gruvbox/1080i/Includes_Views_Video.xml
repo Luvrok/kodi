@@ -40,10 +40,10 @@
 	<constant name="vidview_big_pitch">354</constant>
 	<constant name="vidview_big_marker">14</constant>
 	<constant name="vidview_big_tab">24</constant>
-	<constant name="vidview_wall_w">158</constant>            <!-- TV wall, 10 columns -->
-	<constant name="vidview_wall_h">237</constant>
+	<constant name="vidview_wall_w">162</constant>            <!-- TV wall, 10 columns -->
+	<constant name="vidview_wall_h">243</constant>
 	<constant name="vidview_wall_pitch_x">174</constant>
-	<constant name="vidview_wall_pitch_y">253</constant>
+	<constant name="vidview_wall_pitch_y">255</constant>
 	<constant name="vidview_wall_top">540</constant>
 	<constant name="vidview_next_w">320</constant>            <!-- Next up cards -->
 	<constant name="vidview_next_h">180</constant>
@@ -281,12 +281,12 @@
 	<variable name="VidView_NextUpPath">
 		<value condition="$EXP[VidView_IsTVRoot] + System.AddonIsEnabled(script.embuary.helper)">plugin://script.embuary.helper/?info=getnextup</value>
 		<value condition="$EXP[VidView_IsTVRoot]">special://skin/playlists/majan_inprogress_tvshows.xsp</value>
-		<value condition="$EXP[VidView_IsMoviesRoot]">special://skin/playlists/majan_inprogress_movies.xsp</value>
+		<value condition="$EXP[VidView_IsMoviesRoot]">special://skin/playlists/majan_recent_movies.xsp</value>
 	</variable>
 	<variable name="VidView_NextUpCaption">
 		<value condition="$EXP[VidView_IsTVRoot] + System.AddonIsEnabled(script.embuary.helper)">NEXT UNWATCHED EPISODE OF SHOWS IN PROGRESS</value>
 		<value condition="$EXP[VidView_IsTVRoot]">SHOWS IN PROGRESS · LAST PLAYED FIRST</value>
-		<value>FILMS IN PROGRESS · LAST PLAYED FIRST</value>
+		<value>RECENTLY PLAYED · LAST PLAYED FIRST</value>
 	</variable>
 	<!-- card art per item (used inside the strip's layouts) -->
 	<variable name="VidView_NextUpThumb">
@@ -552,12 +552,6 @@
 				<visible>Control.HasFocus($PARAM[id]) + $EXP[FocusOutlineOff] + $EXP[ReduceMotion]</visible>
 			</control>
 		</definition>
-	</include>
-	<!-- Grid/row tiles that don't zoom by design get a 4% zoom only when the outline is Off (DESIGN 7.2) -->
-	<include name="VidView_FocusZoomIfNoOutline">
-		<animation type="Focus" reversible="true" condition="$EXP[FocusOutlineOff] + !$EXP[ReduceMotion]">
-			<effect type="zoom" start="100" end="104" center="auto" time="150" tween="cubic" easing="out"/>
-		</animation>
 	</include>
 
 	<!-- ============================================================== watched markers -->
@@ -1641,15 +1635,14 @@
 				<left>88</left>
 				<top>532</top>
 				<width>1752</width>
-				<height>514</height>
+				<height>520</height>
 				<orientation>vertical</orientation>
 				<preloaditems>1</preloaditems>
 				<scrolltime tween="cubic" easing="out">200</scrolltime>
-				<onup condition="$EXP[VidView_HasNextUp]">9310</onup>
-				<onup condition="!$EXP[VidView_HasNextUp]">9000</onup>
+				<onup>9000</onup>
 				<ondown>noop</ondown>
-				<onleft>ActivateWindow(1155)</onleft>
-				<onright>ActivateWindow(1155)</onright>
+				<onleft>noop</onleft>
+				<onright>noop</onright>
 				<viewtype label="31308">list</viewtype>
 				<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(movies)</visible>
 				<itemlayout width="vidview_wall_pitch_x" height="vidview_wall_pitch_y">
@@ -1669,7 +1662,7 @@
 						<top>8</top>
 						<width>vidview_wall_w</width>
 						<height>vidview_wall_h</height>
-						<include>VidView_FocusZoomIfNoOutline</include>
+						<include>Anim_FocusZoom</include>
 						<include content="VidView_ArtFallback"/>
 						<include content="VidView_ArtImage"/>
 						<include>VidView_TVMarkers</include>
@@ -1732,8 +1725,8 @@
 				<onup>9000</onup>
 				<ondown condition="String.StartsWith(Container.FolderPath,videodb://movies/titles)">502</ondown>
 				<ondown>502</ondown>
-				<onleft>ActivateWindow(1155)</onleft>
-				<onright>ActivateWindow(1155)</onright>
+				<onleft>noop</onleft>
+				<onright>noop</onright>
 				<itemlayout width="vidview_next_pitch" height="262">
 					<include>VidView_NextUpCard</include>
 				</itemlayout>

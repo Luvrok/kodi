@@ -77,16 +77,16 @@
 	<variable name="Home_PathMoviesRecent">
 		<value condition="$EXP[Home_HubMovies]">videodb://recentlyaddedmovies/</value>
 	</variable>
-	<variable name="Home_PathMoviesInProgress">
-		<value condition="$EXP[Home_HubMovies]">special://skin/playlists/majan_inprogress_movies.xsp</value>
+	<variable name="Home_PathMoviesPlayed">
+		<value condition="$EXP[Home_HubMovies]">special://skin/playlists/majan_recent_movies.xsp</value>
 	</variable>
 	<!-- Next up: script.embuary.helper (true next episode, local only; Omar decision 5) else in-progress shows -->
 	<variable name="Home_PathNextUp">
 		<value condition="$EXP[Home_HubTV] + $EXP[Home_HasNextUpHelper]">plugin://script.embuary.helper/?info=getnextup&amp;reload=$INFO[Window(Home).Property(majan.reload)]</value>
 		<value condition="$EXP[Home_HubTV]">special://skin/playlists/majan_inprogress_tvshows.xsp</value>
 	</variable>
-	<variable name="Home_PathNewEpisodes">
-		<value condition="$EXP[Home_HubTV]">special://skin/playlists/majan_new_episodes.xsp</value>
+	<variable name="Home_PathNewSeries">
+		<value condition="$EXP[Home_HubTV]">videodb://tvshows/titles/</value>
 	</variable>
 	<variable name="Home_PathMusicRecent">
 		<value condition="$EXP[Home_HubMusic]">musicdb://recentlyaddedalbums/</value>
@@ -1518,39 +1518,39 @@
 			<include content="Home_InfoMovie">
 				<param name="id" value="9211"/>
 				<param name="index" value="01"/>
-				<param name="label" value="Recently added"/>
+				<param name="label" value="Continue watching"/>
 				<param name="visible" value="!Control.HasFocus(9212)"/>
 			</include>
 			<include content="Home_InfoMovie">
 				<param name="id" value="9212"/>
 				<param name="index" value="02"/>
-				<param name="label" value="Continue watching"/>
+				<param name="label" value="Recently added"/>
 				<param name="visible" value="Control.HasFocus(9212)"/>
 			</include>
-			<include content="Home_HubPosterRow">
+			<include content="Home_HubCardRow">
 				<param name="id" value="9211"/>
 				<param name="top" value="home_hub_row1_y"/>
 				<param name="index" value="01"/>
+				<param name="label" value="Continue watching"/>
+				<param name="sub" value="Recently played · last played first"/>
+				<param name="path" value="$VAR[Home_PathMoviesPlayed]"/>
+				<param name="seeall" value="ActivateWindow(Videos,special://skin/playlists/majan_recent_movies.xsp,return)"/>
+				<param name="onup" value="9002"/>
+				<param name="ondown" value="9212"/>
+				<param name="empty" value="No recently played films"/>
+			</include>
+			<include content="Home_HubPosterRow">
+				<param name="id" value="9212"/>
+				<param name="top" value="home_hub_tv_row2_y"/>
+				<param name="index" value="02"/>
 				<param name="label" value="Recently added"/>
 				<param name="sub" value="By date added"/>
 				<param name="path" value="$VAR[Home_PathMoviesRecent]"/>
 				<param name="seeall" value="ActivateWindow(Videos,videodb://movies/titles/,return)"/>
-				<param name="onup" value="9002"/>
-				<param name="ondown" value="9212"/>
-				<param name="empty" value="No films added yet"/>
-			</include>
-			<include content="Home_HubCardRow">
-				<param name="id" value="9212"/>
-				<param name="top" value="home_hub_tv_row2_y"/>
-				<param name="index" value="02"/>
-				<param name="label" value="Continue watching"/>
-				<param name="sub" value="Films in progress · last played first"/>
-				<param name="path" value="$VAR[Home_PathMoviesInProgress]"/>
-				<param name="seeall" value="ActivateWindow(Videos,videodb://movies/titles/,return)"/>
 				<param name="onup" value="9211"/>
 				<param name="ondown" value="noop"/>
 				<param name="customdown" value="true"/>
-				<param name="empty" value="No films half-watched"/>
+				<param name="empty" value="No films added yet"/>
 				<param name="delay" value="50"/>
 			</include>
 		</control>
@@ -1569,7 +1569,7 @@
 			<include content="Home_InfoTV">
 				<param name="id" value="9222"/>
 				<param name="index" value="02"/>
-				<param name="label" value="Recently added episodes"/>
+				<param name="label" value="Recently added series"/>
 				<param name="visible" value="Control.HasFocus(9222)"/>
 			</include>
 			<include content="Home_HubCardRow">
@@ -1588,14 +1588,15 @@
 				<param name="id" value="9222"/>
 				<param name="top" value="home_hub_tv_row2_y"/>
 				<param name="index" value="02"/>
-				<param name="label" value="Recently added episodes"/>
-				<param name="sub" value="Unwatched · by date added"/>
-				<param name="path" value="$VAR[Home_PathNewEpisodes]"/>
-				<param name="seeall" value="ActivateWindow(Videos,videodb://recentlyaddedepisodes/,return)"/>
+				<param name="label" value="Recently added series"/>
+				<param name="sub" value="By date added"/>
+				<param name="path" value="$VAR[Home_PathNewSeries]"/>
+				<param name="sortby" value="dateadded"/>
+				<param name="seeall" value="ActivateWindow(Videos,videodb://tvshows/titles/,return)"/>
 				<param name="onup" value="9221"/>
 				<param name="ondown" value="noop"/>
 				<param name="customdown" value="true"/>
-				<param name="empty" value="No new episodes"/>
+				<param name="empty" value="No shows added yet"/>
 				<param name="delay" value="50"/>
 			</include>
 		</control>

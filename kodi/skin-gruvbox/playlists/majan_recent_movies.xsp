@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- Majan / Home "Continue watching" and the movies root Next up strip.
+     Recently opened films, whether finished or not (the mpv bridge writes lastPlayed and the
+     resume bookmark). Never-played films have no lastPlayed and drop out of the rule; the order
+     is the most recent first. 3650 days is "ever played" in practice. -->
+<smartplaylist type="movies">
+    <name>Recently played</name>
+    <match>all</match>
+    <rule field="lastplayed" operator="inthelast">
+        <value>3650</value>
+    </rule>
+    <limit>15</limit>
+    <order direction="descending">lastplayed</order>
+</smartplaylist>
