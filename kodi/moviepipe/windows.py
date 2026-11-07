@@ -4,6 +4,7 @@
 import os
 import re
 import threading
+import time
 
 import xbmc
 import xbmcgui
@@ -548,6 +549,7 @@ class Downloads(Window):
             except Error as e:
                 error(e)
         self.marked -= set(keys)
+        self.changed = True
         self.refresh()
 
     def onClick(self, control):
@@ -576,6 +578,7 @@ def show_downloads():
         Downloads,
         "moviepipe-downloads.xml",
         started=False,
+        changed=False,
         keys=[],
         marked=set(),
         items=[],
@@ -589,4 +592,11 @@ def show_downloads():
     # radarr: it sees done after that and doesn't touch the window again,
     # the ui thread doesn't wait for it (it used to, closing the window froze)
     w.done.set()
+    changed = w.changed
     del w
+    if changed:
+        # the Home preview (and the add-on listing) still shows the removed
+        # rows: a new stamp makes their paths different, then the focused
+        # container is fetched again (it is the row Enter opened this from)
+        xbmc.executebuiltin(f"SetProperty(majan.reload,{time.strftime('%H:%M:%S')},home)")
+        xbmc.executebuiltin("Container.Refresh")
