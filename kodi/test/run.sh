@@ -43,23 +43,14 @@ setup() {
 EOF
   # and no network services: kodi under xvfb in a container crashed now and
   # then right as ws-discovery started
-  echo '{"settings":{"lookandfeel.skin":"skin.majan","lookandfeel.font":"JetBrains Mono","filelists.showparentdiritems":"false","services.wsdiscovery":"false","services.esenabled":"false","services.zeroconf":"false","services.upnp":"false"},"files":{}}' >$STATE/defaults.json
+  echo '{"settings":{"lookandfeel.skin":"skin.gruvbox","lookandfeel.font":"JetBrains Mono","filelists.showparentdiritems":"false","services.wsdiscovery":"false","services.esenabled":"false","services.zeroconf":"false","services.upnp":"false"},"files":{}}' >$STATE/defaults.json
   python3 $REPO/userdata.py defaults $D $STATE/defaults.json
   python3 $REPO/userdata.py enable $D $(nix eval --impure --raw -f "$HERE" ids --arg mock "$([ -n "$LIVE" ] && echo false || echo true)")
   [ -n "$LIVE" ] && return
-  # the mock's: radarr's and sonarr's keys, three channels
-  mkdir -p $STATE/keys $D/userdata/addon_data/pvr.iptvsimple
+  # the mock's: radarr's and sonarr's keys
+  mkdir -p $STATE/keys
   echo key >$STATE/keys/radarr
   echo key >$STATE/keys/sonarr
-  {
-    echo '#EXTM3U'
-    for n in 1 2 3; do
-      echo "#EXTINF:-1 tvg-id=\"c$n\" tvg-logo=\"http://127.0.0.1:8765/img/w500/p400$n.png\",Channel $n"
-      echo "http://127.0.0.1:8765/stream/$n"
-    done
-  } >$STATE/channels.m3u
-  printf '<settings version="2"><setting id="kodi_addon_instance_name">Mock</setting><setting id="kodi_addon_instance_enabled">true</setting><setting id="m3uPathType">0</setting><setting id="m3uPath">%s</setting></settings>' \
-    $STATE/channels.m3u >$D/userdata/addon_data/pvr.iptvsimple/instance-settings-1.xml
 }
 
 start() {
