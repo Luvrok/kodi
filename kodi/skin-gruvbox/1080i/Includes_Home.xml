@@ -51,6 +51,7 @@
 	<constant name="home_card_item_h">238</constant>      <!-- thumb 180 + 10 + show 26 + 2 + code 20 -->
 	<constant name="home_newest_list_x">80</constant>
 	<constant name="home_newest_list_y">52</constant>     <!-- row top + 66 - pad 22: the lifted focus frame stays clear of the row title -->
+	<constant name="spot_list_y">40</constant>           <!-- spotlight row: flat lift (no zoom), posters hug the block title -->
 
 	<!-- ============================================================== expressions -->
 	<expression name="Home_SecHome">[String.IsEmpty(Window(Home).Property(majan.section)) | String.IsEqual(Window(Home).Property(majan.section),home)] + !Skin.HasSetting(HideMenu.Home) + !Skin.HasSetting(HideMenu.Movies)</expression>
@@ -67,6 +68,8 @@
 	<expression name="Home_IsMoreItem">ListItem.IsFolder + String.IsEmpty(ListItem.DBID)</expression>
 	<expression name="Home_HasNextUpHelper">System.AddonIsEnabled(script.embuary.helper)</expression>
 	<expression name="Home_MusicBar">Player.HasAudio + !Player.HasVideo</expression>
+	<!-- 9103 probe in Home_SpotlightText: the title fits on one line at display_64 -->
+	<expression name="Home_SpotTitleOne">!Integer.IsGreater(Container(9103).NumPages,1)</expression>
 <expression name="Home_SpotlightNoWideArt">String.IsEmpty(Container(9120).ListItem.Art(fanart)) + String.IsEmpty(Container(9120).ListItem.Art(landscape))</expression>
 
 	<!-- ================================================================ variables -->
@@ -770,19 +773,24 @@
 		</definition>
 	</include>
 
-	<!-- Unfocused / focused item for poster rows. params: id, w, h, dim, mask_round, mask_square, art -->
+	<!-- Unfocused / focused item for poster rows. params: id, w, h, dim, mask_round, mask_square, art,
+	     item_top, flat, frame_out -->
 	<include name="Home_PosterItem">
 		<param name="art">$INFO[ListItem.Art(poster)]</param>
 		<param name="mask_round">masks/poster_round8.png</param>
 		<param name="mask_square">masks/poster_square.png</param>
 		<param name="focused">false</param>
+		<param name="item_top">home_list_pad</param>
+		<param name="flat">false</param>
+		<param name="frame_out">focus_out</param>
 		<definition>
 			<control type="group">
 				<left>home_item_x</left>
-				<top>home_list_pad</top>
+				<top>$PARAM[item_top]</top>
 				<width>$PARAM[w]</width>
 				<height>$PARAM[h]</height>
-				<include condition="$PARAM[focused]">Anim_FocusLift</include>
+				<include condition="$PARAM[focused] + $PARAM[flat]">Anim_FocusLiftFlat</include>
+				<include condition="$PARAM[focused] + !$PARAM[flat]">Anim_FocusLift</include>
 				<control type="group">
 					<visible>!$EXP[Home_IsMoreItem]</visible>
 					<include content="Home_Art">
@@ -799,6 +807,7 @@
 				</control>
 				<include content="Majan_FocusFrame" condition="$PARAM[focused]">
 					<param name="visible" value="Control.HasFocus($PARAM[id])"/>
+					<param name="out" value="$PARAM[frame_out]"/>
 				</include>
 			</control>
 		</definition>
@@ -1852,11 +1861,10 @@
 		</control>
 	</include>
 
-	<!-- Spotlight text column: one fixed grid, so nothing jumps while the row scrolls. The title always
-	     uses one size (display_64, a 2-line box, vertically centred), the facts strip and the plot area sit
-	     at fixed y, and the bottom block (muted credits + Play/Details/Trailer) is pinned to the
-	     FIG caption's baseline (y 700). The plot takes all the space in between and fades into the
-	     background at both edges instead of ending on a hard clip. -->
+	<!-- Spotlight text column: fixed grid, fixed title size. A one-line probe (9103) picks the title
+	     box height, so a short title does not float in a two-line box; the facts strip follows it and
+	     the plot gets the freed height, so the title always hugs the facts and the plot bottom stays
+	     put. The plot fades into the background at both edges instead of ending on a hard clip. -->
 	<include name="Home_SpotlightText">
 		<control type="group">
 			<left>page_margin</left>
@@ -1872,101 +1880,180 @@
 				<textcolor>$VAR[ColorAccent]</textcolor>
 				<label>$LOCALIZE[31100]</label>
 			</control>
-			<!-- one title size for every film: the 2-line box is vertically centred, a 3rd line is clipped -->
-			<control type="textbox">
+			<!-- one-line probe: NumPages > 1 = the title wraps (height is between one and two lines) -->
+			<control type="textbox" id="9103">
 				<left>0</left>
 				<top>30</top>
 				<width>spot_text_w</width>
-				<height>145</height>
+				<height>100</height>
 				<font>display_64</font>
-				<textcolor>text_primary</textcolor>
-				<aligny>center</aligny>
+				<textcolor>clear</textcolor>
 				<label>$INFO[Container(9120).ListItem.Title]</label>
 			</control>
-			<!-- facts strip: rules above/below, 4 cells, empty cells hidden (others keep width) -->
-			<control type="group">
+			<control type="grouplist">
 				<left>0</left>
-				<top>185</top>
+				<top>30</top>
 				<width>spot_text_w</width>
-				<height>spot_fact_h</height>
-				<include content="Majan_Rule">
-					<param name="top" value="0"/>
-					<param name="left" value="0"/>
-					<param name="width" value="spot_text_w"/>
-					<param name="color" value="$VAR[ColorRuleStrong]"/>
-				</include>
-				<include content="Majan_Rule">
-					<param name="top" value="83"/>
-					<param name="left" value="0"/>
-					<param name="width" value="spot_text_w"/>
-					<param name="color" value="$VAR[ColorRuleStrong]"/>
-				</include>
-				<control type="grouplist">
+				<height>438</height>
+				<orientation>vertical</orientation>
+				<itemgap>10</itemgap>
+				<!-- title: one fixed size, the box follows the number of lines (one line -> the plot grows) -->
+				<control type="textbox">
+					<left>0</left>
+					<top>0</top>
+					<width>spot_text_w</width>
+					<height>87</height>
+					<font>display_64</font>
+					<textcolor>text_primary</textcolor>
+					<aligny>center</aligny>
+					<label>$INFO[Container(9120).ListItem.Title]</label>
+					<visible>$EXP[Home_SpotTitleOne]</visible>
+				</control>
+				<control type="textbox">
+					<left>0</left>
+					<top>0</top>
+					<width>spot_text_w</width>
+					<height>148</height>
+					<font>display_64</font>
+					<textcolor>text_primary</textcolor>
+					<aligny>center</aligny>
+					<label>$INFO[Container(9120).ListItem.Title]</label>
+					<visible>!$EXP[Home_SpotTitleOne]</visible>
+				</control>
+				<!-- facts strip: rules above/below, 4 cells, empty cells hidden (others keep width) -->
+				<control type="group">
 					<left>0</left>
 					<top>0</top>
 					<width>spot_text_w</width>
 					<height>spot_fact_h</height>
-					<orientation>horizontal</orientation>
-					<include content="Home_FactCell">
-						<param name="label" value="$LOCALIZE[31101]"/>
-						<param name="value" value="$INFO[Container(9120).ListItem.Year]"/>
-						<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.Year)"/>
-						<param name="first" value="true"/>
-						<param name="pad" value="0"/>
+					<include content="Majan_Rule">
+						<param name="top" value="0"/>
+						<param name="left" value="0"/>
+						<param name="width" value="spot_text_w"/>
+						<param name="color" value="$VAR[ColorRuleStrong]"/>
 					</include>
-					<include content="Home_FactCell">
-						<param name="label" value="$LOCALIZE[31102]"/>
-						<param name="value" value="$VAR[SpotlightRuntime]"/>
-						<param name="visible" value="Integer.IsGreater(Container(9120).ListItem.Duration(m),0) | Integer.IsGreater(Container(9120).ListItem.Duration(h),0)"/>
+					<include content="Majan_Rule">
+						<param name="top" value="83"/>
+						<param name="left" value="0"/>
+						<param name="width" value="spot_text_w"/>
+						<param name="color" value="$VAR[ColorRuleStrong]"/>
 					</include>
-					<include content="Home_FactCell">
-						<param name="label" value="$LOCALIZE[31103]"/>
-						<param name="value" value="$INFO[Container(9120).ListItem.Rating]"/>
-						<param name="suffix" value="/ 10"/>
-						<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.Rating) + !String.IsEqual(Container(9120).ListItem.Rating,0.0)"/>
-					</include>
-					<include content="Home_FactCell">
-						<param name="label" value="$LOCALIZE[31104]"/>
-						<param name="value" value="$VAR[SpotlightMPAA]"/>
-						<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.MPAA)"/>
-					</include>
+					<control type="grouplist">
+						<left>0</left>
+						<top>0</top>
+						<width>spot_text_w</width>
+						<height>spot_fact_h</height>
+						<orientation>horizontal</orientation>
+						<include content="Home_FactCell">
+							<param name="label" value="$LOCALIZE[31101]"/>
+							<param name="value" value="$INFO[Container(9120).ListItem.Year]"/>
+							<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.Year)"/>
+							<param name="first" value="true"/>
+							<param name="pad" value="0"/>
+						</include>
+						<include content="Home_FactCell">
+							<param name="label" value="$LOCALIZE[31102]"/>
+							<param name="value" value="$VAR[SpotlightRuntime]"/>
+							<param name="visible" value="Integer.IsGreater(Container(9120).ListItem.Duration(m),0) | Integer.IsGreater(Container(9120).ListItem.Duration(h),0)"/>
+						</include>
+						<include content="Home_FactCell">
+							<param name="label" value="$LOCALIZE[31103]"/>
+							<param name="value" value="$INFO[Container(9120).ListItem.Rating]"/>
+							<param name="suffix" value="/ 10"/>
+							<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.Rating) + !String.IsEqual(Container(9120).ListItem.Rating,0.0)"/>
+						</include>
+						<include content="Home_FactCell">
+							<param name="label" value="$LOCALIZE[31104]"/>
+							<param name="value" value="$VAR[SpotlightMPAA]"/>
+							<param name="visible" value="!String.IsEmpty(Container(9120).ListItem.MPAA)"/>
+						</include>
+					</control>
 				</control>
-			</control>
-			<!-- plot: fixed 189 px, scrolls itself; the two gradients fade it into the bg, top and bottom -->
-			<control type="textbox">
-				<left>0</left>
-				<top>279</top>
-				<width>spot_text_w</width>
-				<height>189</height>
-				<font>body_25</font>
-				<textcolor>text_body</textcolor>
-				<label>$INFO[Container(9120).ListItem.Plot]</label>
-				<autoscroll delay="3000" time="3000" repeat="10000">true</autoscroll>
-				<visible>!String.IsEmpty(Container(9120).ListItem.Plot)</visible>
-			</control>
-			<control type="textbox">
-				<left>0</left>
-				<top>279</top>
-				<width>spot_text_w</width>
-				<height>189</height>
-				<font>body_25</font>
-				<textcolor>text_body</textcolor>
-				<label>$INFO[Container(9120).ListItem.Tagline]</label>
-				<visible>String.IsEmpty(Container(9120).ListItem.Plot) + !String.IsEmpty(Container(9120).ListItem.Tagline)</visible>
-			</control>
-			<control type="image">
-				<left>0</left>
-				<top>279</top>
-				<width>spot_text_w</width>
-				<height>14</height>
-				<texture colordiffuse="bg">common/gradient_top.png</texture>
-			</control>
-			<control type="image">
-				<left>0</left>
-				<top>450</top>
-				<width>spot_text_w</width>
-				<height>18</height>
-				<texture colordiffuse="bg">common/gradient_bottom.png</texture>
+				<!-- plot, one-line title: 247 px; two-line title: 186 px; both end at the same y, both fade -->
+				<control type="group">
+					<left>0</left>
+					<top>0</top>
+					<width>spot_text_w</width>
+					<height>247</height>
+					<visible>$EXP[Home_SpotTitleOne]</visible>
+					<control type="textbox">
+						<left>0</left>
+						<top>0</top>
+						<width>spot_text_w</width>
+						<height>247</height>
+						<font>body_25</font>
+						<textcolor>text_body</textcolor>
+						<label>$INFO[Container(9120).ListItem.Plot]</label>
+						<autoscroll delay="3000" time="3000" repeat="10000">true</autoscroll>
+						<visible>!String.IsEmpty(Container(9120).ListItem.Plot)</visible>
+					</control>
+					<control type="textbox">
+						<left>0</left>
+						<top>0</top>
+						<width>spot_text_w</width>
+						<height>247</height>
+						<font>body_25</font>
+						<textcolor>text_body</textcolor>
+						<label>$INFO[Container(9120).ListItem.Tagline]</label>
+						<visible>String.IsEmpty(Container(9120).ListItem.Plot) + !String.IsEmpty(Container(9120).ListItem.Tagline)</visible>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>spot_text_w</width>
+						<height>14</height>
+						<texture colordiffuse="bg">common/gradient_top.png</texture>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>229</top>
+						<width>spot_text_w</width>
+						<height>18</height>
+						<texture colordiffuse="bg">common/gradient_bottom.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<left>0</left>
+					<top>0</top>
+					<width>spot_text_w</width>
+					<height>186</height>
+					<visible>!$EXP[Home_SpotTitleOne]</visible>
+					<control type="textbox">
+						<left>0</left>
+						<top>0</top>
+						<width>spot_text_w</width>
+						<height>186</height>
+						<font>body_25</font>
+						<textcolor>text_body</textcolor>
+						<label>$INFO[Container(9120).ListItem.Plot]</label>
+						<autoscroll delay="3000" time="3000" repeat="10000">true</autoscroll>
+						<visible>!String.IsEmpty(Container(9120).ListItem.Plot)</visible>
+					</control>
+					<control type="textbox">
+						<left>0</left>
+						<top>0</top>
+						<width>spot_text_w</width>
+						<height>186</height>
+						<font>body_25</font>
+						<textcolor>text_body</textcolor>
+						<label>$INFO[Container(9120).ListItem.Tagline]</label>
+						<visible>String.IsEmpty(Container(9120).ListItem.Plot) + !String.IsEmpty(Container(9120).ListItem.Tagline)</visible>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>spot_text_w</width>
+						<height>14</height>
+						<texture colordiffuse="bg">common/gradient_top.png</texture>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>168</top>
+						<width>spot_text_w</width>
+						<height>18</height>
+						<texture colordiffuse="bg">common/gradient_bottom.png</texture>
+					</control>
+				</control>
 			</control>
 			<!-- director + cast: muted, in the bottom block with the buttons -->
 			<control type="group">
@@ -2126,7 +2213,7 @@
 				</control>
 				<control type="list" id="9120">
 					<left>home_newest_list_x</left>
-					<top>home_newest_list_y</top>
+					<top>spot_list_y</top>
 					<width>1750</width>
 					<height>296</height>
 					<orientation>horizontal</orientation>
@@ -2150,6 +2237,9 @@
 							<param name="w" value="spot_poster_w"/>
 							<param name="h" value="spot_poster_h"/>
 							<param name="dim" value="Home_Dim_9120"/>
+							<param name="item_top" value="12"/>
+							<param name="flat" value="true"/>
+							<param name="frame_out" value="3"/>
 						</include>
 					</itemlayout>
 					<focusedlayout width="spot_poster_pitch" height="296">
@@ -2159,6 +2249,9 @@
 							<param name="h" value="spot_poster_h"/>
 							<param name="dim" value="Home_Dim_9120"/>
 							<param name="focused" value="true"/>
+							<param name="item_top" value="12"/>
+							<param name="flat" value="true"/>
+							<param name="frame_out" value="3"/>
 						</include>
 					</focusedlayout>
 					<content target="videos">special://skin/playlists/majan_spotlight.xsp</content>
