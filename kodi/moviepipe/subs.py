@@ -39,11 +39,13 @@ def have(near, kinds):
 def bazarr(path, timeout=180, **query):
     # bazarr's own api (not servarr's): the key arr-keys made, apikey in
     # the query (utilities/helper.py would also take a header or a form)
+    if not C.get("bazarr"):
+        raise Error("bazarr: the add-on has no port for it (addons.nix)")
     try:
         with open(f"{C['keys']}/bazarr") as f:
             key = f.read().strip()
     except OSError:
-        raise Error("bazarr: no key")
+        raise Error(f"bazarr: no key in {C['keys']}")
     query["apikey"] = key
     url = f"http://127.0.0.1:{C['bazarr']}/api{path}?" + urllib.parse.urlencode(query)
     body = urllib.parse.urlencode({k: v for k, v in query.items() if k != "apikey"}).encode()

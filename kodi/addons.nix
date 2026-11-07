@@ -105,6 +105,7 @@ let
               radarr
               sonarr
               qbittorrent
+              bazarr
               keys
               ;
             library = {
