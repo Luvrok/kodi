@@ -112,7 +112,10 @@ if action == "downloads":
 elif action == "queue":
     queue()
 elif action == "discover":
-    discover()
+    try:
+        discover()
+    except Exception as e:  # noqa: BLE001 - show what the plugin would hide
+        xbmcgui.Dialog().ok("Discover", f"{type(e).__name__}: {e}")
 elif action in ("download", "pick"):
     player()
 elif action == "person":
@@ -128,7 +131,9 @@ elif action == "subtitles":
         else:
             movie_subs(int(QUERY["tmdb"]))
     except Error as e:
-        error(e)
+        xbmcgui.Dialog().ok("Subtitles", str(e))
+    except Exception as e:  # noqa: BLE001 - show what the plugin would hide
+        xbmcgui.Dialog().ok("Subtitles", f"{type(e).__name__}: {e}")
 elif action == "reload":
     reload()
 elif action == "open":

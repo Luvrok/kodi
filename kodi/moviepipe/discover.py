@@ -106,16 +106,21 @@ class Discover(xbmcgui.WindowXML):
         if getattr(self, "started", False):
             return
         self.started = True
-        self.closing = False
-        self.moved = False
-        self.rows = {}
-        self.enabled = FIRST - 1
-        self.loads = 0
-        self.stamp = ""
-        self.query = ""
-        self.mode = self.before = "movie"
-        self.show("movie")
-        threading.Thread(target=self.watch, daemon=True).start()
+        try:
+            self.closing = False
+            self.moved = False
+            self.rows = {}
+            self.enabled = FIRST - 1
+            self.loads = 0
+            self.stamp = ""
+            self.query = ""
+            self.mode = self.before = "movie"
+            self.show("movie")
+            threading.Thread(target=self.watch, daemon=True).start()
+        except Exception as e:  # noqa: BLE001 - show what kodi would hide
+            self.closing = True
+            xbmcgui.Dialog().ok("Discover", f"{type(e).__name__}: {e}")
+            self.close()
 
     def gone(self):
         return self.closing

@@ -84,6 +84,10 @@ class Progress(threading.Thread):
             # still fresh the write repeats every WRITE seconds, so the
             # refresh below still runs after the user is back in kodi.
             final = now - updated > STALE
+            # returning from mpv to the film/show page leaves a stale
+            # snapshot there: close it, the list behind is then refreshed
+            if not final and now - updated > RETURN and xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
+                xbmc.executebuiltin("Action(Close)")
             returned = not final and now - updated > RETURN and self.active()
             if entry:
                 if entry["final"]:

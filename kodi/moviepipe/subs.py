@@ -148,15 +148,26 @@ def series(tmdb):
 
 def episodes_of(seriesid):
     # every episode sonarr has for it, with what's missing (a python-literal
-    # list of languages bazarr still looks for: "['ru']")
-    data = json.loads(bazarr("/episodes", timeout=60, method="GET", **{"seriesid[]": seriesid})) or {}
-    data = data.get("data") or []
-    for e in data:
-        try:
-            e["missing"] = ast.literal_eval(e.get("missing_subtitles") or "[]")
-        except (ValueError, SyntaxError):
-            e["missing"] = []
-    return data
+    # list of languages bazarr still looks for: "['ru']"). bazarr has
+    # answered both a bare list and {"data": [...]} depending on the version
+    raw = json.loads(bazarr("/episodes", timeout=60, method="GET", **{"seriesid[]": seriesid})) or []
+    if isinstance(raw, dict):
+        raw = raw.get("data") or []
+    if not isinstance(raw, list):
+        raw = []
+    for e in raw:
+        missing = e.get("missing_subtitles")
+        if isinstance(missing, str):
+            try:
+                missing = ast.literal_eval(missing)
+            except (ValueError, SyntaxError):
+                missing = []
+        if not isinstance(missing, list):
+            missing = []
+        e["missing"] = [
+            m.get("code") if isinstance(m, dict) else m for m in missing
+        ]
+    return raw
 
 
 def episode(s, ep):

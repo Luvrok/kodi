@@ -50,6 +50,12 @@ def enable(ids):
         print(f"userdata: {db}: {e}", file=sys.stderr)
 
 
+# values that win over kodi's even when they were changed by hand: the
+# external mpv always resumes, so kodi's "play or resume" question has no
+# meaning (and its "play from beginning" cannot reach mpv anyway)
+FORCE = {"myvideos.selectaction", "myvideos.playaction"}
+
+
 def settings(spec):
     path = os.path.join(datadir, "userdata/guisettings.xml")
     try:
@@ -63,7 +69,7 @@ def settings(spec):
         s = have.get(name)
         if s is None:
             s = ET.SubElement(root, "setting", id=name)
-        elif s.get("default") != "true":
+        elif s.get("default") != "true" and name not in FORCE:
             # migrate off a skin that's no longer installed: a previous
             # switch set skin.majan, it's gone now and kodi falls back to
             # estuary. the spec's value (skin.gruvbox) takes over.

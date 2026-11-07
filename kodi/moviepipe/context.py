@@ -4,6 +4,8 @@
 # ./actions.py does download and delete
 import sys
 
+import xbmcgui
+
 from actions import delete, movie, show
 from arr import Error, error
 from subs import movie as movie_subs, pack as show_subs
@@ -29,7 +31,9 @@ def main():
         else:
             show(int(tag.getUniqueID("tvshow.tmdb")), kind, tag.getSeason(), tag.getEpisode())
     except Error as e:
-        error(e)
+        xbmcgui.Dialog().ok("Movie pipe", str(e))
+    except Exception as e:  # noqa: BLE001 - show what the plugin would hide
+        xbmcgui.Dialog().ok("Movie pipe", f"{type(e).__name__}: {e}")
 
 
 main()
