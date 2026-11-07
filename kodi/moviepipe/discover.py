@@ -41,7 +41,7 @@ def top(region, provider):
 ROWS = {
     "movie": [
         ("Trending this week", "trending_week", "movie", {}),
-        ("Trending this month", "trending_month", "movie", {}),
+        ("Trending today", "trending_day", "movie", {}),
         ("Top 10 Netflix", "discover", "movie", top("US", NETFLIX)),
         ("Top 10 Prime Video", "discover", "movie", top("US", PRIME)),
         ("Top 10 Apple TV+", "discover", "movie", top("US", APPLE)),
@@ -52,7 +52,7 @@ ROWS = {
     ],
     "tv": [
         ("Trending this week", "trending_week", "tv", {}),
-        ("Trending this month", "trending_month", "tv", {}),
+        ("Trending today", "trending_day", "tv", {}),
         ("Trending anime", "discover", "tv", {"with_genres": "16", "with_id": "True",
                                               "with_original_language": "ja", "sort_by": "popularity.desc"}),
         ("Top 10 Netflix", "discover", "tv", top("US", NETFLIX)),

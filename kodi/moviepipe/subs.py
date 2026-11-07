@@ -72,12 +72,6 @@ def urlencode(query):
     return urllib.parse.urlencode(query)
 
 
-def download(radarrid, language):
-    waiting("Bazarr", f"Searching {language} subtitles…",
-            lambda: bazarr("/movies/subtitles", radarrid=radarrid, language=language,
-                           forced="False", hi="False"))
-
-
 def poll(video, kinds, seconds=90):
     # the video's new subtitles, None when the wait ran out (or the disk
     # isn't readable: then bazarr was still asked)
@@ -105,8 +99,7 @@ def movie(tmdb):
         raise Error("Not in Radarr: Download… it first")
     video = (found[0] or {}).get("path", "")
     near = neighbours(video) if video else None
-    choices = ["Russian", "English", "Russian, then English"]
-    pick = choose(choices)
+    pick = choose(["Russian", "English", "Russian, then English"])
     if pick < 0:
         return
 
@@ -114,16 +107,25 @@ def movie(tmdb):
         if near and have(near, pattern):
             notify("Subtitles", f"{label} subtitles are already there")
             return True
+        # say it at once: bazarr asks its providers for up to a minute
+        notify("Subtitles", f"Bazarr: looking for {label.lower()} subtitles…", 10000)
+
+        def work():
+            bazarr("/movies/subtitles", radarrid=found[0]["id"], language=language,
+                   forced="False", hi="False")
+            if near is None:
+                return True
+            return bool(poll(video, pattern))
+
         try:
-            download(found[0]["id"], language)
+            found_subs = waiting("Subtitles", f"Bazarr: looking for {label.lower()} subtitles…", work)
         except Error as e:
             error(e)
             return False
-        if near is None:
-            notify("Subtitles", "Bazarr is on it, they land next to the film in a minute")
-            return True
-        if poll(video, pattern):
-            notify("Subtitles", f"{label} subtitles downloaded")
+        if found_subs:
+            notify("Subtitles",
+                   f"{label} subtitles downloaded" if near is not None
+                   else "Bazarr is on it, they land next to the film in a minute")
             return True
         notify("Subtitles", "Nothing found, try another time")
         return False
@@ -147,16 +149,16 @@ def series(tmdb):
 
 
 def episodes_of(seriesid):
-    # every episode sonarr has for it, with what's missing (a python-literal
-    # list of languages bazarr still looks for: "['ru']"). bazarr has
-    # answered both a bare list and {"data": [...]} depending on the version
+    # every episode sonarr has for it, with what's missing. bazarr answers
+    # {"data": [...]} on current versions and a bare list on older ones; a
+    # language is {"code2": "ru", "hi": false, "forced": false}
     raw = json.loads(bazarr("/episodes", timeout=60, method="GET", **{"seriesid[]": seriesid})) or []
     if isinstance(raw, dict):
         raw = raw.get("data") or []
     if not isinstance(raw, list):
         raw = []
     for e in raw:
-        missing = e.get("missing_subtitles")
+        missing = e.get("missing_subtitles") or []
         if isinstance(missing, str):
             try:
                 missing = ast.literal_eval(missing)
@@ -164,31 +166,53 @@ def episodes_of(seriesid):
                 missing = []
         if not isinstance(missing, list):
             missing = []
-        e["missing"] = [
-            m.get("code") if isinstance(m, dict) else m for m in missing
-        ]
+        entries = []
+        for m in missing:
+            if isinstance(m, dict):
+                code = m.get("code2") or m.get("code") or m.get("code3")
+                entries.append({"code": code, "hi": bool(m.get("hi")),
+                                "forced": bool(m.get("forced"))})
+            elif isinstance(m, str):
+                # "ru", "ru:hi", "en:forced" (an older bazarr)
+                code, _, flag = m.partition(":")
+                entries.append({"code": code, "hi": flag == "hi",
+                                "forced": flag == "forced"})
+        e["missing"] = [x for x in entries if x["code"]]
     return raw
 
 
+def ep_download(s, ep, entry):
+    bazarr("/episodes/subtitles", seriesid=s["id"], episodeid=ep["sonarrEpisodeId"],
+           language=entry["code"], forced=str(entry["forced"]), hi=str(entry["hi"]))
+
+
 def episode(s, ep):
-    langs = [lang for lang in ("ru", "en") if lang in ep["missing"]]
+    langs = []
+    for entry in ep["missing"]:
+        if entry["code"] in ("ru", "en") and entry["code"] not in langs:
+            langs.append(entry["code"])
     if not langs:
-        notify("Subtitles", "Subtitles are already there")
+        notify("Subtitles", "Russian and English subtitles are already there")
         return
     labels = {"ru": "Russian", "en": "English"}
     pick = choose([labels[lang] for lang in langs], f"S{ep['season']:02}E{ep['episode']:02}")
     if pick < 0:
         return
     language = langs[pick]
-    bazarr("/episodes/subtitles", seriesid=s["id"], episodeid=ep["sonarrEpisodeId"],
-           language=language, forced="False", hi="False")
+    entry = next(x for x in ep["missing"] if x["code"] == language)
+    notify("Subtitles", f"Bazarr: looking for {labels[language].lower()} subtitles…", 10000)
+    try:
+        ep_download(s, ep, entry)
+    except Error as e:
+        error(e)
+        return
     notify("Subtitles", f"Bazarr is on it, {labels[language].lower()} lands next to the file in a minute")
 
 
 def season(s, eps, number):
     missing = [e for e in eps if e["season"] == number and e["missing"]]
     if not missing:
-        notify("Subtitles", "Subtitles are already there")
+        notify("Subtitles", "Russian and English subtitles are already there")
         return
     labels = [f"All missing in season {number}"] + [
         f"S{e['season']:02}E{e['episode']:02} · {e.get('title') or ''}" for e in missing
@@ -197,27 +221,50 @@ def season(s, eps, number):
     if pick < 0:
         return
     if pick == 0:
+        asked = 0
         for e in missing:
-            language = "ru" if "ru" in e["missing"] else "en"
-            bazarr("/episodes/subtitles", seriesid=s["id"], episodeid=e["sonarrEpisodeId"],
-                   language=language, forced="False", hi="False")
-        notify("Subtitles", f"Bazarr: {len(missing)} episodes missing subtitles, they land in a couple of minutes")
+            entry = next((x for x in e["missing"] if x["code"] in ("ru", "en")), None)
+            if not entry:
+                continue
+            try:
+                ep_download(s, e, entry)
+            except Error as err:
+                error(err)
+                return
+            asked += 1
+        notify("Subtitles", f"Bazarr: {asked} episodes missing subtitles, they land in a couple of minutes")
     else:
         episode(s, missing[pick - 1])
 
 
 def pack(tmdb, season_number, episode_number):
-    s = series(tmdb)
-    eps = episodes_of(s["id"])
+    notify("Subtitles", "Bazarr: checking the show…", 10000)
+
+    def work():
+        show = series(tmdb)
+        return show, episodes_of(show["id"])
+
+    try:
+        found = waiting("Subtitles", "Bazarr: checking the show…", work)
+    except Error as e:
+        error(e)
+        return
+    if not found:
+        return
+    s, eps = found
+    if not eps:
+        error(Error("Bazarr has no episodes for this show yet: wait for the Sonarr sync"))
+        return
     if episode_number is not None:
         ep = next((e for e in eps if (e["season"], e["episode"]) == (season_number, episode_number)), None)
         if not ep:
-            raise Error(f"sonarr: no episode S{season_number:02}E{episode_number:02}")
+            error(Error(f"sonarr: no episode S{season_number:02}E{episode_number:02}"))
+            return
         episode(s, ep)
         return
     missing = [e for e in eps if e["missing"]]
     if not missing:
-        notify("Subtitles", "Subtitles are already there")
+        notify("Subtitles", "Russian and English subtitles are already there")
         return
     if season_number is None:
         seasons = sorted({e["season"] for e in missing})
@@ -229,8 +276,12 @@ def pack(tmdb, season_number, episode_number):
             if pick < 0:
                 return
             if pick == 0:
-                waiting("Bazarr", f"Searching subtitles for {s['title']}…",
-                        lambda: bazarr("/series", seriesid=s["id"], action="search-missing", timeout=30))
+                try:
+                    waiting("Bazarr", f"Searching subtitles for {s['title']}…",
+                            lambda: bazarr("/series", seriesid=s["id"], action="search-missing", timeout=30))
+                except Error as e:
+                    error(e)
+                    return
                 notify("Subtitles", "Bazarr: russian for every episode missing, an english one translates after")
                 return
             season_number = seasons[pick - 1]

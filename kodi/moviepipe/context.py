@@ -31,7 +31,7 @@ def main():
         else:
             show(int(tag.getUniqueID("tvshow.tmdb")), kind, tag.getSeason(), tag.getEpisode())
     except Error as e:
-        xbmcgui.Dialog().ok("Movie pipe", str(e))
+        error(e)
     except Exception as e:  # noqa: BLE001 - show what the plugin would hide
         xbmcgui.Dialog().ok("Movie pipe", f"{type(e).__name__}: {e}")
 

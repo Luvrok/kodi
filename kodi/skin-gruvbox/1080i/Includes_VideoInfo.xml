@@ -478,9 +478,11 @@
 		</control>
 	</include>
 
-	<!-- Buttons (y 818): Resume / Play / From start / Browse / Trailer / More.
-	     Kodi ids: 8 play (from the beginning when 9 exists), 9 resume (Kodi enables it only when
-	     there is a resume point), 11 trailer. Browse (tvshow/season/set) and From start re-send 8. -->
+	<!-- Buttons (y 818): Resume / Play / Browse / Trailer / More.
+	     Kodi ids: 8 play, 9 resume (Kodi enables it only when there is a resume
+	     point), 11 trailer. Browse (tvshow/season/set) re-sends 8. There is no
+	     "from start": the external mpv always resumes from its own watch-later
+	     file, so the button could not do what it says. -->
 	<include name="VidInfo_Buttons">
 		<!-- Grouplists clip to their rect: the row is 7px bigger on every side and each button group is
 		     offset 7px (usecontrolcoords), itemgap 9 + 7 = 16px visual gap; buttons still start at x 680, y 818. -->
@@ -502,8 +504,10 @@
 				<param name="width" value="176"/>
 				<param name="label" value="Resume"/>
 				<param name="visible" value="$EXP[VidInfo_ShowResume]"/>
-				<param name="right1" value="9013"/>
-				<param name="right1_if" value="true"/>
+				<param name="right1" value="9152"/>
+				<param name="right1_if" value="$EXP[VidInfo_ShowTrailer]"/>
+				<param name="right2" value="9010"/>
+				<param name="right2_if" value="!$EXP[VidInfo_ShowTrailer]"/>
 			</include>
 			<!-- Play (no resume point) -->
 			<include content="VidInfo_ButtonPrimary">
@@ -511,20 +515,6 @@
 				<param name="width" value="button_w_play"/>
 				<param name="label" value="Play"/>
 				<param name="visible" value="$EXP[VidInfo_ShowPlay]"/>
-				<param name="right1" value="9152"/>
-				<param name="right1_if" value="$EXP[VidInfo_ShowTrailer]"/>
-				<param name="right2" value="9010"/>
-				<param name="right2_if" value="!$EXP[VidInfo_ShowTrailer]"/>
-			</include>
-			<!-- From start (next to Resume) = Kodi play button 8 -->
-			<include content="VidInfo_ButtonSecondary">
-				<param name="id" value="9013"/>
-				<param name="width" value="166"/>
-				<param name="label" value="From start"/>
-				<param name="onclick" value="SendClick(8)"/>
-				<param name="visible" value="$EXP[VidInfo_ShowResume]"/>
-				<param name="left1" value="9"/>
-				<param name="left1_if" value="true"/>
 				<param name="right1" value="9152"/>
 				<param name="right1_if" value="$EXP[VidInfo_ShowTrailer]"/>
 				<param name="right2" value="9010"/>
@@ -549,7 +539,7 @@
 				<param name="width" value="button_w_trailer"/>
 				<param name="label" value="Trailer"/>
 				<param name="visible" value="$EXP[VidInfo_ShowTrailer]"/>
-				<param name="left1" value="9013"/>
+				<param name="left1" value="9"/>
 				<param name="left1_if" value="$EXP[VidInfo_ShowResume]"/>
 				<param name="left2" value="8"/>
 				<param name="left2_if" value="$EXP[VidInfo_ShowPlay]"/>
@@ -566,7 +556,7 @@
 				<param name="onclick" value="SetFocus(9100)"/>
 				<param name="left1" value="9152"/>
 				<param name="left1_if" value="$EXP[VidInfo_ShowTrailer]"/>
-				<param name="left2" value="9013"/>
+				<param name="left2" value="9"/>
 				<param name="left2_if" value="!$EXP[VidInfo_ShowTrailer] + $EXP[VidInfo_ShowResume]"/>
 				<param name="left3" value="8"/>
 				<param name="left3_if" value="!$EXP[VidInfo_ShowTrailer] + $EXP[VidInfo_ShowPlay]"/>

@@ -12,7 +12,7 @@
 	  14 manage versions | 15 manage extras | 443 go to collection (Estuary convention).
 	  Not used: 3/4 (Kodi image/text area - we read ListItem.* directly), 5 (tracks toggle).
 	Majan ids: 9000 button row (default focus), 9001 plot (OK = full plot), 9010 More,
-	  9012 Browse / 9013 From start (both re-send 8), 9100 More row, 9200 full-plot overlay, 61 its scrollbar.
+	  9012 Browse (re-sends 8), 9100 More row, 9200 full-plot overlay, 61 its scrollbar.
 
 	Focus map: 9001 plot ↕ 9000 buttons ↓ 50 cast (page slides up 440 px while 50 has focus).
 	  More → 9100 row (replaces the media flags while focused; ▲ / Back return to More).

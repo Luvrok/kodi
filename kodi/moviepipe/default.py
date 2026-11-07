@@ -125,13 +125,13 @@ elif action == "trailer":
 elif action == "subtitles":
     try:
         if QUERY.get("type") in ("tv", "tvshow", "season", "episode"):
-            pack(int(QUERY["tmdb"]),
-                 int(QUERY["season"]) if QUERY.get("season") else None,
-                 int(QUERY["episode"]) if QUERY.get("episode") else None)
+            pack_subs(int(QUERY["tmdb"]),
+                      int(QUERY["season"]) if QUERY.get("season") else None,
+                      int(QUERY["episode"]) if QUERY.get("episode") else None)
         else:
             movie_subs(int(QUERY["tmdb"]))
     except Error as e:
-        xbmcgui.Dialog().ok("Subtitles", str(e))
+        error(e)
     except Exception as e:  # noqa: BLE001 - show what the plugin would hide
         xbmcgui.Dialog().ok("Subtitles", f"{type(e).__name__}: {e}")
 elif action == "reload":
