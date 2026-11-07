@@ -124,6 +124,8 @@ elif action == "trailer":
     trailer(QUERY.get("type", "movie"), QUERY.get("tmdb"))
 elif action == "subtitles":
     try:
+        if not QUERY.get("tmdb"):
+            raise Error("This item has no TMDB id")
         if QUERY.get("type") in ("tv", "tvshow", "season", "episode"):
             pack_subs(int(QUERY["tmdb"]),
                       int(QUERY["season"]) if QUERY.get("season") else None,
