@@ -36,6 +36,11 @@ let
         "lookandfeel.skin" = "skin.gruvbox";
         "lookandfeel.font" = "JetBrains Mono";
         "filelists.showparentdiritems" = "false";
+        # a film with a resume point starts where it stopped: no "Play from
+        # beginning" menu (the external mpv wrapper would ignore the choice
+        # and resume anyway)
+        "myvideos.selectaction" = "2";  # ACTION_RESUME
+        "myvideos.playaction" = "2";    # ACTION_RESUME
       };
     }
   );

@@ -25,6 +25,7 @@ import xbmcvfs
 
 POLL = 2
 WRITE = 10  # while playing, write the bookmark at most this often
+RETURN = 3  # after mpv stops updating, refresh the lists this soon once kodi is back
 STALE = 30  # an mpv state not updated for this long is treated as stopped
 CLEAN = 86400
 
@@ -39,6 +40,7 @@ class Progress(threading.Thread):
         self.monitor = xbmc.Monitor()
         self.home = xbmcgui.Window(10000)
         self.seen = {}
+        self.pending = 0
         self.database = None
 
     def log(self, message, bad=False):
@@ -53,11 +55,18 @@ class Progress(threading.Thread):
             if self.monitor.waitForAbort(POLL):
                 break
 
+    def active(self):
+        return xbmc.getCondVisibility("Window.IsActive(home) | Window.IsActive(videos)")
+
     def tick(self):
         directory = state_dir()
+        now = time.time()
+        # a write happened while mpv was up: refresh once kodi is back,
+        # even when the state has already stopped changing
+        if self.pending and now - self.pending > 1 and self.active():
+            self.refresh()
         if not os.path.isdir(directory):
             return
-        now = time.time()
         for name in glob.glob(os.path.join(directory, "*.json")):
             try:
                 with open(name) as f:
@@ -75,10 +84,11 @@ class Progress(threading.Thread):
             # still fresh the write repeats every WRITE seconds, so the
             # refresh below still runs after the user is back in kodi.
             final = now - updated > STALE
+            returned = not final and now - updated > RETURN and self.active()
             if entry:
                 if entry["final"]:
                     continue
-                if not final and now - entry["written"] < WRITE:
+                if not final and not returned and now - entry["written"] < WRITE:
                     continue
             result = self.write(state)
             if result is True:
@@ -178,5 +188,8 @@ class Progress(threading.Thread):
         # fetch again. The lists refresh when they are reopened; this also
         # refreshes the focused one while mpv is fresh and after it ends.
         self.home.setProperty("majan.reload", time.strftime("%H:%M:%S"))
-        if xbmc.getCondVisibility("Window.IsActive(home) | Window.IsActive(videos)"):
+        if self.active():
+            self.pending = 0
             xbmc.executebuiltin("Container.Refresh")
+        else:
+            self.pending = time.time()

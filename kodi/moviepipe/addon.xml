@@ -36,7 +36,7 @@
 		<menu id="kodi.core.main">
 			<item library="context.py" args="subtitles">
 				<label>Subtitles</label>
-				<visible>[String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.UniqueID(tmdb))] | [String.IsEqual(ListItem.DBType,tvshow) + !String.IsEmpty(ListItem.UniqueID(tmdb))] | [String.IsEqual(ListItem.DBType,season) + !String.IsEmpty(ListItem.UniqueID(tvshow.tmdb))] | [String.IsEqual(ListItem.DBType,episode) + !String.IsEmpty(ListItem.UniqueID(tvshow.tmdb))]</visible>
+				<visible>[String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.UniqueID(tmdb))] | [String.IsEqual(ListItem.DBType,tvshow) + !String.IsEmpty(ListItem.UniqueID(tmdb))] | [[String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)] + [!String.IsEmpty(ListItem.UniqueID(tvshow.tmdb)) | !String.IsEmpty(ListItem.UniqueID(tmdb))]]</visible>
 			</item>
 		</menu>
 	</extension>

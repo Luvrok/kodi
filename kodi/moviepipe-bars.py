@@ -1,6 +1,6 @@
 # ./moviepipe's progress bars (windows.py): 0.png .. 100.png a 5% apart,
 # white on a faint track for the skin's accent to colour. and the person
-# page's underline of the tab shown (person.py), 3 px at the bottom, 14 px
+# page's underline of the tab shown (person.py), 1 px at the bottom, 14 px
 # in from the sides (its texture's border): ../moviepipe-underline.png
 # moviepipe-bars.py DIR
 import struct
@@ -31,5 +31,5 @@ for percent in range(0, 101, 5):
 clear, white = b"\0\0\0\0", b"\xff\xff\xff\xff"
 png(
     f"{sys.argv[1]}/../moviepipe-underline.png",
-    [clear * 32] * 5 + [clear * 14 + white * 4 + clear * 14] * 3,
+    [clear * 32] * 5 + [clear * 14 + white * 4 + clear * 14],
 )
