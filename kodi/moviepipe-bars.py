@@ -1,7 +1,8 @@
 # ./moviepipe's progress bars (windows.py): 0.png .. 100.png a 5% apart,
 # white on a faint track for the skin's accent to colour. and the person
-# page's underline of the tab shown (person.py), 1 px at the bottom, 14 px
-# in from the sides (its texture's border): ../moviepipe-underline.png
+# page's underline of the tab shown (person.py): ../moviepipe-underline.png
+# (1 px at the bottom, 14 px in from the sides) and the skin's full-width
+# ../moviepipe-underline-solid.png (a 1 x 40 texture, no horizontal slices)
 # moviepipe-bars.py DIR
 import struct
 import sys
@@ -32,4 +33,10 @@ clear, white = b"\0\0\0\0", b"\xff\xff\xff\xff"
 png(
     f"{sys.argv[1]}/../moviepipe-underline.png",
     [clear * 32] * 5 + [clear * 14 + white * 4 + clear * 14],
+)
+# the chip's texture: one white row under 39 clear ones, so a solid 1 px
+# line with border="0,39,0,1" (no horizontal slicing to smear)
+png(
+    f"{sys.argv[1]}/../moviepipe-underline-solid.png",
+    [clear] * 39 + [white],
 )
