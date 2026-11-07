@@ -833,31 +833,6 @@
 							<param name="mask_square" value="masks/landscape_square.png"/>
 							<param name="title" value="$VAR[Home_CardTitle]"/>
 						</include>
-						<!-- tag: RESUME n% (accent) for part-watched episodes; "n NEW" on show cards (fallback) -->
-						<control type="group">
-							<right>0</right>
-							<top>0</top>
-							<width>104</width>
-							<height>26</height>
-							<visible>Integer.IsGreater(ListItem.PercentPlayed,0) + !String.IsEqual(ListItem.DBType,tvshow)</visible>
-							<control type="image">
-								<left>0</left>
-								<top>0</top>
-								<width>104</width>
-								<height>26</height>
-								<texture colordiffuse="$VAR[ColorAccent]">common/white.png</texture>
-							</control>
-							<control type="label">
-								<left>0</left>
-								<top>0</top>
-								<width>104</width>
-								<height>26</height>
-								<align>center</align>
-								<font>tab_13</font>
-								<textcolor>ink</textcolor>
-								<label>RESUME $INFO[ListItem.PercentPlayed]%</label>
-							</control>
-						</control>
 						<control type="group">
 							<right>0</right>
 							<top>0</top>
@@ -1287,7 +1262,7 @@
 		<definition>
 			<control type="label">
 				<width>auto</width><height>24</height><font>mono_17</font><textcolor>text_secondary</textcolor>
-				<label>  ·  Resume $INFO[Container($PARAM[id]).ListItem.PercentPlayed]%</label>
+				<label>  ·  In progress</label>
 				<visible>Container($PARAM[id]).ListItem.IsResumable</visible>
 			</control>
 			<control type="label">

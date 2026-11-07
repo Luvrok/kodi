@@ -174,7 +174,7 @@
 		<value condition="$EXP[VidView_IsTVType] + $EXP[VidView_TVDone]">Watched</value>
 		<value condition="$EXP[VidView_IsTVType] + Integer.IsGreater(ListItem.Property(WatchedEpisodes),0)">In progress</value>
 		<value condition="$EXP[VidView_IsTVType]">Unwatched</value>
-		<value condition="ListItem.IsResumable">Resume $INFO[ListItem.PercentPlayed]%</value>
+		<value condition="ListItem.IsResumable">In progress</value>
 		<value condition="Integer.IsGreater(ListItem.PlayCount,0)">Watched</value>
 		<value>Unwatched</value>
 	</variable>
@@ -259,7 +259,7 @@
 
 	<!-- Wall header (focused show of the wall, container 502) -->
 	<variable name="VidView_WallProgress">
-		<value condition="String.IsEqual(Container(502).ListItem.DBType,movie) + Integer.IsGreater(Container(502).ListItem.PercentPlayed,0)">$INFO[Container(502).ListItem.PercentPlayed]% WATCHED$INFO[Container(502).ListItem.LastPlayed, · ,]</value>
+		<value condition="String.IsEqual(Container(502).ListItem.DBType,movie) + Integer.IsGreater(Container(502).ListItem.PercentPlayed,0)">IN PROGRESS$INFO[Container(502).ListItem.LastPlayed, · ,]</value>
 		<value condition="String.IsEqual(Container(502).ListItem.DBType,movie) + Integer.IsGreater(Container(502).ListItem.Playcount,0)">WATCHED$INFO[Container(502).ListItem.LastPlayed, · ,]</value>
 		<value condition="String.IsEqual(Container(502).ListItem.DBType,movie)">UNWATCHED</value>
 		<value condition="Integer.IsEqual(Container(502).ListItem.Property(UnWatchedEpisodes),0) + Integer.IsGreater(Container(502).ListItem.Property(TotalEpisodes),0)">ALL $INFO[Container(502).ListItem.Property(TotalEpisodes)] EPISODES WATCHED$INFO[Container(502).ListItem.Property(TotalSeasons), · , SEASONS]</value>
@@ -1808,16 +1808,6 @@
 	<!-- Accent tag top-right: "RESUME n%" on next-episode cards, "n NEW" on show cards (fallback).
 	     Kodi labels have no background, so the tab width is picked by digit count (tab_13 = 7.8 px/char). -->
 	<include name="VidView_NextUpTag">
-		<include content="VidView_TagBox">
-			<param name="width" value="86"/>
-			<param name="label" value="RESUME $INFO[ListItem.PercentPlayed]%"/>
-			<param name="visible" value="String.IsEqual(ListItem.DBType,episode) + Integer.IsGreater(ListItem.PercentPlayed,0) + Integer.IsLess(ListItem.PercentPlayed,10)"/>
-		</include>
-		<include content="VidView_TagBox">
-			<param name="width" value="94"/>
-			<param name="label" value="RESUME $INFO[ListItem.PercentPlayed]%"/>
-			<param name="visible" value="String.IsEqual(ListItem.DBType,episode) + Integer.IsGreater(ListItem.PercentPlayed,9)"/>
-		</include>
 		<include content="VidView_TagBox">
 			<param name="width" value="56"/>
 			<param name="label" value="$INFO[ListItem.Property(UnWatchedEpisodes)] NEW"/>
