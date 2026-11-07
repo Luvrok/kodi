@@ -23,10 +23,10 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 
-POLL = 2
+POLL = 1
 WRITE = 10  # while playing, write the bookmark at most this often
-RETURN = 3  # after mpv stops updating, refresh the lists this soon once kodi is back
-STALE = 30  # an mpv state not updated for this long is treated as stopped
+RETURN = 2.5  # after mpv stops updating, refresh the lists this soon once kodi is back
+STALE = 8  # an mpv state not updated for this long is treated as stopped
 CLEAN = 86400
 
 
@@ -79,20 +79,24 @@ class Progress(threading.Thread):
             key = (path, state.get("started") or 0)
             entry = self.seen.get(key)
             updated = float(state.get("updated") or 0)
-            # a state nobody has touched for STALE is a killed or finished
-            # mpv: its last position is the final one. While the file is
-            # still fresh the write repeats every WRITE seconds, so the
-            # refresh below still runs after the user is back in kodi.
-            final = now - updated > STALE
+            # mpv writes every second (a paused player does too), so a gap of
+            # RETURN seconds is a stopped or killed one: its last position is
+            # the final one. Without kodi in front (mpv still up, or an info
+            # page open) STALE is the fallback. While the file is fresh the
+            # write repeats every WRITE seconds.
+            stopped = now - updated > RETURN
+            returned = stopped and self.active()
+            final = stopped and (returned or now - updated > STALE)
             # returning from mpv to the film/show page leaves a stale
             # snapshot there: close it, the list behind is then refreshed
-            if not final and now - updated > RETURN and xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
+            if stopped and xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
                 xbmc.executebuiltin("Action(Close)")
-            returned = not final and now - updated > RETURN and self.active()
             if entry:
-                if entry["final"]:
+                # a final state is final only until mpv writes again (a
+                # paused or suspended player can look stopped for a while)
+                if entry["final"] and stopped:
                     continue
-                if not final and not returned and now - entry["written"] < WRITE:
+                if not final and now - entry["written"] < WRITE:
                     continue
             result = self.write(state)
             if result is True:
