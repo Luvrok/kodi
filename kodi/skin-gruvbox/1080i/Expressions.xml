@@ -15,8 +15,8 @@
 	<expression name="FocusOutlineOff">String.IsEqual(Skin.String(majan.focusoutline),off)</expression>
 	<expression name="FocusOutlineMedium">String.IsEqual(Skin.String(majan.focusoutline),medium)</expression>
 
-	<!-- Setting 4: artwork background (empty = faint). Forced off without TMDb Helper. Wired in M2 (T15). -->
-	<expression name="ArtBackgroundOn">!String.IsEqual(Skin.String(majan.artbackground),off) + System.AddonIsEnabled(plugin.video.themoviedb.helper)</expression>
+	<!-- Setting 4: artwork background (empty = off). Forced off without TMDb Helper. Wired in M2 (T15). -->
+	<expression name="ArtBackgroundOn">[String.IsEqual(Skin.String(majan.artbackground),faint) | String.IsEqual(Skin.String(majan.artbackground),soft) | String.IsEqual(Skin.String(majan.artbackground),visible)] + System.AddonIsEnabled(plugin.video.themoviedb.helper)</expression>
 
 	<!-- Setting 5: trailer button -->
 	<expression name="ShowTrailerButton">!Skin.HasSetting(majan.hidetrailer)</expression>

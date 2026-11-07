@@ -695,8 +695,8 @@
 	<!-- ============================================================ SkinSettings expressions -->
 	<expression name="Dlg_AccentSignal">String.IsEmpty(Skin.String(majan.accent)) | String.IsEqual(Skin.String(majan.accent),signal) | [!String.IsEqual(Skin.String(majan.accent),cobalt) + !String.IsEqual(Skin.String(majan.accent),mint) + !String.IsEqual(Skin.String(majan.accent),amber) + !String.IsEqual(Skin.String(majan.accent),rose) + !String.IsEqual(Skin.String(majan.accent),ice) + !String.IsEqual(Skin.String(majan.accent),bone)]</expression>
 	<expression name="Dlg_OutlineThin">!String.IsEqual(Skin.String(majan.focusoutline),medium) + !String.IsEqual(Skin.String(majan.focusoutline),off)</expression>
-	<expression name="Dlg_ArtOff">!System.AddonIsEnabled(plugin.video.themoviedb.helper) | String.IsEqual(Skin.String(majan.artbackground),off)</expression>
-	<expression name="Dlg_ArtFaint">System.AddonIsEnabled(plugin.video.themoviedb.helper) + [String.IsEmpty(Skin.String(majan.artbackground)) | String.IsEqual(Skin.String(majan.artbackground),faint)]</expression>
+	<expression name="Dlg_ArtOff">!System.AddonIsEnabled(plugin.video.themoviedb.helper) | String.IsEmpty(Skin.String(majan.artbackground)) | String.IsEqual(Skin.String(majan.artbackground),off)</expression>
+	<expression name="Dlg_ArtFaint">System.AddonIsEnabled(plugin.video.themoviedb.helper) + String.IsEqual(Skin.String(majan.artbackground),faint)</expression>
 	<expression name="Dlg_ArtSoft">System.AddonIsEnabled(plugin.video.themoviedb.helper) + String.IsEqual(Skin.String(majan.artbackground),soft)</expression>
 	<expression name="Dlg_ArtVisible">System.AddonIsEnabled(plugin.video.themoviedb.helper) + String.IsEqual(Skin.String(majan.artbackground),visible)</expression>
 	<expression name="Dlg_WatchedBoth">String.IsEmpty(Skin.String(majan.watchedmarkers)) | String.IsEqual(Skin.String(majan.watchedmarkers),both)</expression>

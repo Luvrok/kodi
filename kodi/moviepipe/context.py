@@ -1,10 +1,12 @@
 # the menu (c) of a film, show, season or episode (addon.xml): "Download…"
-# with its tmdb id, "Delete from disk" with its id in kodi's library.
-# ./actions.py does it
+# with its tmdb id, "Delete from disk" with its id in kodi's library, and
+# "Subtitles" on a film: russian ones next to it (./subs.py).
+# ./actions.py does download and delete
 import sys
 
 from actions import delete, movie, show
 from arr import Error, error
+from subs import movie as subtitles
 
 
 def main():
@@ -13,6 +15,11 @@ def main():
     try:
         if sys.argv[1] == "delete":
             delete(kind, tag.getDbId())
+        elif sys.argv[1] == "subtitles":
+            if kind == "movie":
+                subtitles(int(tag.getUniqueID("tmdb")))
+            else:
+                error("Subtitles: films for now")
         elif kind == "movie":
             movie(int(tag.getUniqueID("tmdb")))
         elif kind == "tvshow":

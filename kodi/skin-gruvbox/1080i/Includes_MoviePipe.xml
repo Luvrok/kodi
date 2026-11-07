@@ -87,6 +87,12 @@
 			<param name="site" value="letterboxd"/>
 			<param name="visible" value="String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.UniqueID(tmdb))"/>
 		</include>
+		<include content="VidInfo_MoreButton">
+			<param name="id" value="9156"/>
+			<param name="label" value="SUBTITLES"/>
+			<param name="onclick" value="RunPlugin(plugin://plugin.video.moviepipe/?action=subtitles&amp;type=$VAR[MoviePipe_TmdbType]&amp;tmdb=$INFO[ListItem.UniqueID(tmdb)])"/>
+			<param name="visible" value="String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.UniqueID(tmdb))"/>
+		</include>
 	</include>
 
 

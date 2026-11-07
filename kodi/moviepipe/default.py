@@ -11,6 +11,8 @@
 #                      ./person.py, a person's page (majan's film page: the
 #                      cast, "more by director", its director by the film)
 #   ?action=trailer&type=movie|tv&tmdb=...  ./trailer.py, majan's film page
+#   ?action=subtitles&type=movie&tmdb=...  ./subs.py, russian ones next to
+#                      the film through bazarr (english translates after)
 #   ?action=reload     r on majan's film page: its cast row again
 #                      (../majan-moviepipe.xml)
 #   ?action=open&site=tmdb|imdb|letterboxd&type=movie|tv|person&tmdb=&imdb=
@@ -31,6 +33,7 @@ from arr import Error, error
 from browser import browse, url
 from discover import discover
 from person import person
+from subs import movie as subtitles
 from tmdb import info, settle
 from trailer import trailer
 from windows import downloads, show_downloads
@@ -115,6 +118,11 @@ elif action == "person":
     person(QUERY.get("tmdb"), QUERY.get("name", ""), QUERY.get("tab"), QUERY.get("film"), QUERY.get("type", "movie"))
 elif action == "trailer":
     trailer(QUERY.get("type", "movie"), QUERY.get("tmdb"))
+elif action == "subtitles":
+    try:
+        subtitles(int(QUERY["tmdb"]))
+    except Error as e:
+        error(e)
 elif action == "reload":
     reload()
 elif action == "open":

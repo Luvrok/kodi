@@ -40,8 +40,8 @@ ROWS = {
     "tv": [
         ("Trending this week", "trending_week", "tv", {}),
         ("Popular", "popular", "tv", {}),
-        ("Trending anime", "discover", "tv", {"with_genres": "Animation", "with_original_language": "ja",
-                                              "sort_by": "popularity.desc"}),
+        ("Trending anime", "discover", "tv", {"with_genres": "16", "with_id": "True",
+                                              "with_original_language": "ja", "sort_by": "popularity.desc"}),
         ("On the air", "on_the_air", "tv", {}),
         ("Airing today", "airing_today", "tv", {}),
         ("Top rated", "top_rated", "tv", {}),
