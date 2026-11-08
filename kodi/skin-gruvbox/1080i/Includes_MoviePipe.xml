@@ -87,30 +87,6 @@
 			<param name="site" value="letterboxd"/>
 			<param name="visible" value="String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.UniqueID(tmdb))"/>
 		</include>
-		<include content="VidInfo_MoreButton">
-			<param name="id" value="9156"/>
-			<param name="label" value="SUBTITLES"/>
-			<param name="onclick" value="RunPlugin(plugin://plugin.video.moviepipe/?action=subtitles&amp;type=$VAR[MoviePipe_TmdbType]&amp;tmdb=$INFO[ListItem.UniqueID(tmdb)])"/>
-			<param name="visible" value="String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.UniqueID(tmdb))"/>
-		</include>
-		<include content="VidInfo_MoreButton">
-			<param name="id" value="9157"/>
-			<param name="label" value="SUBTITLES"/>
-			<param name="onclick" value="RunPlugin(plugin://plugin.video.moviepipe/?action=subtitles&amp;type=tv&amp;tmdb=$INFO[ListItem.UniqueID(tmdb)])"/>
-			<param name="visible" value="String.IsEqual(ListItem.DBType,tvshow) + !String.IsEmpty(ListItem.UniqueID(tmdb))"/>
-		</include>
-		<include content="VidInfo_MoreButton">
-			<param name="id" value="9158"/>
-			<param name="label" value="SUBTITLES"/>
-			<param name="onclick" value="RunPlugin(plugin://plugin.video.moviepipe/?action=subtitles&amp;type=season&amp;tmdb=$INFO[ListItem.UniqueID(tvshow.tmdb)]&amp;season=$INFO[ListItem.Season])"/>
-			<param name="visible" value="String.IsEqual(ListItem.DBType,season) + [!String.IsEmpty(ListItem.UniqueID(tvshow.tmdb)) | !String.IsEmpty(ListItem.UniqueID(tmdb))]"/>
-		</include>
-		<include content="VidInfo_MoreButton">
-			<param name="id" value="9159"/>
-			<param name="label" value="SUBTITLES"/>
-			<param name="onclick" value="RunPlugin(plugin://plugin.video.moviepipe/?action=subtitles&amp;type=episode&amp;tmdb=$INFO[ListItem.UniqueID(tvshow.tmdb)]&amp;season=$INFO[ListItem.Season]&amp;episode=$INFO[ListItem.Episode])"/>
-			<param name="visible" value="String.IsEqual(ListItem.DBType,episode) + [!String.IsEmpty(ListItem.UniqueID(tvshow.tmdb)) | !String.IsEmpty(ListItem.UniqueID(tmdb))]"/>
-		</include>
 	</include>
 
 

@@ -11,9 +11,6 @@
 #                      ./person.py, a person's page (majan's film page: the
 #                      cast, "more by director", its director by the film)
 #   ?action=trailer&type=movie|tv&tmdb=...  ./trailer.py, majan's film page
-#   ?action=subtitles&type=movie&tmdb=...|&type=tv[&season=&episode=]
-#                      ./subs.py, russian ones through bazarr: a film's
-#                      next to it, a show's pack or its episodes' search
 #   ?action=reload     r on majan's film page: its cast row again
 #                      (../majan-moviepipe.xml)
 #   ?action=open&site=tmdb|imdb|letterboxd&type=movie|tv|person&tmdb=&imdb=
@@ -34,7 +31,6 @@ from arr import Error, error
 from browser import browse, url
 from discover import discover
 from person import person
-from subs import movie as movie_subs, pack as pack_subs
 from tmdb import info, settle
 from trailer import trailer
 from windows import downloads, show_downloads
@@ -122,20 +118,6 @@ elif action == "person":
     person(QUERY.get("tmdb"), QUERY.get("name", ""), QUERY.get("tab"), QUERY.get("film"), QUERY.get("type", "movie"))
 elif action == "trailer":
     trailer(QUERY.get("type", "movie"), QUERY.get("tmdb"))
-elif action == "subtitles":
-    try:
-        if not QUERY.get("tmdb"):
-            raise Error("This item has no TMDB id")
-        if QUERY.get("type") in ("tv", "tvshow", "season", "episode"):
-            pack_subs(int(QUERY["tmdb"]),
-                      int(QUERY["season"]) if QUERY.get("season") else None,
-                      int(QUERY["episode"]) if QUERY.get("episode") else None)
-        else:
-            movie_subs(int(QUERY["tmdb"]))
-    except Error as e:
-        error(e)
-    except Exception as e:  # noqa: BLE001 - show what the plugin would hide
-        xbmcgui.Dialog().ok("Subtitles", f"{type(e).__name__}: {e}")
 elif action == "reload":
     reload()
 elif action == "open":
