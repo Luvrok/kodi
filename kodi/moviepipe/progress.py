@@ -40,6 +40,7 @@ class Progress(threading.Thread):
         self.monitor = xbmc.Monitor()
         self.home = xbmcgui.Window(10000)
         self.seen = {}
+        self.closed = {}
         self.pending = 0
         self.database = None
 
@@ -88,9 +89,15 @@ class Progress(threading.Thread):
             returned = stopped and self.active()
             final = stopped and (returned or now - updated > STALE)
             # returning from mpv to the film/show page leaves a stale
-            # snapshot there: close it, the list behind is then refreshed
-            if stopped and xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
-                xbmc.executebuiltin("Action(Close)")
+            # snapshot there: close it once, the list behind is then
+            # refreshed. once per session: the state stays stopped for CLEAN
+            # and every later tick would close the page the user just opened
+            if not stopped:
+                self.closed.pop(key, None)
+            elif key not in self.closed:
+                if xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
+                    xbmc.executebuiltin("Action(Close)")
+                self.closed[key] = now
             if entry:
                 # a final state is final only until mpv writes again (a
                 # paused or suspended player can look stopped for a while)
@@ -114,6 +121,9 @@ class Progress(threading.Thread):
         for key, entry in list(self.seen.items()):
             if now - entry["written"] > CLEAN:
                 del self.seen[key]
+        for key, when in list(self.closed.items()):
+            if now - when > CLEAN:
+                del self.closed[key]
         for name in glob.glob(os.path.join(directory, "*.json")):
             try:
                 if now - os.path.getmtime(name) > CLEAN:
