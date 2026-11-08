@@ -1,7 +1,7 @@
 # english subtitles become russian on jedha's subtitle translator
 # (hosts/jedha/subtitle-translator), next to the video as VIDEO.ru.srt,
-# when it has nothing russian: no russian ones from bazarr, no russian
-# track inside, no dub.
+# when it has no russian subtitle file: no russian ones from bazarr. a
+# russian dub does not stop it.
 #   subtitles.py CONFIG add VIDEO SUBTITLES LANGUAGE
 #     bazarr's post-processing, after each subtitle it downloads: an
 #     english one goes in the queue. in two minutes, the rest of that
@@ -14,7 +14,6 @@ import hashlib
 import json
 import os
 import re
-import subprocess
 import sys
 import time
 import urllib.error
@@ -62,20 +61,6 @@ def neighbours(video):
     return {os.path.join(folder, f): f[len(base) :] for f in os.listdir(folder) if f.startswith(base + ".")}
 
 
-def russian_inside(video):
-    # a russian dub or subtitle track in the video
-    out = subprocess.run(
-        [C["ffprobe"], "-v", "error", "-show_entries", "stream=codec_type:stream_tags=language", "-of", "json", video],
-        capture_output=True,
-        text=True,
-    )
-    streams = json.loads(out.stdout or "{}").get("streams", [])
-    return any(
-        s.get("codec_type") in ("audio", "subtitle") and s.get("tags", {}).get("language", "").lower() in ("ru", "rus")
-        for s in streams
-    )
-
-
 def translate(text, key):
     # the first translator that answers: jedha through jedha-tunnel.nix,
     # then the same one from outside. its answer is a line per event:
@@ -119,7 +104,7 @@ def process(item):
         log(f"{video}: gone")
         return
     near = neighbours(video)
-    if any(RUSSIAN.match(s) for s in near.values()) or russian_inside(video):
+    if any(RUSSIAN.match(s) for s in near.values()):
         log(f"{video}: has russian")
         return
     english = item["subtitles"] if os.path.exists(item["subtitles"]) else None

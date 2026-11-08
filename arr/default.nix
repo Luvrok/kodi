@@ -124,7 +124,6 @@ let
         builtins.toJSON {
           inherit (s) queue;
           inherit secrets;
-          ffprobe = "${pkgs.ffmpeg-headless}/bin/ffprobe";
           # in order, the next one when one doesn't answer
           inherit (cfg.arr) translators;
         }

@@ -500,16 +500,17 @@ def bazarr(sec):
     api = Api("bazarr", C["bazarr"], "", header="X-API-KEY")
     api.wait()
     # russian and english for everything, profile 1 (./default.nix makes
-    # it the default). russian is skipped when the video has a russian dub
-    # (audio_exclude). an english one goes to ./subtitles.py, that makes it
-    # russian when there's still none
+    # it the default). a russian dub does not stop the russian search
+    # (audio_exclude off), a subtitle is only downloaded when the file has
+    # none yet (cutoff None: no upgrades). an english one goes to
+    # ./subtitles.py, that makes it russian when there's still none
     item = {"audio_exclude": "False", "audio_only_include": "False", "hi": "False", "forced": "False"}
     languages = {
         "profileId": 1,
         "name": "Russian, English",
         "cutoff": None,
         "items": [
-            dict(item, id=1, language="ru", audio_exclude="True"),
+            dict(item, id=1, language="ru"),
             dict(item, id=2, language="en"),
         ],
         "mustContain": [],
