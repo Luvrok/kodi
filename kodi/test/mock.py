@@ -179,15 +179,15 @@ QUEUE = {
                             "sizeleft": 6e9, "timeleft": "00:20:00", "status": "downloading",
                             "trackedDownloadState": "downloading", "quality": {"quality": {"name": "Bluray-1080p"}},
                             "indexer": "RuTracker (Prowlarr)", "statusMessages": [],
-                            "movie": {"title": "Dune: Part Two", "year": 2024, "tmdbId": 1008, "overview": LONG[:200],
+                            "movie": {"id": 55, "title": "Dune: Part Two", "year": 2024, "tmdbId": 1008, "overview": LONG[:200],
                                       "images": [{"coverType": "poster", "remoteUrl": "http://127.0.0.1:8765/img/w500/p1008.png"},
                                                  {"coverType": "fanart", "remoteUrl": "http://127.0.0.1:8765/img/w1280/b1008.png"}]}}]},
     "sonarr": {"records": [{"id": 2, "downloadId": "BBBB", "title": "Severance.S02.1080p.WEB-DL", "size": 20e9,
                             "sizeleft": 15e9, "timeleft": "01:20:00", "status": "downloading",
                             "trackedDownloadState": "downloading", "quality": {"quality": {"name": "WEBDL-1080p"}},
                             "indexer": "1337x", "statusMessages": [],
-                            "episode": {"seasonNumber": 2, "episodeNumber": 1},
-                            "series": {"title": "Severance", "year": 2022, "tmdbId": 2001, "overview": LONG[:200],
+                            "episode": {"id": 21, "seasonNumber": 2, "episodeNumber": 1},
+                            "series": {"id": 7, "title": "Severance", "year": 2022, "tmdbId": 2001, "overview": LONG[:200],
                                        "images": [{"coverType": "poster", "remoteUrl": "http://127.0.0.1:8765/img/w500/p2001.png"}]}}]},
 }
 
@@ -219,12 +219,31 @@ class Handler(BaseHTTPRequestHandler):
         app = {7878: "radarr", 8989: "sonarr"}.get(port)
         if app and url.path == "/api/v3/queue":
             return self.send(json.dumps(QUEUE[app]).encode())
+        if app == "radarr" and (m := re.fullmatch(r"/api/v3/movie/(\d+)", url.path)):
+            found = next((x for x in QUEUE["radarr"]["records"] if x["movie"]["id"] == int(m[1])), None)
+            if found:
+                movie = dict(found["movie"], monitored=True, hasFile=False,
+                             path="/media/outer-1/movies/Dune Part Two (2024)")
+                return self.send(json.dumps(movie).encode())
         if port == 8140 and url.path == "/api/v2/torrents/info":
             return self.send(json.dumps([
                 {"hash": "aaaa", "size": 10e9, "progress": 0.4, "eta": 1200, "state": "downloading", "dlspeed": 3e6, "num_seeds": 12, "num_complete": 40},
                 {"hash": "bbbb", "size": 20e9, "progress": 0.25, "eta": 4800, "state": "stalledDL", "dlspeed": 0, "num_seeds": 0, "num_complete": 9},
             ]).encode())
         return self.send(b"[]")
+
+    def do_PUT(self):
+        port = self.server.server_address[1]
+        body = self.rfile.read(int(self.headers.get("Content-Length") or 0))
+        LOG.write(f"{port} PUT {self.path} {body.decode(errors='replace')}\n")
+        LOG.flush()
+        return self.send(body)
+
+    def do_DELETE(self):
+        port = self.server.server_address[1]
+        LOG.write(f"{port} DELETE {self.path}\n")
+        LOG.flush()
+        return self.send(b"")
 
 
 for port in (8765, 7878, 8989, 8140):
