@@ -131,6 +131,12 @@ majan: 1080i/Includes_Home.xml: 5 of '<top>202</top>', wanted 6
   во время обновления (radarr + sonarr + qBittorrent, до 10 с каждый)
   блокировал UI-поток kodi до 30 с. Теперь `done.set()` и выход: поток
   видит флаг сразу после запросов и к окну не притрагивается.
+- `windows.remove()`: **Remove** в окне загрузок удалял торрент с
+  `skipRedownload=true`, но фильм или эпизоды оставались «wanted», и
+  следующий RSS Sync брал релиз заново (так вернулся Heart of the Beast).
+  Теперь `windows.forget()` снимает monitored с фильма или с эпизодов
+  удалённой раздачи; **Another release** по-прежнему оставляет «wanted» и
+  ищет следующую.
 
 ### 6. moviepipe: сервис не умирает и не держит kodi
 

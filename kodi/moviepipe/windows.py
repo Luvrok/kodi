@@ -430,6 +430,24 @@ def downloads():
     return rows, trouble
 
 
+def forget(app, records):
+    # what was removed here is not wanted any more: radarr and sonarr look
+    # for what is monitored and has no file, so skipRedownload alone only
+    # skipped the search right after the removal and the next rss sync
+    # brought the same film or episode back. another release keeps it
+    api = Api(app)
+    if app == "radarr":
+        for id in {r["movie"]["id"] for r in records if r.get("movie")}:
+            movie = api.get(f"/movie/{id}")
+            if movie.get("monitored"):
+                movie["monitored"] = False
+                api.put(f"/movie/{id}", movie)
+    else:
+        ids = sorted({r["episode"]["id"] for r in records if r.get("episode")})
+        if ids:
+            api.put("/episode/monitor", {"episodeIds": ids, "monitored": False})
+
+
 class Downloads(Window):
     # right on a row: its button (pause, go on), left: the row again.
     # space (kodi's pause) works the button from either. v marks a row (and
@@ -528,13 +546,17 @@ class Downloads(Window):
 
     def remove(self, keys, another=False):
         # from radarr's or sonarr's queue and from qbittorrent. another:
-        # this release to the blocklist, they look for the next one
+        # this release to the blocklist, they look for the next one, and the
+        # film or episode stays wanted. otherwise it's forgotten (forget):
+        # skipRedownload only skipped the search right after the removal
         keys = [k for k in keys if k in self.records]
         if not keys:
             return
         names = [name(k[0], self.records[k]) for k in keys]
         shown = names[:8] + ([f"and {len(names) - 8} more"] if len(names) > 8 else [])
-        if not another and not xbmcgui.Dialog().yesno("Remove from downloads", "\n".join(shown)):
+        if not another and not xbmcgui.Dialog().yesno(
+            "Remove from downloads", "\n".join(shown) + "\n\nIt won't be searched for again."
+        ):
             return
         for key in keys:
             try:
@@ -546,6 +568,8 @@ class Downloads(Window):
                     blocklist="true" if another else "false",
                     skipRedownload="false" if another else "true",
                 )
+                if not another:
+                    forget(key[0], self.records[key])
             except Error as e:
                 error(e)
         self.marked -= set(keys)
