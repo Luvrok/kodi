@@ -936,27 +936,6 @@
 								<label>$INFO[ListItem.Property(UnWatchedEpisodes),, NEW]</label>
 							</control>
 						</control>
-						<!-- show progress (fallback show cards) -->
-						<control type="progress">
-							<left>0</left>
-							<right>0</right>
-							<bottom>0</bottom>
-							<height>progress_h</height>
-							<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-							<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-							<info>ListItem.Property(WatchedEpisodePercent)</info>
-							<visible>String.IsEqual(ListItem.DBType,tvshow) + $EXP[ShowUnwatchedMarkers]</visible>
-						</control>
-						<control type="progress">
-							<left>0</left>
-							<right>0</right>
-							<bottom>0</bottom>
-							<height>progress_h</height>
-							<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-							<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-							<info>ListItem.PercentPlayed</info>
-							<visible>!String.IsEqual(ListItem.DBType,tvshow) + Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
-						</control>
 					</control>
 					<control type="group">
 						<visible>$EXP[Home_IsMoreItem]</visible>

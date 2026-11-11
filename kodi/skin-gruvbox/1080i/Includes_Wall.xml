@@ -168,27 +168,7 @@
 								<param name="marker" value="marker_s"/>
 								<param name="tab" value="marker_tab"/>
 							</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.PercentPlayed</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + ListItem.IsResumable + !$EXP[VidView_IsFolderType]</visible>
-							</control>
 							<include>VidView_TVMarkersSquare</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.Property(WatchedEpisodePercent)</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + $EXP[VidView_IsTVType] + $EXP[VidView_TVStarted]</visible>
-							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="160" height="240" condition="String.IsEqual(Skin.String(majan.wall.size),small) + Skin.HasSetting(majan.wall.nogap)">
@@ -235,27 +215,7 @@
 								<param name="marker" value="marker_s"/>
 								<param name="tab" value="marker_tab"/>
 							</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.PercentPlayed</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + ListItem.IsResumable + !$EXP[VidView_IsFolderType]</visible>
-							</control>
 							<include>VidView_TVMarkersSquare</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.Property(WatchedEpisodePercent)</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + $EXP[VidView_IsTVType] + $EXP[VidView_TVStarted]</visible>
-							</control>
 							<control type="group">
 								<visible>Control.HasFocus(506) + [!Skin.HasSetting(majan.wall.noborder) | Skin.HasSetting(majan.reducemotion)]</visible>
 								<control type="image">
@@ -365,27 +325,7 @@
 								<param name="marker" value="marker_s"/>
 								<param name="tab" value="marker_tab"/>
 							</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.PercentPlayed</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + ListItem.IsResumable + !$EXP[VidView_IsFolderType]</visible>
-							</control>
 							<include>VidView_TVMarkersSquare</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.Property(WatchedEpisodePercent)</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + $EXP[VidView_IsTVType] + $EXP[VidView_TVStarted]</visible>
-							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="240" height="360" condition="!String.IsEqual(Skin.String(majan.wall.size),small) + !String.IsEqual(Skin.String(majan.wall.size),large) + Skin.HasSetting(majan.wall.nogap)">
@@ -432,27 +372,7 @@
 								<param name="marker" value="marker_s"/>
 								<param name="tab" value="marker_tab"/>
 							</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.PercentPlayed</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + ListItem.IsResumable + !$EXP[VidView_IsFolderType]</visible>
-							</control>
 							<include>VidView_TVMarkersSquare</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.Property(WatchedEpisodePercent)</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + $EXP[VidView_IsTVType] + $EXP[VidView_TVStarted]</visible>
-							</control>
 							<control type="group">
 								<visible>Control.HasFocus(506) + [!Skin.HasSetting(majan.wall.noborder) | Skin.HasSetting(majan.reducemotion)]</visible>
 								<control type="image">
@@ -562,27 +482,7 @@
 								<param name="marker" value="marker_s"/>
 								<param name="tab" value="marker_tab"/>
 							</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.PercentPlayed</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + ListItem.IsResumable + !$EXP[VidView_IsFolderType]</visible>
-							</control>
 							<include>VidView_TVMarkersSquare</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.Property(WatchedEpisodePercent)</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + $EXP[VidView_IsTVType] + $EXP[VidView_TVStarted]</visible>
-							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="320" height="480" condition="String.IsEqual(Skin.String(majan.wall.size),large) + Skin.HasSetting(majan.wall.nogap)">
@@ -629,27 +529,7 @@
 								<param name="marker" value="marker_s"/>
 								<param name="tab" value="marker_tab"/>
 							</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.PercentPlayed</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + ListItem.IsResumable + !$EXP[VidView_IsFolderType]</visible>
-							</control>
 							<include>VidView_TVMarkersSquare</include>
-							<control type="progress">
-								<left>0</left>
-								<right>0</right>
-								<bottom>0</bottom>
-								<height>progress_h</height>
-								<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-								<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-								<info>ListItem.Property(WatchedEpisodePercent)</info>
-								<visible>$EXP[ShowUnwatchedMarkers] + $EXP[VidView_IsTVType] + $EXP[VidView_TVStarted]</visible>
-							</control>
 							<control type="group">
 								<visible>Control.HasFocus(506) + [!Skin.HasSetting(majan.wall.noborder) | Skin.HasSetting(majan.reducemotion)]</visible>
 								<control type="image">

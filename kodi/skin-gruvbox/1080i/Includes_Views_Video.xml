@@ -569,17 +569,6 @@
 				<param name="marker" value="$PARAM[marker]"/>
 				<param name="tab" value="$PARAM[tab]"/>
 			</include>
-			<!-- in progress: 4px accent bar on the bottom edge -->
-			<control type="progress">
-				<left>0</left>
-				<right>0</right>
-				<bottom>0</bottom>
-				<height>progress_h</height>
-				<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-				<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-				<info>ListItem.PercentPlayed</info>
-				<visible>$EXP[ShowUnwatchedMarkers] + ListItem.IsResumable + !$EXP[VidView_IsFolderType]</visible>
-			</control>
 		</definition>
 	</include>
 	<include name="VidView_MarkersSquare">
@@ -628,26 +617,6 @@
 	<include name="VidView_TVMarkers">
 		<include condition="Skin.HasSetting(majan.roundedcorners)">VidView_TVMarkersRound</include>
 		<include condition="!Skin.HasSetting(majan.roundedcorners)">VidView_TVMarkersSquare</include>
-		<control type="progress">
-			<left>0</left>
-			<right>0</right>
-			<bottom>0</bottom>
-			<height>progress_h</height>
-			<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-			<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-			<info>ListItem.Property(WatchedEpisodePercent)</info>
-			<visible>$EXP[ShowUnwatchedMarkers] + $EXP[VidView_IsTVType] + $EXP[VidView_TVStarted]</visible>
-		</control>
-		<control type="progress">
-			<left>0</left>
-			<right>0</right>
-			<bottom>0</bottom>
-			<height>progress_h</height>
-			<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-			<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-			<info>ListItem.PercentPlayed</info>
-			<visible>$EXP[ShowUnwatchedMarkers] + String.IsEqual(ListItem.DBType,movie) + Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
-		</control>
 	</include>
 	<include name="VidView_TVMarkersSquare">
 		<control type="group">
@@ -1760,26 +1729,6 @@
 					<param name="mask" value="masks/landscape_round8.png"/>
 				</include>
 				<include>VidView_NextUpTag</include>
-				<control type="progress">
-					<left>0</left>
-					<right>0</right>
-					<bottom>0</bottom>
-					<height>progress_h</height>
-					<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-					<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-					<info>ListItem.Property(WatchedEpisodePercent)</info>
-					<visible>$EXP[ShowUnwatchedMarkers] + String.IsEqual(ListItem.DBType,tvshow) + $EXP[VidView_TVStarted]</visible>
-				</control>
-				<control type="progress">
-					<left>0</left>
-					<right>0</right>
-					<bottom>0</bottom>
-					<height>progress_h</height>
-					<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-					<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-					<info>ListItem.PercentPlayed</info>
-					<visible>$EXP[ShowUnwatchedMarkers] + !String.IsEqual(ListItem.DBType,tvshow) + Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
-				</control>
 				<include content="VidView_PosterFocus" condition="$PARAM[focused]">
 					<param name="id" value="9310"/>
 				</include>

@@ -253,17 +253,6 @@
 			<texture>markers/watched_round.png</texture>
 			<visible>$EXP[ShowWatchedMarkers] + $EXP[ListItemIsVideoFile] + $EXP[ListItemWatched] + Skin.HasSetting(majan.roundedcorners)</visible>
 		</control>
-		<!-- in progress: accent bar on the bottom edge -->
-		<control type="progress">
-			<left>0</left>
-			<right>0</right>
-			<bottom>0</bottom>
-			<height>progress_h</height>
-			<texturebg colordiffuse="scrim_track">common/white.png</texturebg>
-			<midtexture colordiffuse="$VAR[ColorAccent]">common/white.png</midtexture>
-			<info>ListItem.PercentPlayed</info>
-			<visible>$EXP[ShowUnwatchedMarkers] + ListItem.IsResumable</visible>
-		</control>
 	</include>
 
 	<!-- ========================================================== buttons -->

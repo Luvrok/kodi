@@ -62,7 +62,6 @@
 	<constant name="spot_poster_pitch">193.333</constant> <!-- 181.333 + gap 12 -->
 	<constant name="marker_s">12</constant>               <!-- unwatched square in rows -->
 	<constant name="marker_tab">22</constant>             <!-- watched tab in rows -->
-	<constant name="progress_h">4</constant>
 
 	<!-- Home spotlight (HomeTuned.dc.html) -->
 	<constant name="spot_text_w">704</constant>
