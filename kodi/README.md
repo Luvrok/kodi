@@ -137,6 +137,12 @@ majan: 1080i/Includes_Home.xml: 5 of '<top>202</top>', wanted 6
   Теперь `windows.forget()` снимает monitored с фильма или с эпизодов
   удалённой раздачи; **Another release** по-прежнему оставляет «wanted» и
   ищет следующую.
+- `actions.delete()`: «Delete from disk» у фильма, которого нет в radarr
+  (скачан до его установки или добавлен в библиотеку руками), раньше падал
+  с «radarr doesn't have…». Теперь `actions.erase()` сам удаляет файл и
+  названное по нему (nfo, арт `Name-poster.png`, субтитры `Name.ru.srt`),
+  пустую папку и запись в библиотеке kodi. Файлы принадлежат пользователю
+  kodi, так что права те же, что у radarr.
 
 ### 6. moviepipe: сервис не умирает и не держит kodi
 

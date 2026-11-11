@@ -148,6 +148,32 @@ def inside(path, folder):
     return (path.rstrip("/") + "/").startswith(folder)
 
 
+def erase(path):
+    # a film radarr doesn't know (downloaded before it was installed, or
+    # added to kodi by hand): its file and what is named after it - kodi's
+    # nfo and art (Name-poster.png), subtitles (Name.ru.srt) - then the
+    # folder if that left it empty. the library's files are kodi's user's,
+    # so kodi can do this itself
+    folder, name = os.path.split(path)
+    stem = os.path.splitext(name)[0]
+    try:
+        names = os.listdir(folder)
+    except OSError as e:
+        raise Error(f"can't delete {path}: {e.strerror}")
+    if name not in names:
+        raise Error(f"can't delete {path}: it isn't there")
+    for entry in names:
+        if entry == name or entry.startswith(stem + ".") or entry.startswith(stem + "-"):
+            try:
+                os.remove(os.path.join(folder, entry))
+            except OSError as e:
+                raise Error(f"can't delete {entry}: {e.strerror}")
+    try:
+        os.rmdir(folder)  # only when nothing else is left in it
+    except OSError:
+        pass
+
+
 def ids(details):
     unique = details.get("uniqueid") or {}
 
@@ -172,7 +198,15 @@ def delete(kind, dbid):
             None,
         )
         if m is None:
-            raise Error(f"radarr doesn't have {d['title']}")
+            # not radarr's (downloaded before it was installed, say): its
+            # file still is kodi's, so delete that one and forget the film
+            name = f"{d['title']} ({d['year']})" if d.get("year") else d["title"]
+            if not xbmcgui.Dialog().yesno("Delete from disk", f"{name}\n\nRadarr doesn't have this film. Its file is deleted from the disk and Kodi forgets it, so it won't be downloaded again."):
+                return
+            erase(d["file"])
+            rpc("VideoLibrary.RemoveMovie", movieid=dbid)
+            notify(name, "Deleted")
+            return
         name = f"{m['title']} ({m['year']})"
         if not xbmcgui.Dialog().yesno("Delete from disk", f"{name}\n\nRadarr deletes the film and its files. It won't be downloaded again."):
             return

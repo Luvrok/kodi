@@ -5,7 +5,7 @@
      disk" in the menu of the library's, the window of its downloads (6,
      or video add-ons), discover (5), kodi's library scanned when one is
      in. ../addons.nix builds it -->
-<addon id="plugin.video.moviepipe" name="Movie pipe" version="1.1.4" provider-name="barnard">
+<addon id="plugin.video.moviepipe" name="Movie pipe" version="1.1.5" provider-name="barnard">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 	</requires>
