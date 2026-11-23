@@ -84,11 +84,12 @@ launch() {
   # no proxy: the mock is 127.0.0.1. a null audio sink: no sound card. no
   # core file of a crash in the working directory. run.sh xray's
   # image.tmdb.org: its certificate (nixpkgs' openssl reads NIX_SSL_CERT_FILE
-  # first, this container has one)
+  # first, this container has one). KODI_DATA too: barnard's session exports
+  # it, and HOME alone would leave the stand on barnard's library
   ulimit -c 0
   cert=$STATE/xray/cert.pem
   [ -e $cert ] || cert=
-  env -u HTTPS_PROXY -u HTTP_PROXY -u https_proxy -u http_proxy -u ALL_PROXY -u NO_PROXY -u no_proxy \
+  env -u KODI_DATA -u HTTPS_PROXY -u HTTP_PROXY -u https_proxy -u http_proxy -u ALL_PROXY -u NO_PROXY -u no_proxy \
     ${cert:+SSL_CERT_FILE=$cert NIX_SSL_CERT_FILE=$cert} HOME=$STATE/home LD_LIBRARY_PATH=$2/lib LIBGL_DRIVERS_PATH=$2/lib/dri \
     __EGL_VENDOR_LIBRARY_DIRS=$2/share/glvnd/egl_vendor.d __GLX_VENDOR_LIBRARY_NAME=mesa LIBGL_ALWAYS_SOFTWARE=1 \
     KODI_AE_SINK=NULL $1/bin/kodi --gl-interface=egl --standalone >$STATE/kodi.out 2>&1 &
