@@ -7,15 +7,18 @@
 #   delete: radarr or sonarr delete it with its files (they can, kodi
 #     can't write there), kodi's library forgets it. radarr and sonarr
 #     don't download it again: the film or show is gone from them, a
-#     season or an episode isn't wanted any more
+#     season or an episode isn't wanted any more. what they don't have (a
+#     pack downloaded before they were installed, or added to kodi by
+#     hand) kodi deletes itself
 import json
 import os
+import shutil
 import time
 
 import xbmc
 import xbmcgui
 
-from arr import Api, Error, notify, waiting
+from arr import Api, C, Error, notify, waiting
 from windows import choose
 
 # s: a film or a show looked up or added, radarr and sonarr wait for their
@@ -174,6 +177,36 @@ def erase(path):
         pass
 
 
+def kodi_files(show, season=None):
+    # a show's files in kodi's library: kodi keeps them when they are gone
+    # from the disk, so this is what a stale show is forgotten by
+    params = {"tvshowid": show, "properties": ["file"]}
+    if season is not None:
+        params["season"] = season
+    found = rpc("VideoLibrary.GetEpisodes", **params).get("episodes") or []
+    return [x["file"] for x in found if x.get("file")]
+
+
+def erase_show(folder, files):
+    # a show sonarr doesn't know (a pack downloaded before it was
+    # installed, or added to kodi by hand): its folder whole, the way
+    # sonarr deletes a show, when kodi gave one under the library's. kodi
+    # gives the folder the episodes are in, so a library that keeps
+    # several shows in one folder falls back to the files one by one and
+    # the folders that leaves empty
+    root = os.path.normpath(C["library"]["sonarr"])
+    folder = os.path.normpath(folder) if folder else ""
+    if folder and folder != root and inside(folder, root) and os.path.isdir(folder):
+        try:
+            shutil.rmtree(folder)
+        except OSError as e:
+            raise Error(f"can't delete {folder}: {e.strerror}")
+        return
+    for path in files:
+        if os.path.exists(path):
+            erase(path)
+
+
 def ids(details):
     unique = details.get("uniqueid") or {}
 
@@ -218,7 +251,8 @@ def delete(kind, dbid):
     if kind == "tvshow":
         show = dbid
     elif kind == "season":
-        show = rpc("VideoLibrary.GetSeasonDetails", seasonid=dbid, properties=["tvshowid"])["seasondetails"]["tvshowid"]
+        found = rpc("VideoLibrary.GetSeasonDetails", seasonid=dbid, properties=["tvshowid", "season"])["seasondetails"]
+        show, number = found["tvshowid"], found["season"]
     else:
         e = rpc("VideoLibrary.GetEpisodeDetails", episodeid=dbid, properties=["tvshowid", "season", "episode"])["episodedetails"]
         show = e["tvshowid"]
@@ -234,7 +268,33 @@ def delete(kind, dbid):
         None,
     )
     if s is None:
-        raise Error(f"sonarr doesn't have {d['title']}")
+        # not sonarr's (a pack downloaded before it was installed, say):
+        # the library's files are kodi's user's, so delete those and
+        # forget what was asked for
+        if kind == "tvshow":
+            name = d["title"]
+            said = "Its folder is deleted from the disk and Kodi forgets the show"
+        elif kind == "season":
+            name = f"{d['title']}, season {number}"
+            said = "Its files are deleted from the disk and Kodi forgets them"
+        else:
+            name = f"{d['title']} S{e['season']:02}E{e['episode']:02}"
+            said = "Its file is deleted from the disk and Kodi forgets it"
+        if not xbmcgui.Dialog().yesno("Delete from disk", f"{name}\n\nSonarr doesn't have this show. {said}, so it won't be downloaded again."):
+            return
+        if kind == "tvshow":
+            erase_show(d["file"], kodi_files(show))
+            rpc("VideoLibrary.RemoveTVShow", tvshowid=show)
+        else:
+            paths = kodi_files(show, number) if kind == "season" else [e["file"]]
+            for path in paths:
+                if os.path.exists(path):
+                    erase(path)
+            # kodi drops what's gone from that show's folder
+            if d["file"]:
+                rpc("VideoLibrary.Clean", directory=os.path.join(d["file"], ""), showdialogs=False)
+        notify(name, "Deleted")
+        return
 
     if kind == "tvshow":
         if not xbmcgui.Dialog().yesno("Delete from disk", f"{s['title']}\n\nSonarr deletes the show and all its files. It won't be downloaded again."):
@@ -245,7 +305,6 @@ def delete(kind, dbid):
         return
 
     if kind == "season":
-        number = rpc("VideoLibrary.GetSeasonDetails", seasonid=dbid, properties=["season"])["seasondetails"]["season"]
         name = f"{s['title']}, season {number}"
         mine = [x for x in sonarr.get("/episode", seriesId=s["id"]) if x["seasonNumber"] == number]
     else:
