@@ -41,8 +41,10 @@ let
         # and resume anyway)
         "myvideos.selectaction" = "2"; # ACTION_RESUME
         "myvideos.playaction" = "2"; # ACTION_RESUME
-        # kodi's own click set: no 6 s startup.wav (the titan set has one)
-        "lookandfeel.soundskin" = "resource.uisounds.kodi";
+        # no gui sounds: the empty sound set is "None" in kodi's settings
+        # (the setting allows it), and it's in userdata.py's FORCE, so a
+        # value changed by hand doesn't come back
+        "lookandfeel.soundskin" = "";
       };
     }
   );
