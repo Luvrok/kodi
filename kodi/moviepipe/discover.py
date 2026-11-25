@@ -85,8 +85,8 @@ ROWS = {
 # window at 6, it isn't a row here)
 FIRST, LAST = 1, 10
 # the chips, and the rows' SendClick: 40 + n the next page, 50 + n back
-# (two-digit n: 40 + 10 = 410), 105 collections (./sets.py)
-MOVIES, SHOWS, SEARCH, BROWSE, COLLECTIONS = 101, 102, 103, 104, 105
+# (two-digit n: 40 + 10 = 410)
+MOVIES, SHOWS, SEARCH, BROWSE = 101, 102, 103, 104
 NEXTPAGES = tuple(40 + n for n in range(1, LAST + 1))
 BACKPAGES = tuple(50 + n for n in range(1, LAST + 1))
 # rows past the focus that get their path: each is tmdb helper asking tmdb
@@ -296,11 +296,6 @@ class Discover(xbmcgui.WindowXML):
             if query:
                 self.query = query
                 self.show("search")
-        elif cid == COLLECTIONS:
-            # over this window, so esc is back here (./sets.py)
-            xbmc.executebuiltin(
-                "RunPlugin(plugin://plugin.video.moviepipe/?action=collections)"
-            )
         elif cid == BROWSE:
             # videos over this window, return: esc is back here, not home
             xbmc.executebuiltin(f"ActivateWindow(Videos,{HELPER},return)")

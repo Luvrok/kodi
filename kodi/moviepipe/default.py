@@ -17,8 +17,6 @@
 #                      the page in the browser, ./browser.py (more on the
 #                      film page)
 #   ?action=page&row=N&by=1|-1  home's row N's page of tmdb helper
-#   ?action=collections  the library's collections and tmdb's to search,
-#                      ./sets.py
 import sys
 import time
 import urllib.parse
@@ -33,7 +31,6 @@ from browser import browse, url
 from discover import discover
 from downloads import downloads, show_downloads
 from person import person
-from sets import collections
 from tmdb import settle
 from trailer import trailer
 
@@ -133,10 +130,5 @@ elif action == "open":
     )
 elif action == "page":
     page()
-elif action == "collections":
-    try:
-        collections()
-    except Exception as e:  # noqa: BLE001 - show what the plugin would hide
-        xbmcgui.Dialog().ok("Collections", f"{type(e).__name__}: {e}")
 else:
     listing()

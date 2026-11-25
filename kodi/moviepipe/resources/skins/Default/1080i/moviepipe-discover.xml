@@ -44,7 +44,7 @@
 		<control type="grouplist" id="9000">
 			<left>520</left>
 			<top>56</top>
-			<width>1000</width>
+			<width>820</width>
 			<height>subnav_h</height>
 			<orientation>horizontal</orientation>
 			<usecontrolcoords>true</usecontrolcoords>
@@ -76,14 +76,6 @@
 			<include content="MoviePipe_Chip">
 				<param name="id" value="104"/>
 				<param name="label" value="ALL OF TMDB HELPER"/>
-				<param name="shown" value="false"/>
-				<param name="left" value="24"/>
-				<param name="onup" value="noop"/>
-				<param name="ondown" value="201"/>
-			</include>
-			<include content="MoviePipe_Chip">
-				<param name="id" value="105"/>
-				<param name="label" value="COLLECTIONS"/>
 				<param name="shown" value="false"/>
 				<param name="left" value="24"/>
 				<param name="onup" value="noop"/>
