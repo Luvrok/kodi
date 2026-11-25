@@ -9,19 +9,18 @@
 # tag on its tiles. the last tile turns the row's page, left on the first
 # one back. a row gets its path when the focus is two rows from it: tmdb
 # helper asks tmdb for every poster's details the first time. SEARCH: what
-# tmdb finds, back the rows again. up from the rows: the plot on top,
-# enter all of it. t a trailer, o the tmdb page in the browser, r the rows
-# again
+# tmdb finds, back the rows again. t a trailer, o the tmdb page in the
+# browser, r the rows again
 import threading
 import time
 
 import xbmc
 import xbmcgui
 
-from actions import rpc
 from arr import Error
 from browser import browse, url
 from keys import letter
+from kodi import rpc
 from tmdb import HELPER, helper, info, settle
 from trailer import trailer
 from windows import window
@@ -34,8 +33,12 @@ NETFLIX, PRIME, APPLE = 8, 9, 350
 
 
 def top(region, provider):
-    return {"with_watch_providers": str(provider), "watch_region": region,
-            "with_id": "True", "sort_by": "popularity.desc"}
+    return {
+        "with_watch_providers": str(provider),
+        "watch_region": region,
+        "with_id": "True",
+        "sort_by": "popularity.desc",
+    }
 
 
 ROWS = {
@@ -53,8 +56,17 @@ ROWS = {
     "tv": [
         ("Trending this week", "trending_week", "tv", {}),
         ("Trending today", "trending_day", "tv", {}),
-        ("Trending anime", "discover", "tv", {"with_genres": "16", "with_id": "True",
-                                              "with_original_language": "ja", "sort_by": "popularity.desc"}),
+        (
+            "Trending anime",
+            "discover",
+            "tv",
+            {
+                "with_genres": "16",
+                "with_id": "True",
+                "with_original_language": "ja",
+                "sort_by": "popularity.desc",
+            },
+        ),
         ("Top 10 Netflix", "discover", "tv", top("US", NETFLIX)),
         ("Top 10 Prime Video", "discover", "tv", top("US", PRIME)),
         ("Top 10 Apple TV+", "discover", "tv", top("US", APPLE)),
@@ -72,9 +84,9 @@ ROWS = {
 # row n is list 200 + n, 1..10 tmdb's lists (what downloads has its own
 # window at 6, it isn't a row here)
 FIRST, LAST = 1, 10
-# the chips, the plot on top, and the rows' SendClick: 40 + n the next
-# page, 50 + n back (two-digit n: 40 + 10 = 410)
-MOVIES, SHOWS, SEARCH, BROWSE, PLOT = 101, 102, 103, 104, 9100
+# the chips, and the rows' SendClick: 40 + n the next page, 50 + n back
+# (two-digit n: 40 + 10 = 410), 105 collections (./sets.py)
+MOVIES, SHOWS, SEARCH, BROWSE, COLLECTIONS = 101, 102, 103, 104, 105
 NEXTPAGES = tuple(40 + n for n in range(1, LAST + 1))
 BACKPAGES = tuple(50 + n for n in range(1, LAST + 1))
 # rows past the focus that get their path: each is tmdb helper asking tmdb
@@ -86,19 +98,44 @@ TICK = 0.2
 
 def newest(kind):
     # the library's last added film or show: (title, tmdb id)
-    method, key = ("VideoLibrary.GetMovies", "movies") if kind == "movie" else ("VideoLibrary.GetTVShows", "tvshows")
+    method, key = (
+        ("VideoLibrary.GetMovies", "movies")
+        if kind == "movie"
+        else ("VideoLibrary.GetTVShows", "tvshows")
+    )
     try:
-        found = rpc(method, properties=["title", "uniqueid"], sort={"method": "dateadded", "order": "descending"}, limits={"end": 10}).get(key) or []
+        found = (
+            rpc(
+                method,
+                properties=["title", "uniqueid"],
+                sort={"method": "dateadded", "order": "descending"},
+                limits={"end": 10},
+            ).get(key)
+            or []
+        )
     except Error:
         return None
-    return next(((x["title"], x["uniqueid"]["tmdb"]) for x in found if (x.get("uniqueid") or {}).get("tmdb")), None)
+    return next(
+        (
+            (x["title"], x["uniqueid"]["tmdb"])
+            for x in found
+            if (x.get("uniqueid") or {}).get("tmdb")
+        ),
+        None,
+    )
 
 
 class Row:
     # a row's name, tmdb helper's params for it, what's on it, its page and
     # whether its tiles carry a tag (a row that isn't out yet: "soon")
     def __init__(self, title, params, kind, tag=""):
-        self.title, self.params, self.kind, self.tag, self.page = title, params, kind, tag, 1
+        self.title, self.params, self.kind, self.tag, self.page = (
+            title,
+            params,
+            kind,
+            tag,
+            1,
+        )
 
 
 class Discover(xbmcgui.WindowXML):
@@ -145,7 +182,9 @@ class Discover(xbmcgui.WindowXML):
                 params["tmdb_id"] = found[1]
             if kind == "search":
                 params["query"] = self.query
-            rows.append(Row(title, params, what, tag="soon" if kind == "upcoming" else ""))
+            rows.append(
+                Row(title, params, what, tag="soon" if kind == "upcoming" else "")
+            )
         self.rows = {FIRST + i: row for i, row in enumerate(rows)}
         self.loads += 1
         load = self.loads
@@ -163,7 +202,10 @@ class Discover(xbmcgui.WindowXML):
     def first(self, load):
         # the first row on top once it's in (the old rows' tile stood there
         # otherwise), the focus on it unless it went elsewhere
-        if not settle(200 + FIRST, lambda: self.gone() or load != self.loads) or load != self.loads:
+        if (
+            not settle(200 + FIRST, lambda: self.gone() or load != self.loads)
+            or load != self.loads
+        ):
             return
         if not 201 <= self.getFocusId() <= 200 + LAST:
             self.setProperty("row", str(200 + FIRST))
@@ -188,12 +230,18 @@ class Discover(xbmcgui.WindowXML):
         self.setProperty(f"row{n}.kind", row.kind)
         self.setProperty(f"row{n}.tag", row.tag)
         self.setProperty(f"row{n}.page", str(row.page))
-        self.setProperty(f"row{n}.path", helper(**row.params, page=page, reload=self.stamp))
+        self.setProperty(
+            f"row{n}.path", helper(**row.params, page=page, reload=self.stamp)
+        )
         threading.Thread(target=self.empty, args=(n, self.loads), daemon=True).start()
 
     def empty(self, n, load):
         # a row that came back empty goes, the focus skips it
-        if not settle(200 + n, lambda: self.gone() or load != self.loads) and load == self.loads and not self.gone():
+        if (
+            not settle(200 + n, lambda: self.gone() or load != self.loads)
+            and load == self.loads
+            and not self.gone()
+        ):
             self.setProperty(f"row{n}.empty", "1")
 
     def turn(self, n, by):
@@ -222,7 +270,9 @@ class Discover(xbmcgui.WindowXML):
         while not self.closing and not monitor.waitForAbort(TICK):
             try:
                 focus = self.getFocusId()
-                if 200 + FIRST <= focus <= 200 + LAST and str(focus) != self.getProperty("row"):
+                if 200 + FIRST <= focus <= 200 + LAST and str(
+                    focus
+                ) != self.getProperty("row"):
                     self.setProperty("row", str(focus))
                     if focus > 200 + FIRST:
                         self.moved = True
@@ -238,16 +288,21 @@ class Discover(xbmcgui.WindowXML):
         elif cid == SHOWS:
             self.show("tv")
         elif cid == SEARCH:
-            query = xbmcgui.Dialog().input("Search TMDb: films, shows, people", self.query).strip()
+            query = (
+                xbmcgui.Dialog()
+                .input("Search TMDb: films, shows, people", self.query)
+                .strip()
+            )
             if query:
                 self.query = query
                 self.show("search")
-        elif cid == PLOT:
-            row = self.getProperty("row")
-            if row:
-                xbmcgui.Dialog().textviewer(info(f"Container({row}).ListItem.Label"), info(f"Container({row}).ListItem.Plot"))
+        elif cid == COLLECTIONS:
+            # over this window, so esc is back here (./sets.py)
+            xbmc.executebuiltin(
+                "RunPlugin(plugin://plugin.video.moviepipe/?action=collections)"
+            )
         elif cid == BROWSE:
-            self.leave()
+            # videos over this window, return: esc is back here, not home
             xbmc.executebuiltin(f"ActivateWindow(Videos,{HELPER},return)")
         elif cid == 410:
             self.turn(10, 1)
@@ -262,7 +317,12 @@ class Discover(xbmcgui.WindowXML):
         a = action.getId()
         key = letter(action)
         focus = self.getFocusId()
-        if a in (xbmcgui.ACTION_MOVE_UP, xbmcgui.ACTION_MOVE_DOWN, xbmcgui.ACTION_MOVE_LEFT, xbmcgui.ACTION_MOVE_RIGHT):
+        if a in (
+            xbmcgui.ACTION_MOVE_UP,
+            xbmcgui.ACTION_MOVE_DOWN,
+            xbmcgui.ACTION_MOVE_LEFT,
+            xbmcgui.ACTION_MOVE_RIGHT,
+        ):
             self.moved = True
         elif key == "r":
             # every row again, tmdb helper asked anew
@@ -272,11 +332,29 @@ class Discover(xbmcgui.WindowXML):
         elif key == "o" and 201 <= focus <= 200 + LAST:
             # its tmdb page in the browser: a film's, a show's, a person's
             item = f"Container({focus}).ListItem"
-            kind = "person" if info(f"{item}.Property(tmdb_type)") == "person" else "tv" if info(f"{item}.DBType") == "tvshow" else "movie"
-            browse(url("tmdb", kind, info(f"{item}.UniqueID(tmdb)") or info(f"{item}.Property(tmdb_id)")))
+            kind = (
+                "person"
+                if info(f"{item}.Property(tmdb_type)") == "person"
+                else "tv"
+                if info(f"{item}.DBType") == "tvshow"
+                else "movie"
+            )
+            browse(
+                url(
+                    "tmdb",
+                    kind,
+                    info(f"{item}.UniqueID(tmdb)") or info(f"{item}.Property(tmdb_id)"),
+                )
+            )
         elif key == "t" and 201 <= focus <= 200 + LAST:
-            tmdb = info(f"Container({focus}).ListItem.UniqueID(tmdb)") or info(f"Container({focus}).ListItem.Property(tmdb_id)")
-            kind = "tv" if info(f"Container({focus}).ListItem.DBType") == "tvshow" else "movie"
+            tmdb = info(f"Container({focus}).ListItem.UniqueID(tmdb)") or info(
+                f"Container({focus}).ListItem.Property(tmdb_id)"
+            )
+            kind = (
+                "tv"
+                if info(f"Container({focus}).ListItem.DBType") == "tvshow"
+                else "movie"
+            )
             if tmdb:
                 trailer(kind, tmdb)
         elif a in (xbmcgui.ACTION_NAV_BACK, xbmcgui.ACTION_PREVIOUS_MENU):

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- collections (../../../../sets.py): the library's movie sets or tmdb's
+     by a search, as majan's poster wall. the chips above: library or tmdb,
+     the search, and the library's order (title, films). the wall is kodi's
+     panel, filled by the add-on; enter opens the collection's films in
+     videos, this window under them (esc is back here). majan's fonts,
+     colours and textures; the two layouts of a tile are the same but for
+     the focus -->
+<window>
+	<defaultcontrol always="true">301</defaultcontrol>
+	<include>Anim_WindowOpenClose</include>
+	<controls>
+		<include>Majan_Background</include>
+		<include content="Majan_TopBar">
+			<param name="index" value="TMDb"/>
+			<param name="title" value="Collections"/>
+			<param name="sub" value="$INFO[Window.Property(count)]"/>
+		</include>
+		<!-- the chips: library or tmdb, a search, the library's order -->
+		<control type="grouplist" id="9000">
+			<left>520</left>
+			<top>56</top>
+			<width>1000</width>
+			<height>subnav_h</height>
+			<orientation>horizontal</orientation>
+			<usecontrolcoords>true</usecontrolcoords>
+			<itemgap>12</itemgap>
+			<onleft>noop</onleft>
+			<onright>noop</onright>
+			<include content="MoviePipe_Chip">
+				<param name="id" value="101"/>
+				<param name="label" value="LIBRARY"/>
+				<param name="shown" value="String.IsEqual(Window.Property(mode),library)"/>
+				<param name="onup" value="noop"/>
+				<param name="ondown" value="301"/>
+			</include>
+			<include content="MoviePipe_Chip">
+				<param name="id" value="102"/>
+				<param name="label" value="TMDB"/>
+				<param name="shown" value="String.IsEqual(Window.Property(mode),tmdb)"/>
+				<param name="onup" value="noop"/>
+				<param name="ondown" value="301"/>
+			</include>
+			<include content="MoviePipe_Chip">
+				<param name="id" value="103"/>
+				<param name="label" value="SEARCH$INFO[Window.Property(query), ,]"/>
+				<param name="shown" value="false"/>
+				<param name="left" value="24"/>
+				<param name="onup" value="noop"/>
+				<param name="ondown" value="301"/>
+			</include>
+			<include content="MoviePipe_Chip">
+				<param name="id" value="111"/>
+				<param name="label" value="TITLE"/>
+				<param name="shown" value="String.IsEqual(Window.Property(sort),title)"/>
+				<param name="left" value="24"/>
+				<param name="onup" value="noop"/>
+				<param name="ondown" value="301"/>
+				<param name="visible" value="String.IsEqual(Window.Property(mode),library)"/>
+			</include>
+			<include content="MoviePipe_Chip">
+				<param name="id" value="112"/>
+				<param name="label" value="FILMS"/>
+				<param name="shown" value="String.IsEqual(Window.Property(sort),films)"/>
+				<param name="onup" value="noop"/>
+				<param name="ondown" value="301"/>
+				<param name="visible" value="String.IsEqual(Window.Property(mode),library)"/>
+			</include>
+		</control>
+		<control type="label">
+			<left>page_margin</left>
+			<top>176</top>
+			<width>page_width</width>
+			<height>24</height>
+			<font>mono_15</font>
+			<textcolor>$VAR[ColorCaption]</textcolor>
+			<label>$INFO[Window.Property(empty)]</label>
+		</control>
+		<!-- the wall: 8 a row, the next one peeks in at the bottom -->
+		<control type="panel" id="301">
+			<left>page_margin</left>
+			<top>170</top>
+			<width>page_width</width>
+			<height>812</height>
+			<orientation>vertical</orientation>
+			<preloaditems>2</preloaditems>
+			<scrolltime tween="cubic" easing="out">200</scrolltime>
+			<onup>9000</onup>
+			<ondown>noop</ondown>
+			<onleft>noop</onleft>
+			<onright>noop</onright>
+			<itemlayout width="228" height="380">
+				<control type="group">
+					<left>14</left>
+					<top>0</top>
+					<width>200</width>
+					<height>300</height>
+					<include>Majan_Artwork</include>
+				</control>
+				<control type="label">
+					<left>14</left>
+					<top>310</top>
+					<width>200</width>
+					<height>48</height>
+					<font>card_21_bold</font>
+					<textcolor>text_primary</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<left>14</left>
+					<top>356</top>
+					<width>200</width>
+					<height>20</height>
+					<font>mono_13</font>
+					<textcolor>$VAR[ColorCaption]</textcolor>
+					<label>$INFO[ListItem.Property(films)]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout width="228" height="380">
+				<control type="group">
+					<left>14</left>
+					<top>0</top>
+					<width>200</width>
+					<height>300</height>
+					<include>Anim_FocusZoom</include>
+					<include>Majan_Artwork</include>
+					<include content="Majan_FocusFrame">
+						<param name="visible" value="Control.HasFocus(301)"/>
+					</include>
+				</control>
+				<control type="label">
+					<left>14</left>
+					<top>310</top>
+					<width>200</width>
+					<height>48</height>
+					<font>card_21_bold</font>
+					<textcolor>text_primary</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<left>14</left>
+					<top>356</top>
+					<width>200</width>
+					<height>20</height>
+					<font>mono_13</font>
+					<textcolor>$VAR[ColorCaption]</textcolor>
+					<label>$INFO[ListItem.Property(films)]</label>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="label">
+			<right>page_margin</right>
+			<top>996</top>
+			<width>1500</width>
+			<height>20</height>
+			<align>right</align>
+			<font>mono_13</font>
+			<textcolor>$VAR[ColorCaption]</textcolor>
+			<label>ENTER — THE FILMS · ESC — BACK · TITLE / FILMS — ORDER</label>
+		</control>
+	</controls>
+</window>

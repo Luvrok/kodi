@@ -282,8 +282,7 @@
 						</control>
 					</control>
 				</control>
-				<!-- the biography, 6 lines, the rest fading out under them,
-				     enter: all of it -->
+				<!-- the biography, 6 lines, the rest fading out under them -->
 				<control type="group">
 					<left>16</left>
 					<width>vidview_col_w</width>
@@ -297,23 +296,6 @@
 						<param name="font" value="body_26"/>
 						<param name="label" value="$INFO[Window.Property(bio)]"/>
 					</include>
-					<control type="button" id="9001">
-						<width>1080</width>
-						<height>228</height>
-						<label></label>
-						<texturefocus/>
-						<texturenofocus/>
-						<onup>noop</onup>
-						<ondown>9000</ondown>
-						<onleft>noop</onleft>
-						<onright>noop</onright>
-					</control>
-					<control type="group">
-						<width>1080</width>
-						<height>228</height>
-						<visible>Control.HasFocus(9001)</visible>
-						<include>Majan_FocusFrameAlways</include>
-					</control>
 				</control>
 			</control>
 			<!-- the tabs and the orders, where the film page's buttons are -->
@@ -325,7 +307,6 @@
 				<orientation>horizontal</orientation>
 				<usecontrolcoords>true</usecontrolcoords>
 				<itemgap>12</itemgap>
-				<onup condition="Control.IsVisible(9001)">9001</onup>
 				<ondown condition="Integer.IsGreater(Container(500).NumItems,0)">500</ondown>
 				<onleft>noop</onleft>
 				<onright>noop</onright>
@@ -333,7 +314,7 @@
 					<param name="id" value="101"/>
 					<param name="label" value="FILMS"/>
 					<param name="shown" value="String.IsEqual(Window.Property(tab),films)"/>
-					<param name="onup" value="9001"/>
+					<param name="onup" value="noop"/>
 					<param name="ondown" value="500"/>
 					<param name="visible" value="!String.IsEmpty(Window.Property(has_films))"/>
 				</include>
@@ -341,7 +322,7 @@
 					<param name="id" value="102"/>
 					<param name="label" value="TV SHOWS"/>
 					<param name="shown" value="String.IsEqual(Window.Property(tab),tv)"/>
-					<param name="onup" value="9001"/>
+					<param name="onup" value="noop"/>
 					<param name="ondown" value="500"/>
 					<param name="visible" value="!String.IsEmpty(Window.Property(has_tv))"/>
 				</include>
@@ -349,7 +330,7 @@
 					<param name="id" value="103"/>
 					<param name="label" value="DIRECTED"/>
 					<param name="shown" value="String.IsEqual(Window.Property(tab),directed)"/>
-					<param name="onup" value="9001"/>
+					<param name="onup" value="noop"/>
 					<param name="ondown" value="500"/>
 					<param name="visible" value="!String.IsEmpty(Window.Property(has_directed))"/>
 				</include>
@@ -358,21 +339,21 @@
 					<param name="label" value="POPULAR"/>
 					<param name="shown" value="String.IsEqual(Window.Property(sort),popular)"/>
 					<param name="left" value="32"/>
-					<param name="onup" value="9001"/>
+					<param name="onup" value="noop"/>
 					<param name="ondown" value="500"/>
 				</include>
 				<include content="MoviePipe_Chip">
 					<param name="id" value="112"/>
 					<param name="label" value="NEWEST"/>
 					<param name="shown" value="String.IsEqual(Window.Property(sort),newest)"/>
-					<param name="onup" value="9001"/>
+					<param name="onup" value="noop"/>
 					<param name="ondown" value="500"/>
 				</include>
 				<include content="MoviePipe_Chip">
 					<param name="id" value="113"/>
 					<param name="label" value="OLDEST"/>
 					<param name="shown" value="String.IsEqual(Window.Property(sort),oldest)"/>
-					<param name="onup" value="9001"/>
+					<param name="onup" value="noop"/>
 					<param name="ondown" value="500"/>
 				</include>
 				<include content="MoviePipe_Chip">
@@ -380,7 +361,7 @@
 					<param name="label" value="TMDB ↗"/>
 					<param name="shown" value="false"/>
 					<param name="left" value="32"/>
-					<param name="onup" value="9001"/>
+					<param name="onup" value="noop"/>
 					<param name="ondown" value="500"/>
 				</include>
 			</control>

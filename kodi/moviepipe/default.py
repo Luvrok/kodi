@@ -1,6 +1,6 @@
 # Movie pipe in video add-ons, and its routes:
 #   ?action=downloads  what radarr and sonarr download (6, ../keyboard.xml),
-#                      ./windows.py
+#                      ./downloads.py
 #   ?action=queue      the same as a folder of posters: discover's first row,
 #                      the top bar's 06 (../majan-moviepipe.xml)
 #   ?action=discover   tmdb's trending, popular, new (5), ./discover.py
@@ -16,8 +16,9 @@
 #   ?action=open&site=tmdb|imdb|letterboxd&type=movie|tv|person&tmdb=&imdb=
 #                      the page in the browser, ./browser.py (more on the
 #                      film page)
-#   ?action=plot&id=N  the whole plot of container N's tile (home's rows)
 #   ?action=page&row=N&by=1|-1  home's row N's page of tmdb helper
+#   ?action=collections  the library's collections and tmdb's to search,
+#                      ./sets.py
 import sys
 import time
 import urllib.parse
@@ -30,10 +31,11 @@ from actions import movie, show
 from arr import Error, error
 from browser import browse, url
 from discover import discover
+from downloads import downloads, show_downloads
 from person import person
-from tmdb import info, settle
+from sets import collections
+from tmdb import settle
 from trailer import trailer
-from windows import downloads, show_downloads
 
 HANDLE = int(sys.argv[1])
 QUERY = dict(urllib.parse.parse_qsl(sys.argv[2][1:]))
@@ -85,12 +87,6 @@ def reload():
     xbmcgui.Window(10000).setProperty("moviepipe.reload", str(time.time()))
 
 
-def plot():
-    # a tile's whole plot, home's rows (its info shows a few lines of it)
-    cid = QUERY["id"]
-    xbmcgui.Dialog().textviewer(info(f"Container({cid}).ListItem.Label"), info(f"Container({cid}).ListItem.Plot"))
-
-
 def page():
     # home's row turns its page in place (../majan-moviepipe.xml: its path
     # has the page of this property), its first tile in focus then
@@ -115,16 +111,32 @@ elif action == "discover":
 elif action in ("download", "pick"):
     player()
 elif action == "person":
-    person(QUERY.get("tmdb"), QUERY.get("name", ""), QUERY.get("tab"), QUERY.get("film"), QUERY.get("type", "movie"))
+    person(
+        QUERY.get("tmdb"),
+        QUERY.get("name", ""),
+        QUERY.get("tab"),
+        QUERY.get("film"),
+        QUERY.get("type", "movie"),
+    )
 elif action == "trailer":
     trailer(QUERY.get("type", "movie"), QUERY.get("tmdb"))
 elif action == "reload":
     reload()
 elif action == "open":
-    browse(url(QUERY.get("site", "tmdb"), QUERY.get("type", "movie"), QUERY.get("tmdb"), QUERY.get("imdb")))
-elif action == "plot":
-    plot()
+    browse(
+        url(
+            QUERY.get("site", "tmdb"),
+            QUERY.get("type", "movie"),
+            QUERY.get("tmdb"),
+            QUERY.get("imdb"),
+        )
+    )
 elif action == "page":
     page()
+elif action == "collections":
+    try:
+        collections()
+    except Exception as e:  # noqa: BLE001 - show what the plugin would hide
+        xbmcgui.Dialog().ok("Collections", f"{type(e).__name__}: {e}")
 else:
     listing()

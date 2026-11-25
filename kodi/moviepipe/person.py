@@ -44,7 +44,7 @@ SORTS = {
 # film's crew
 DETAILS, SEARCH, CREW, ROW = 70, 71, 72, 500
 # the list's last tile (tmdb helper's next page), left on its first
-NEXT, PREVIOUS, BIO, TMDB = 310, 311, 9001, 121
+NEXT, PREVIOUS, TMDB = 310, 311, 121
 KINDS = {
     "Acting": "Actor",
     "Directing": "Director",
@@ -70,7 +70,9 @@ def items(cid):
         yield info(f"{item}.Label"), item
 
 
-class Person(xbmcgui.WindowXML):
+class Person(xbmcgui.WindowXMLDialog):
+    # a dialog, not a window: the page it was opened from stays under it,
+    # esc is back there (the window used to close all, so esc was home)
     def onInit(self):
         if getattr(self, "started", False):
             return
@@ -94,16 +96,27 @@ class Person(xbmcgui.WindowXML):
 
     def search(self):
         # the first of that name, tmdb's most popular first
-        self.setProperty("search", helper(info="search", tmdb_type="person", query=self.name))
+        self.setProperty(
+            "search", helper(info="search", tmdb_type="person", query=self.name)
+        )
         if not self.filled(SEARCH):
             return None
-        found = [(label.casefold() != self.name.casefold(), n, info(f"{item}.Property(tmdb_id)")) for n, (label, item) in enumerate(items(SEARCH))]
+        found = [
+            (
+                label.casefold() != self.name.casefold(),
+                n,
+                info(f"{item}.Property(tmdb_id)"),
+            )
+            for n, (label, item) in enumerate(items(SEARCH))
+        ]
         return min(found)[2] if found else None
 
     def director(self):
         # the film's director by its crew, a show's creator: tmdb helper's
         # lists have no director, only its page of the film does
-        self.setProperty("crew", helper(info="crew", tmdb_type=self.kind, tmdb_id=self.film))
+        self.setProperty(
+            "crew", helper(info="crew", tmdb_type=self.kind, tmdb_id=self.film)
+        )
         if not self.filled(CREW):
             return None
         jobs = ("Creator", "Director") if self.kind == "tv" else ("Director",)
@@ -112,7 +125,9 @@ class Person(xbmcgui.WindowXML):
             roles = info(f"{item}.Property(role)").split(" / ")
             rank = next((n for n, job in enumerate(jobs) if job in roles), None)
             if rank is not None:
-                found.append((rank, len(found), label, info(f"{item}.Property(tmdb_id)")))
+                found.append(
+                    (rank, len(found), label, info(f"{item}.Property(tmdb_id)"))
+                )
         if not found:
             return None
         _, _, self.name, tmdb = min(found)
@@ -127,14 +142,19 @@ class Person(xbmcgui.WindowXML):
         if not self.tmdb:
             self.setProperty("empty", f"No {self.name or 'director'} on TMDb")
             return
-        self.setProperty("details", helper(info="details", tmdb_type="person", tmdb_id=self.tmdb))
+        self.setProperty(
+            "details", helper(info="details", tmdb_type="person", tmdb_id=self.tmdb)
+        )
         if self.filled(DETAILS):
             self.details()
         if not self.tab:
             if self.department == "Directing" and self.counts.get("directed"):
                 self.tab = "directed"
             else:
-                self.tab = next((t for t in ("films", "tv", "directed") if self.counts.get(t)), "films")
+                self.tab = next(
+                    (t for t in ("films", "tv", "directed") if self.counts.get(t)),
+                    "films",
+                )
         # the focus on its tab, the first of the row before the tabs came:
         # through kodi, a control's own setFocusId is the ui thread's
         buttons = [v[0] for v in TABS.values()] + [v[0] for v in SORTS.values()]
@@ -155,11 +175,17 @@ class Person(xbmcgui.WindowXML):
         # the directed: of all they did behind the camera, the tab says
         # if there's none. the others only with some
         for tab in TABS:
-            self.setProperty(f"has_{tab}", "1" if self.counts[tab] or self.tab == tab else "")
+            self.setProperty(
+                f"has_{tab}", "1" if self.counts[tab] or self.tab == tab else ""
+            )
         self.setProperty("name", self.name)
         self.setProperty("bio", self.bio)
-        self.setProperty("kind", KINDS.get(self.department, self.department or "Person"))
-        self.setProperty("kicker", f"Known for {self.department}" if self.department else "")
+        self.setProperty(
+            "kind", KINDS.get(self.department, self.department or "Person")
+        )
+        self.setProperty(
+            "kicker", f"Known for {self.department}" if self.department else ""
+        )
         self.setProperty("born", day(get("Property(birthday)")))
         self.setProperty("died", day(died))
         self.setProperty("age", get("Property(age)"))
@@ -170,7 +196,14 @@ class Person(xbmcgui.WindowXML):
     def show(self):
         _, kind, extra, title, _ = TABS[self.tab]
         _, by, how, said = SORTS[self.sort]
-        params = dict(info=kind, tmdb_type="person", tmdb_id=self.tmdb, sort_by=by, sort_how=how, **extra)
+        params = dict(
+            info=kind,
+            tmdb_type="person",
+            tmdb_id=self.tmdb,
+            sort_by=by,
+            sort_how=how,
+            **extra,
+        )
         if self.page > 1:
             params["page"] = self.page
         if self.stamp:
@@ -180,10 +213,15 @@ class Person(xbmcgui.WindowXML):
         self.setProperty("page", str(self.page))
         self.setProperty("rowtitle", f"{title} · {said}")
         total = self.counts.get(self.tab) if self.tab != "directed" else None
-        said = [f"page {self.page}" if self.page > 1 else "", f"{total} in all" if total else ""]
+        said = [
+            f"page {self.page}" if self.page > 1 else "",
+            f"{total} in all" if total else "",
+        ]
         self.setProperty("rowcount", " · ".join(s for s in said if s))
         self.loads += 1
-        threading.Thread(target=self.loaded, args=(self.loads, helper(**params)), daemon=True).start()
+        threading.Thread(
+            target=self.loaded, args=(self.loads, helper(**params)), daemon=True
+        ).start()
 
     def loaded(self, load, path):
         # the old posters dim till the new ones are in (the xml), then the
@@ -215,9 +253,6 @@ class Person(xbmcgui.WindowXML):
             self.page += 1
         elif cid == PREVIOUS and self.page > 1:
             self.page -= 1
-        elif cid == BIO:
-            xbmcgui.Dialog().textviewer(self.name, self.bio)
-            return
         elif cid == TMDB:
             browse(url("tmdb", "person", self.tmdb))
             return
@@ -234,11 +269,28 @@ class Person(xbmcgui.WindowXML):
             self.show()
         elif key == "o" and self.getFocusId() == ROW:
             # the film's or show's page in the browser
-            kind = "tv" if info(f"Container({ROW}).ListItem.DBType") == "tvshow" else "movie"
-            browse(url("tmdb", kind, info(f"Container({ROW}).ListItem.UniqueID(tmdb)") or info(f"Container({ROW}).ListItem.Property(tmdb_id)")))
+            kind = (
+                "tv"
+                if info(f"Container({ROW}).ListItem.DBType") == "tvshow"
+                else "movie"
+            )
+            browse(
+                url(
+                    "tmdb",
+                    kind,
+                    info(f"Container({ROW}).ListItem.UniqueID(tmdb)")
+                    or info(f"Container({ROW}).ListItem.Property(tmdb_id)"),
+                )
+            )
         elif key == "t" and self.getFocusId() == ROW:
-            tmdb = info(f"Container({ROW}).ListItem.UniqueID(tmdb)") or info(f"Container({ROW}).ListItem.Property(tmdb_id)")
-            kind = "tv" if info(f"Container({ROW}).ListItem.DBType") == "tvshow" else "movie"
+            tmdb = info(f"Container({ROW}).ListItem.UniqueID(tmdb)") or info(
+                f"Container({ROW}).ListItem.Property(tmdb_id)"
+            )
+            kind = (
+                "tv"
+                if info(f"Container({ROW}).ListItem.DBType") == "tvshow"
+                else "movie"
+            )
             if tmdb:
                 trailer(kind, tmdb)
         elif a in (xbmcgui.ACTION_NAV_BACK, xbmcgui.ACTION_PREVIOUS_MENU):
@@ -253,8 +305,7 @@ def person(tmdb=None, name="", tab=None, film=None, kind="movie"):
     if film and kind == "tv":
         # a show's creator: the tab they have the most of
         tab = None
-    # the film's page goes, this one comes up in its place
-    xbmc.executebuiltin("Dialog.Close(all,true)", True)
+    # a dialog over the page it came from: esc is back there
     w = window(
         Person,
         "moviepipe-person.xml",
