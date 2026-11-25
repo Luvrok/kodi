@@ -398,15 +398,18 @@ country» на каждый постер и фон. Через xray (`127.0.0.1:
   «Choose Action» и «Play with»: `default_player_movies`/`_episodes`
   указывают на `moviepipe-download.json`, `combined_players` выключен.
   Фильм из библиотеки по-прежнему играет в Kodi первым.
-- Коллекции: чип `COLLECTIONS` в Discover открывает `moviepipe-sets.xml`
-  (`sets.py`): стена постеров библиотечных сетов, поиск по названию, порядок
-  по названию или числу фильмов; `TMDB` — поиск коллекций TMDb, Enter
-  открывает фильмы коллекции в `Videos`, Esc возвращает к стене. У сетов в
-  нативной стене больше нет оранжевых меток (условие `DBType,set` убрано из
-  `VidView_Markers`).
+- Коллекции: страница TMDb Helper (`ALL OF TMDB HELPER` → Collections)
+  осталась его собственной, но теперь её можно смотреть: `all_collections`
+  сортируется по имени, а не по id, первая плитка — «Search collections»
+  (его же поиск по коллекциям). У сетов в нативной стене больше нет
+  оранжевых меток (условие `DBType,set` убрано из `VidView_Markers`), а
+  плитка «Next page» рисуется как NEXT в Discover, а не серым прямоугольником
+  с двумя надписями. Оба патча TMDb Helper — в `addons.nix` через
+  `substituteInPlace --replace-fail`: сдвинулся пин — сборка падает, а не
+  теряет правку молча.
 
 Проверено без запуска Kodi: `python3 -m py_compile`, `test/test_labels.py`
-(11 тестов), разбор всех 112 XML `xml.etree`, импорт модулей аддона с
+(11 тестов), разбор всех 111 XML `xml.etree`, импорт модулей аддона с
 подставными `xbmc`/`xbmcgui` и подставным `arr.json`.
 
 ## Что осталось нерешённым

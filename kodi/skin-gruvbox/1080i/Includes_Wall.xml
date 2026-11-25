@@ -95,6 +95,15 @@
 							</include>
 							<include content="VidView_Markers"/>
 							<include>VidView_TVMarkers</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="176" height="256" condition="String.IsEqual(Skin.String(majan.wall.size),small) + !Skin.HasSetting(majan.wall.nogap)">
@@ -123,6 +132,15 @@
 							</include>
 							<include content="VidView_Markers"/>
 							<include>VidView_TVMarkers</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 							<control type="image">
 								<left>focus_out</left>
 								<top>focus_out</top>
@@ -169,6 +187,15 @@
 								<param name="tab" value="marker_tab"/>
 							</include>
 							<include>VidView_TVMarkersSquare</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="160" height="240" condition="String.IsEqual(Skin.String(majan.wall.size),small) + Skin.HasSetting(majan.wall.nogap)">
@@ -217,6 +244,15 @@
 							</include>
 							<include>VidView_TVMarkersSquare</include>
 							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
+							<control type="group">
 								<visible>Control.HasFocus(506) + [!Skin.HasSetting(majan.wall.noborder) | Skin.HasSetting(majan.reducemotion)]</visible>
 								<control type="image">
 									<left>0</left>
@@ -252,6 +288,15 @@
 							</include>
 							<include content="VidView_Markers"/>
 							<include>VidView_TVMarkers</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="242" height="355" condition="!String.IsEqual(Skin.String(majan.wall.size),small) + !String.IsEqual(Skin.String(majan.wall.size),large) + !Skin.HasSetting(majan.wall.nogap)">
@@ -280,6 +325,15 @@
 							</include>
 							<include content="VidView_Markers"/>
 							<include>VidView_TVMarkers</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 							<control type="image">
 								<left>focus_out</left>
 								<top>focus_out</top>
@@ -326,6 +380,15 @@
 								<param name="tab" value="marker_tab"/>
 							</include>
 							<include>VidView_TVMarkersSquare</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="240" height="360" condition="!String.IsEqual(Skin.String(majan.wall.size),small) + !String.IsEqual(Skin.String(majan.wall.size),large) + Skin.HasSetting(majan.wall.nogap)">
@@ -374,6 +437,15 @@
 							</include>
 							<include>VidView_TVMarkersSquare</include>
 							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
+							<control type="group">
 								<visible>Control.HasFocus(506) + [!Skin.HasSetting(majan.wall.noborder) | Skin.HasSetting(majan.reducemotion)]</visible>
 								<control type="image">
 									<left>0</left>
@@ -409,6 +481,15 @@
 							</include>
 							<include content="VidView_Markers"/>
 							<include>VidView_TVMarkers</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="324" height="474" condition="String.IsEqual(Skin.String(majan.wall.size),large) + !Skin.HasSetting(majan.wall.nogap)">
@@ -437,6 +518,15 @@
 							</include>
 							<include content="VidView_Markers"/>
 							<include>VidView_TVMarkers</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 							<control type="image">
 								<left>focus_out</left>
 								<top>focus_out</top>
@@ -483,6 +573,15 @@
 								<param name="tab" value="marker_tab"/>
 							</include>
 							<include>VidView_TVMarkersSquare</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="320" height="480" condition="String.IsEqual(Skin.String(majan.wall.size),large) + Skin.HasSetting(majan.wall.nogap)">
@@ -530,6 +629,15 @@
 								<param name="tab" value="marker_tab"/>
 							</include>
 							<include>VidView_TVMarkersSquare</include>
+							<control type="group">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<visible>$EXP[MoviePipe_IsNext]</visible>
+								<control type="image">
+									<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+									<texture colordiffuse="bg_raised">common/white.png</texture>
+								</control>
+								<include>MoviePipe_NextTile</include>
+							</control>
 							<control type="group">
 								<visible>Control.HasFocus(506) + [!Skin.HasSetting(majan.wall.noborder) | Skin.HasSetting(majan.reducemotion)]</visible>
 								<control type="image">
