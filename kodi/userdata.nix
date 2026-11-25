@@ -39,8 +39,8 @@ let
         # a film with a resume point starts where it stopped: no "Play from
         # beginning" menu (the external mpv wrapper would ignore the choice
         # and resume anyway)
-        "myvideos.selectaction" = "2";  # ACTION_RESUME
-        "myvideos.playaction" = "2";    # ACTION_RESUME
+        "myvideos.selectaction" = "2"; # ACTION_RESUME
+        "myvideos.playaction" = "2"; # ACTION_RESUME
         # kodi's own click set: no 6 s startup.wav (the titan set has one)
         "lookandfeel.soundskin" = "resource.uisounds.kodi";
       };
@@ -113,5 +113,12 @@ in
     pagemulti_sync = "3";
     max_threads = "10";
     artwork_quality = "2";
+    # enter on a film or an episode in its lists: straight to movie pipe's
+    # player, no "Choose Action" and "Play with" dialogs (its default is
+    # one player, asked twice otherwise). a film in the library still plays
+    # in kodi's player first (default_player_kodi is on)
+    default_player_movies = "moviepipe-download.json play_movie";
+    default_player_episodes = "moviepipe-download.json play_episode";
+    combined_players = "false";
   };
 }
