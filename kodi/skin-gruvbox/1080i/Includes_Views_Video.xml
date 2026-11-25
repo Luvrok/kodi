@@ -579,7 +579,7 @@
 				<width>$PARAM[marker]</width>
 				<height>$PARAM[marker]</height>
 				<texture colordiffuse="$VAR[ColorAccent]">markers/unwatched.png</texture>
-				<visible>$EXP[ShowUnwatchedMarkers] + [[$EXP[ListItemIsVideoFile] + $EXP[ListItemUnwatched]] | [String.IsEqual(ListItem.DBType,set) + !$EXP[VidView_SetDone]]]</visible>
+				<visible>$EXP[ShowUnwatchedMarkers] + [$EXP[ListItemIsVideoFile] + $EXP[ListItemUnwatched]]]</visible>
 			</control>
 			<control type="image">
 				<right>0</right>
@@ -587,7 +587,7 @@
 				<width>$PARAM[tab]</width>
 				<height>$PARAM[tab]</height>
 				<texture>markers/watched.png</texture>
-				<visible>$EXP[ShowWatchedMarkers] + [[$EXP[ListItemIsVideoFile] + $EXP[ListItemWatched]] | $EXP[VidView_SetDone]]</visible>
+				<visible>$EXP[ShowWatchedMarkers] + [$EXP[ListItemIsVideoFile] + $EXP[ListItemWatched]]</visible>
 			</control>
 		</definition>
 	</include>
@@ -599,7 +599,7 @@
 				<width>$PARAM[marker]</width>
 				<height>$PARAM[marker]</height>
 				<texture colordiffuse="$VAR[ColorAccent]">markers/unwatched_round.png</texture>
-				<visible>$EXP[ShowUnwatchedMarkers] + [[$EXP[ListItemIsVideoFile] + $EXP[ListItemUnwatched]] | [String.IsEqual(ListItem.DBType,set) + !$EXP[VidView_SetDone]]]</visible>
+				<visible>$EXP[ShowUnwatchedMarkers] + [$EXP[ListItemIsVideoFile] + $EXP[ListItemUnwatched]]]</visible>
 			</control>
 			<control type="image">
 				<right>6</right>
@@ -607,7 +607,7 @@
 				<width>$PARAM[tab]</width>
 				<height>$PARAM[tab]</height>
 				<texture>markers/watched_round.png</texture>
-				<visible>$EXP[ShowWatchedMarkers] + [[$EXP[ListItemIsVideoFile] + $EXP[ListItemWatched]] | $EXP[VidView_SetDone]]</visible>
+				<visible>$EXP[ShowWatchedMarkers] + [$EXP[ListItemIsVideoFile] + $EXP[ListItemWatched]]</visible>
 			</control>
 		</definition>
 	</include>

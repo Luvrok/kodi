@@ -60,10 +60,7 @@
 	</variable>
 	<!-- context hint line (x 680, y 990) -->
 	<variable name="VidInfo_Hint">
-		<value condition="Control.HasFocus(9001)">OK FOR FULL PLOT · ↓ BUTTONS</value>
 		<value condition="ControlGroup(9100).HasFocus()">◀ ▶ CHOOSE · ↑ OR BACK TO RETURN</value>
-		<value condition="ControlGroup(9000).HasFocus() + Control.IsVisible(9001) + Integer.IsGreater(Container(50).NumItems,0)">↑ PLOT · ↓ $VAR[VidInfo_CastHeader]</value>
-		<value condition="ControlGroup(9000).HasFocus() + Control.IsVisible(9001)">↑ PLOT</value>
 		<value condition="ControlGroup(9000).HasFocus() + Integer.IsGreater(Container(50).NumItems,0)">↓ $VAR[VidInfo_CastHeader]</value>
 	</variable>
 	<!-- cast row items (inside list 50): actors, or the films of a collection -->
@@ -154,7 +151,6 @@
 			<onleft condition="$PARAM[left4_if]">$PARAM[left4]</onleft>
 			<onright condition="$PARAM[right1_if]">$PARAM[right1]</onright>
 			<onright condition="$PARAM[right2_if]">$PARAM[right2]</onright>
-			<onup condition="Control.IsVisible(9001)">9001</onup>
 			<ondown condition="Integer.IsGreater(Container(50).NumItems,0)">50</ondown>
 		</definition>
 	</include>
@@ -396,7 +392,7 @@
 				<height>vidview_fact_h</height>
 				<include>VidView_Facts</include>
 			</control>
-			<!-- plot: fixed 3-line block; the focusable frame opens the full plot -->
+			<!-- plot: fixed 3-line block, the rest fades out under it -->
 			<control type="group">
 				<left>16</left>
 				<width>vidview_col_w</width>
@@ -423,30 +419,7 @@
 					<label>$INFO[ListItem.Tagline]</label>
 					<visible>String.IsEmpty(ListItem.Plot)</visible>
 				</control>
-				<control type="image"><bottom>0</bottom><width>1080</width><height>44</height><texture colordiffuse="bg">common/gradient_bottom.png</texture><visible>Container(9161).HasNext</visible></control><control type="button" id="9001">
-					<description>plot: OK opens the full plot</description>
-					<left>0</left>
-					<top>0</top>
-					<width>1080</width>
-					<height>114</height>
-					<label></label>
-					<texturefocus />
-					<texturenofocus />
-					<onup>noop</onup>
-					<ondown>9000</ondown>
-					<onleft>noop</onleft>
-					<onright>noop</onright>
-					<onclick>SetFocus(61)</onclick>
-					<visible>!String.IsEmpty(ListItem.Plot)</visible>
-				</control>
-				<control type="group">
-					<left>0</left>
-					<top>0</top>
-					<width>1080</width>
-					<height>114</height>
-					<visible>Control.HasFocus(9001)</visible>
-					<include>Majan_FocusFrameAlways</include>
-				</control>
+				<control type="image"><bottom>0</bottom><width>1080</width><height>44</height><texture colordiffuse="bg">common/gradient_bottom.png</texture><visible>Container(9161).HasNext</visible></control>
 			</control>
 			<control type="grouplist">
 				<left>16</left>
@@ -494,7 +467,6 @@
 			<orientation>horizontal</orientation>
 			<usecontrolcoords>true</usecontrolcoords>
 			<itemgap>9</itemgap>
-			<onup condition="Control.IsVisible(9001)">9001</onup>
 			<ondown condition="Integer.IsGreater(Container(50).NumItems,0)">50</ondown>
 			<onleft>noop</onleft>
 			<onright>noop</onright>
@@ -615,7 +587,6 @@
 			<include content="VidInfo_MoreButton">
 				<param name="id" value="443"/>
 				<param name="label" value="COLLECTION"/>
-				<param name="onclick" value="Dialog.Close(all,true)"/>
 				<param name="onclick2" value="ActivateWindow(Videos,videodb://movies/sets/$INFO[ListItem.SetId]/?setid=$INFO[ListItem.SetId],return)"/>
 				<param name="visible" value="!String.IsEmpty(ListItem.SetID)"/>
 			</include>
@@ -757,76 +728,5 @@
 			</control>
 			</control>
 		</definition>
-	</include>
-
-	<!-- Full plot overlay: shown while scrollbar 61 (inside group 9200) has focus.
-	     Up/Down scroll, Back / Left / Right close it. -->
-	<include name="VidInfo_FullPlot">
-		<control type="group" id="9200">
-			<visible allowhiddenfocus="true">ControlGroup(9200).HasFocus()</visible>
-			<include>Anim_FadeVisible</include>
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>screen_w</width>
-				<height>screen_h</height>
-				<texture colordiffuse="bg">common/white.png</texture>
-			</control>
-			<control type="label">
-				<left>360</left>
-				<top>140</top>
-				<width>1160</width>
-				<height>22</height>
-				<font>mono_15</font>
-				<textcolor>$VAR[ColorAccent]</textcolor>
-				<label>PLOT · $VAR[VidInfo_Kicker]</label>
-			</control>
-			<control type="label">
-				<left>360</left>
-				<top>172</top>
-				<width>1160</width>
-				<height>72</height>
-				<font>display_64</font>
-				<textcolor>text_primary</textcolor>
-				<label>$VAR[VidInfo_Title]</label>
-			</control>
-			<include content="Majan_Rule">
-				<param name="top" value="262"/>
-				<param name="left" value="360"/>
-				<param name="width" value="1200"/>
-				<param name="color" value="hairline_strong"/>
-			</include>
-			<control type="textbox">
-				<left>360</left>
-				<top>290</top>
-				<width>1160</width>
-				<height>676</height>
-				<font>body_26</font>
-				<textcolor>text_body</textcolor>
-				<pagecontrol>61</pagecontrol>
-				<label>$INFO[ListItem.Plot]</label>
-				<autoscroll delay="6000" time="3000" repeat="10000">true</autoscroll>  <!-- standard Kodi plot scroll: wait 6s, roll, pause 10s, repeat -->
-			</control>
-			<control type="scrollbar" id="61">
-				<left>1556</left>
-				<top>290</top>
-				<width>4</width>
-				<height>676</height>
-				<orientation>vertical</orientation>
-				<showonepage>true</showonepage>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onback>9001</onback>
-			</control>
-			<control type="label">
-				<left>360</left>
-				<top>996</top>
-				<width>1200</width>
-				<height>22</height>
-				<font>mono_14</font>
-				<textcolor>text_tertiary</textcolor>
-				<label>↑ ↓ SCROLL · BACK TO CLOSE</label>
-			</control>
-		</control>
 	</include>
 </includes>
