@@ -87,6 +87,22 @@ let
       infotagger
       (module "script.module.qrcode" "6.1.0" kodi.pythonPackages.qrcode)
     ];
+    postInstall = ''
+      d=$out/share/kodi/addons/plugin.video.themoviedb.helper/resources/tmdbhelper/lib
+      # its "all collections" page: tmdb's database order is the id, which
+      # reads as no order at all; by name it is a page one can browse. the
+      # first tile asks for a name (its own collection search), the rest is
+      # 20 a page. --replace-fail: a pinned rev that moved the line fails
+      # the build instead of losing this quietly
+      substituteInPlace $d/query/database/collections.py \
+        --replace-fail 'name IS NOT NULL ORDER BY id LIMIT' \
+        'name IS NOT NULL ORDER BY name COLLATE NOCASE LIMIT'
+      substituteInPlace $d/items/directories/tmdb/lists_allitems.py \
+        --replace-fail 'items = [ItemCollections(**i).item for i in items]' \
+        "items = [ItemCollections(**i).item for i in items]
+              if int(page) == 1:
+                  items.insert(0, {'label': 'Search collections', 'params': {'info': 'search', 'tmdb_type': 'collection'}})"
+    '';
   };
 
   moviepipe = buildKodiAddon {
