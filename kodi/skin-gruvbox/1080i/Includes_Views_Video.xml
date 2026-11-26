@@ -844,7 +844,9 @@
 				<textcolor>text_secondary</textcolor>
 				<texturenofocus />
 				<onclick>SendClick(3)</onclick>
-				<visible>Control.IsEnabled(3)</visible>
+				<!-- a plugin's order is its own: sorting the 20 items of a page
+				     means nothing, and kodi offers plugin pages only "date" -->
+				<visible>Control.IsEnabled(3) + !String.StartsWith(Container.FolderPath,plugin://)</visible>
 			</control>
 			<control type="button" id="9325">
 				<include>VidView_NavButtonLook</include>
@@ -852,7 +854,7 @@
 				<textcolor>text_secondary</textcolor>
 				<texturenofocus />
 				<onclick>SendClick(4)</onclick>
-				<visible>Control.IsEnabled(4)</visible>
+				<visible>Control.IsEnabled(4) + !String.StartsWith(Container.FolderPath,plugin://)</visible>
 			</control>
 			<!-- VIEW: <name> -->
 			<control type="button" id="9326">
