@@ -89,14 +89,11 @@ let
     ];
     postInstall = ''
       d=$out/share/kodi/addons/plugin.video.themoviedb.helper/resources/tmdbhelper/lib
-      # its "all collections" page: tmdb's database order is the id, which
-      # reads as no order at all; by name it is a page one can browse. the
-      # first tile asks for a name (its own collection search), the rest is
-      # 20 a page. --replace-fail: a pinned rev that moved the line fails
-      # the build instead of losing this quietly
-      substituteInPlace $d/query/database/collections.py \
-        --replace-fail 'name IS NOT NULL ORDER BY id LIMIT' \
-        'name IS NOT NULL ORDER BY name COLLATE NOCASE LIMIT'
+      # its "all collections" page: the first tile asks for a name (its own
+      # collection search), the rest is 20 a page. tmdb's daily export has
+      # only ids and names, no art or popularity, so the id order (the
+      # classics first) is left alone. --replace-fail: a pinned rev that
+      # moved the line fails the build instead of losing this quietly
       substituteInPlace $d/items/directories/tmdb/lists_allitems.py \
         --replace-fail 'items = [ItemCollections(**i).item for i in items]' \
         "items = [ItemCollections(**i).item for i in items]
