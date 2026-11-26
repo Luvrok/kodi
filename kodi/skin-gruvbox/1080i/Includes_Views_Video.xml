@@ -273,6 +273,7 @@
 	</variable>
 	<variable name="VidView_WallMeta">
 		<value condition="Container(502).ListItem.IsParentFolder">PARENT FOLDER · OK GOES UP ONE LEVEL</value>
+		<value condition="String.IsEqual(Container(502).ListItem.DBType,set)">Collection$INFO[Container(502).ListItem.Property(Total), · , films]</value>
 		<value>$INFO[Container(502).ListItem.Year]$INFO[Container(502).ListItem.Genre, · ,]$INFO[Container(502).ListItem.Studio, · ,]</value>
 	</variable>
 
@@ -1614,7 +1615,7 @@
 				<onleft>noop</onleft>
 				<onright>noop</onright>
 				<viewtype label="31308">list</viewtype>
-				<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(movies)</visible>
+				<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(movies) | Container.Content(sets)</visible>
 				<itemlayout width="vidview_wall_pitch_x" height="vidview_wall_pitch_y">
 					<control type="group">
 						<left>8</left>
@@ -1624,6 +1625,15 @@
 						<include content="VidView_ArtFallback"/>
 						<include content="VidView_ArtImage"/>
 						<include>VidView_TVMarkers</include>
+						<control type="group">
+							<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+							<visible>$EXP[MoviePipe_IsNext]</visible>
+							<control type="image">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<texture colordiffuse="bg_raised">common/white.png</texture>
+							</control>
+							<include>MoviePipe_NextTile</include>
+						</control>
 					</control>
 				</itemlayout>
 				<focusedlayout width="vidview_wall_pitch_x" height="vidview_wall_pitch_y">
@@ -1636,6 +1646,15 @@
 						<include content="VidView_ArtFallback"/>
 						<include content="VidView_ArtImage"/>
 						<include>VidView_TVMarkers</include>
+						<control type="group">
+							<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+							<visible>$EXP[MoviePipe_IsNext]</visible>
+							<control type="image">
+								<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+								<texture colordiffuse="bg_raised">common/white.png</texture>
+							</control>
+							<include>MoviePipe_NextTile</include>
+						</control>
 						<include content="VidView_PosterFocus">
 							<param name="id" value="502"/>
 						</include>

@@ -398,13 +398,15 @@ country» на каждый постер и фон. Через xray (`127.0.0.1:
   «Choose Action» и «Play with»: `default_player_movies`/`_episodes`
   указывают на `moviepipe-download.json`, `combined_players` выключен.
   Фильм из библиотеки по-прежнему играет в Kodi первым.
-- Коллекции: страница TMDb Helper (`ALL OF TMDB HELPER` → Collections)
-  осталась его собственной, но теперь её можно смотреть: `all_collections`
-  сортируется по имени, а не по id, первая плитка — «Search collections»
-  (его же поиск по коллекциям). У сетов в нативной стене больше нет
-  оранжевых меток (условие `DBType,set` убрано из `VidView_Markers`), а
-  плитка «Next page» рисуется как NEXT в Discover, а не серым прямоугольником
-  с двумя надписями. Оба патча TMDb Helper — в `addons.nix` через
+- Коллекции: страница TMDb Helper (`ALL OF TMDB HELPER` → Movies →
+  Collections) осталась его собственной, но теперь её можно смотреть:
+  `all_collections` сортируется по имени, а не по id, первая плитка —
+  «Search collections» (его же поиск по коллекциям). Сеты открываются в
+  стене 502, как фильмы и сериалы: заголовок, верхний блок с постером и
+  описанием, а не край-в-край 506; 506 для сетов остался в выборе вида. У
+  сетов больше нет оранжевых меток (условие `DBType,set` убрано из
+  `VidView_Markers`), а «Next page» и там, и там — NEXT из Discover, а не
+  серый прямоугольник. Патчи TMDb Helper — в `addons.nix` через
   `substituteInPlace --replace-fail`: сдвинулся пин — сборка падает, а не
   теряет правку молча.
 
